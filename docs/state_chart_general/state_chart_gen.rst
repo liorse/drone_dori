@@ -1,0 +1,23 @@
+*****************************
+trying statecharts as devices
+*****************************
+
+I am going to try a few statecharts to test if they are suitable for this project.
+specifically I am going to need a thread that will be
+
+1. Read from a device every X seconds
+2. be responsive to commands
+
+To be able to do that I will need a statechart that will the following states
+
+1. init
+2. idle
+3. reading_status
+4. setting_parameter
+5. error
+
+Now let's start with the init state. entering into the init state will
+
+1. init the communication with instrument
+2. init the parameters for outside communication using the MQTT mosquitto
+3. if failed goto to the error state, inform the outside world and decide what to do next depending on the error.
