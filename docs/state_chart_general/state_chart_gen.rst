@@ -21,3 +21,12 @@ Now let's start with the init state. entering into the init state will
 1. init the communication with instrument
 2. init the parameters for outside communication using the MQTT mosquitto
 3. if failed goto to the error state, inform the outside world and decide what to do next depending on the error.
+
+Connecting the serial over RF to the raspberry:
+dmesg | grep ttyUSB
+[14785.320310] usb 1-1.3: FTDI USB Serial Device converter now attached to ttyUSB0
+pppd proxyarp mtu 1280 persist nodeflate noauth lcp-echo-interval 10 crtscts lock 10.10.1.2:10.10.1.1 /dev/ttyUSB0 115200
+the line that worked:
+sudo pppd  -detach  noauth crtscts lock 10.10.1.1:10.10.1.2 /dev/ttyUSB0 115200 &
+sudo kill pppd
+
