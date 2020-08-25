@@ -1,0 +1,169 @@
+<?xml version="1.0" encoding="UTF-8" standalone="no"?>
+<diagram program="umlet" version="14.3.0">
+  <zoom_level>8</zoom_level>
+  <element>
+    <id>UMLState</id>
+    <coordinates>
+      <x>408</x>
+      <y>336</y>
+      <w>200</w>
+      <h>144</h>
+    </coordinates>
+    <panel_attributes>comm OFF
+--
+
+entry/
+opc.post_fifo(
+Event(signal=signals.establish_comm,
+payload=None,
+times=1,
+period=None 
+deferred=False)
+
+valign=top
+</panel_attributes>
+    <additional_attributes/>
+  </element>
+  <element>
+    <id>UMLState</id>
+    <coordinates>
+      <x>184</x>
+      <y>336</y>
+      <w>208</w>
+      <h>248</h>
+    </coordinates>
+    <panel_attributes>comm ON
+--
+valign=top
+
+entry/ opc.post_fifo(
+Event(signal=signals.read_opc,
+payload=None,
+times=0,
+period=Update_periodicity_sec
+deferred=True)
+
+exit/ 
+ opc.cancel_events(
+ Event(signal=signals.read_opc))
+
+ close communication port</panel_attributes>
+    <additional_attributes/>
+  </element>
+  <element>
+    <id>UMLState</id>
+    <coordinates>
+      <x>144</x>
+      <y>232</y>
+      <w>752</w>
+      <h>472</h>
+    </coordinates>
+    <panel_attributes>Common Behaviour
+--
+
+valign=top
+</panel_attributes>
+    <additional_attributes/>
+  </element>
+  <element>
+    <id>UMLState</id>
+    <coordinates>
+      <x>368</x>
+      <y>192</y>
+      <w>384</w>
+      <h>32</h>
+    </coordinates>
+    <panel_attributes>Active Object - OPC (Read and Control)</panel_attributes>
+    <additional_attributes/>
+  </element>
+  <element>
+    <id>UMLState</id>
+    <coordinates>
+      <x>176</x>
+      <y>264</y>
+      <w>440</w>
+      <h>400</h>
+    </coordinates>
+    <panel_attributes>Enabled
+--
+
+exit/
+
+valign=top
+</panel_attributes>
+    <additional_attributes/>
+  </element>
+  <element>
+    <id>UMLState</id>
+    <coordinates>
+      <x>664</x>
+      <y>384</y>
+      <w>224</w>
+      <h>160</h>
+    </coordinates>
+    <panel_attributes>Disabled
+--
+Do nothing and wait for a comm OFF event
+valign=top
+</panel_attributes>
+    <additional_attributes/>
+  </element>
+  <element>
+    <id>UMLSpecialState</id>
+    <coordinates>
+      <x>840</x>
+      <y>320</y>
+      <w>16</w>
+      <h>16</h>
+    </coordinates>
+    <panel_attributes>type=initial</panel_attributes>
+    <additional_attributes/>
+  </element>
+  <element>
+    <id>Relation</id>
+    <coordinates>
+      <x>840</x>
+      <y>328</y>
+      <w>24</w>
+      <h>72</h>
+    </coordinates>
+    <panel_attributes>lt=-&gt;</panel_attributes>
+    <additional_attributes>10.0;10.0;10.0;70.0</additional_attributes>
+  </element>
+  <element>
+    <id>Relation</id>
+    <coordinates>
+      <x>472</x>
+      <y>472</y>
+      <w>80</w>
+      <h>208</h>
+    </coordinates>
+    <panel_attributes>comm oFF
+lt=-&gt;</panel_attributes>
+    <additional_attributes>10.0;240.0;10.0;10.0</additional_attributes>
+  </element>
+  <element>
+    <id>Relation</id>
+    <coordinates>
+      <x>720</x>
+      <y>536</y>
+      <w>64</w>
+      <h>184</h>
+    </coordinates>
+    <panel_attributes>disabled
+lt=-&gt;</panel_attributes>
+    <additional_attributes>10.0;210.0;10.0;10.0</additional_attributes>
+  </element>
+  <element>
+    <id>Relation</id>
+    <coordinates>
+      <x>280</x>
+      <y>576</y>
+      <w>72</w>
+      <h>104</h>
+    </coordinates>
+    <panel_attributes>comm ON
+lt=-&gt;</panel_attributes>
+    <additional_attributes>10.0;110.0;10.0;10.0</additional_attributes>
+  </element>
+</diagram>
