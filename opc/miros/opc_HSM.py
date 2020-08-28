@@ -6,6 +6,9 @@
 # 4a. it can also be statechart over the network on a remote pc (via RF serial link via PPP)
 # 5. It will be able accept control commands to start the laser or the pump for example
 
+from PyQt5.QtWidgets import QApplication, QMainWindow, \
+    QPushButton, QVBoxLayout, QWidget
+
 import time
 
 from miros import Event
@@ -136,6 +139,14 @@ def COMM_ON(opc, e):
     opc.temp.fun = ENABLED
     status = return_status.SUPER
   return status
+
+def btn_enable_opc_evt():
+    print("sent enable event to OPC")
+    opc.post_fifo(Event(signal=signals.enable_opc))
+
+def btn_disable_opc_evt():
+    print("sent disable event to OPC")
+    opc.post_fifo(Event(signal=signals.disable_opc))
   
 if __name__ == "__main__":
   
@@ -144,11 +155,6 @@ if __name__ == "__main__":
   opc.live_trace = True
   #opc.live_spy = True
   opc.start_at(DISABLED)
-  opc.post_fifo(Event(signal=signals.enable_opc))
-  time.sleep(5)
-  opc.post_fifo(Event(signal=signals.disable_opc))
-  time.sleep(3)
-  opc.post_fifo(Event(signal=signals.enable_opc))
   
   '''
   opc.establish_comm()
@@ -158,4 +164,20 @@ if __name__ == "__main__":
   opc.set_laser(True)
   opc.set_laser(False)
   '''
-  time.sleep(5)
+
+
+  app = QApplication([])
+  win = QMainWindow()
+  central_widget = QWidget()
+  btn_enable_opc = QPushButton('Enable OPC', central_widget)
+  btn_disable_opc = QPushButton('Disable OPC', central_widget)
+
+  btn_enable_opc.clicked.connect(btn_enable_opc_evt)
+  btn_disable_opc.clicked.connect(btn_disable_opc_evt)
+
+  layout = QVBoxLayout(central_widget)
+  layout.addWidget(btn_enable_opc)
+  layout.addWidget(btn_disable_opc)
+  win.setCentralWidget(central_widget)
+  win.show()
+  app.exit(app.exec_())
