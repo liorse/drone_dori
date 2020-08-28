@@ -6,11 +6,10 @@
 # 4a. it can also be statechart over the network on a remote pc (via RF serial link via PPP)
 # 5. It will be able accept control commands to start the laser or the pump for example
 
-from PyQt5.QtWidgets import QApplication, QMainWindow, \
-    QPushButton, QVBoxLayout, QWidget
 
 import time
 
+import paho.mqtt.client as mqtt
 from miros import Event
 from miros import spy_on
 from miros import signals
@@ -128,6 +127,7 @@ def COMM_ON(opc, e):
   elif e.signal == signals.read_data:
     if np.random.random() > 0.2:
       logging.info("reading data from OPC...")
+      mqttc.publish("opc/data", payload=np.random.random(), qos=2)
       status = return_status.HANDLED
     else:
       logging.info("comm failed !!!")
@@ -140,44 +140,52 @@ def COMM_ON(opc, e):
     status = return_status.SUPER
   return status
 
-def btn_enable_opc_evt():
-    print("sent enable event to OPC")
-    opc.post_fifo(Event(signal=signals.enable_opc))
+def on_message(client, userdata, message):
 
-def btn_disable_opc_evt():
-    print("sent disable event to OPC")
-    opc.post_fifo(Event(signal=signals.disable_opc))
-  
+    if message.payload == b'1':
+        opc.post_fifo(Event(signal=signals.enable_opc))
+    elif message.payload == b'0':
+        opc.post_fifo(Event(signal=signals.disable_opc))
+    else:
+        print("doing nothing")
+    return 0
+    #print("Received message '" + str(message.payload) + "' on topic '"
+    #     + message.topic + "' with QoS " + str(message.qos))
+
 if __name__ == "__main__":
   
-  # set an active object
-  opc = OPC(name='OPC', serial_port='/tty/USB0')
-  opc.live_trace = True
-  #opc.live_spy = True
-  opc.start_at(DISABLED)
-  
-  '''
-  opc.establish_comm()
-  opc.read_data_from_opc()
-  opc.set_fan(True)
-  opc.set_fan(False)
-  opc.set_laser(True)
-  opc.set_laser(False)
-  '''
+    # set an active object
+    opc = OPC(name='OPC', serial_port='/tty/USB0')
+    opc.live_trace = True
+    #opc.live_spy = True
+
+    mqttc = mqtt.Client(client_id=str(np.random.random()), clean_session=True, userdata=None)
+    #opc.mqttc = mqttc
+    opc.start_at(DISABLED)
+
+    host="localhost"
+    port_num = 1883
+    mqttc.connect_async(host, port=port_num, keepalive=60, bind_address="")
+    mqttc.loop_start()
+    time.sleep(0.1)
+    mqttc.subscribe("opc/cmd", qos=2)
+    mqttc.on_message = on_message
+
+    try:
+      while True:
+        time.sleep(0.1)
+    except KeyboardInterrupt:
+        mqttc.loop_stop()
+        mqttc.disconnect()
+        print("Disconnected from Mosquitto broker")
+      
+    '''
+    opc.establish_comm()
+    opc.read_data_from_opc()
+    opc.set_fan(True)
+    opc.set_fan(False)
+    opc.set_laser(True)
+    opc.set_laser(False)
+    '''
 
 
-  app = QApplication([])
-  win = QMainWindow()
-  central_widget = QWidget()
-  btn_enable_opc = QPushButton('Enable OPC', central_widget)
-  btn_disable_opc = QPushButton('Disable OPC', central_widget)
-
-  btn_enable_opc.clicked.connect(btn_enable_opc_evt)
-  btn_disable_opc.clicked.connect(btn_disable_opc_evt)
-
-  layout = QVBoxLayout(central_widget)
-  layout.addWidget(btn_enable_opc)
-  layout.addWidget(btn_disable_opc)
-  win.setCentralWidget(central_widget)
-  win.show()
-  app.exit(app.exec_())
