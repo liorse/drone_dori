@@ -6,21 +6,24 @@ from PyQt5.QtWidgets import QApplication, QMainWindow, \
 
 
 def on_message(client, userdata, message):
-   print("Received message '" + str(message.payload) + "' on topic '"
-        + message.topic + "' with QoS " + str(message.qos))
+    print("Received message '" + str(message.payload) + "' on topic '" +
+          message.topic + "' with QoS " + str(message.qos))
+
 
 def btn_enable_opc_evt():
     print("sent enable event to OPC")
     mqttc.publish("opc/cmd", payload="1", qos=2)
-    
+
 
 def btn_disable_opc_evt():
     print("sent disable event to OPC")
     mqttc.publish("opc/cmd", payload="0", qos=2)
 
 
-mqttc = mqtt.Client(client_id=str(np.random.random()), clean_session=True, userdata=None)
-host="localhost"
+mqttc = mqtt.Client(client_id=str(np.random.random()),
+                    clean_session=True,
+                    userdata=None)
+host = "localhost"
 port_num = 1883
 mqttc.connect_async(host, port=port_num, keepalive=60, bind_address="")
 mqttc.loop_start()

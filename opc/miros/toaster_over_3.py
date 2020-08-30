@@ -10,62 +10,62 @@ from collections import namedtuple
 import re
 from miros import stripped
 
-BuzzSpec = namedtuple(
-  "BuzzSpec", ['buzz_times'])
+BuzzSpec = namedtuple("BuzzSpec", ['buzz_times'])
+
 
 class ToasterOven(ActiveObject):
 
-  TOAST_TIME_IN_SEC = 10
-  BAKE_TIME_IN_SEC = 20
-  PRE_TIME_SEC = 1
-  DONE_BUZZ_PERIOD_SEC = 0.5
+    TOAST_TIME_IN_SEC = 10
+    BAKE_TIME_IN_SEC = 20
+    PRE_TIME_SEC = 1
+    DONE_BUZZ_PERIOD_SEC = 0.5
 
-  def __init__(self, name,
-    toast_time_in_sec=None,
-    bake_time_in_sec=None,
-    get_ready_sec=None,
-    done_buzz_period_sec=None):
+    def __init__(self,
+                 name,
+                 toast_time_in_sec=None,
+                 bake_time_in_sec=None,
+                 get_ready_sec=None,
+                 done_buzz_period_sec=None):
 
-    super().__init__(name)
+        super().__init__(name)
 
-    if toast_time_in_sec is None:
-      toast_time_in_sec = ToasterOven.TOAST_TIME_IN_SEC
-    if bake_time_in_sec is None:
-      bake_time_in_sec = ToasterOven.BAKE_TIME_IN_SEC
-    if get_ready_sec is None:
-      get_ready_sec = ToasterOven.PRE_TIME_SEC
-    if done_buzz_period_sec is None:
-      done_buzz_period_sec = ToasterOven.DONE_BUZZ_PERIOD_SEC
+        if toast_time_in_sec is None:
+            toast_time_in_sec = ToasterOven.TOAST_TIME_IN_SEC
+        if bake_time_in_sec is None:
+            bake_time_in_sec = ToasterOven.BAKE_TIME_IN_SEC
+        if get_ready_sec is None:
+            get_ready_sec = ToasterOven.PRE_TIME_SEC
+        if done_buzz_period_sec is None:
+            done_buzz_period_sec = ToasterOven.DONE_BUZZ_PERIOD_SEC
 
-    self.toast_time_in_sec = toast_time_in_sec
-    self.bake_time_in_sec = bake_time_in_sec
-    self.get_ready_sec = get_ready_sec
-    self.done_buzz_period_sec = done_buzz_period_sec
-    self.history = None
+        self.toast_time_in_sec = toast_time_in_sec
+        self.bake_time_in_sec = bake_time_in_sec
+        self.get_ready_sec = get_ready_sec
+        self.done_buzz_period_sec = done_buzz_period_sec
+        self.history = None
 
-  def light_on(self):
-    # call to your hardware's light_on driver
-    pass
+    def light_on(self):
+        # call to your hardware's light_on driver
+        pass
 
-  def light_off(self):
-    # call to your hardware's light_off driver
-    pass
+    def light_off(self):
+        # call to your hardware's light_off driver
+        pass
 
+    def heater_on(self):
+        # call to your hardware's heater on driver
+        pass
 
-  def heater_on(self):
-    # call to your hardware's heater on driver
-    pass
+    def heater_off(self):
+        # call to your hardware's heater off driver
+        pass
 
-  def heater_off(self):
-    # call to your hardware's heater off driver
-     pass
+    def buzz(self):
+        # call to your hardware's buzzer
+        pass
 
-  def buzz(self):
-    # call to your hardware's buzzer
-    pass
-
-  def cook_time(self, time_in_sec):
-    '''Produce ``Get_Ready`` and ``Done`` one-shot events with their respect Buzz
+    def cook_time(self, time_in_sec):
+        '''Produce ``Get_Ready`` and ``Done`` one-shot events with their respect Buzz
        specifications.
 
     **Note**:
@@ -75,39 +75,35 @@ class ToasterOven(ActiveObject):
     **Args**:
        | ``time_in_sec`` (float): the cooking time in seconds
     '''
-    get_ready_sec = time_in_sec - self.get_ready_sec
+        get_ready_sec = time_in_sec - self.get_ready_sec
 
-    self.post_fifo(
-      Event(signal=signals.Get_Ready, payload=BuzzSpec(buzz_times=1)),
-      times=1,
-      period=get_ready_sec,
-      deferred=True)
+        self.post_fifo(Event(signal=signals.Get_Ready,
+                             payload=BuzzSpec(buzz_times=1)),
+                       times=1,
+                       period=get_ready_sec,
+                       deferred=True)
 
-    self.post_fifo(
-      Event(signal=signals.Done, payload=BuzzSpec(buzz_times=2)),
-      times=1,
-      period=time_in_sec,
-      deferred=True)
+        self.post_fifo(Event(signal=signals.Done,
+                             payload=BuzzSpec(buzz_times=2)),
+                       times=1,
+                       period=time_in_sec,
+                       deferred=True)
 
 
 class ToasterOvenMock(ToasterOven):
+    def __init__(self,
+                 name,
+                 toast_time_in_sec=None,
+                 bake_time_in_sec=None,
+                 get_ready_sec=None,
+                 done_buzz_period_sec=None):
 
-  def __init__(self,
-    name,
-    toast_time_in_sec=None,
-    bake_time_in_sec=None,
-    get_ready_sec=None,
-    done_buzz_period_sec=None):
+        super().__init__(name, toast_time_in_sec, bake_time_in_sec,
+                         get_ready_sec, done_buzz_period_sec)
 
-    super().__init__(name,
-      toast_time_in_sec,
-      bake_time_in_sec,
-      get_ready_sec,
-      done_buzz_period_sec)
-
-  @staticmethod
-  def prepend_trace_timestamp(string):
-    '''Prepend the trace-style timestamp in front of a string
+    @staticmethod
+    def prepend_trace_timestamp(string):
+        '''Prepend the trace-style timestamp in front of a string
 
     **Args**:
        | ``string`` (str): a string you would like timestamped
@@ -123,11 +119,12 @@ class ToasterOvenMock(ToasterOven):
       # => [2019-02-04 06:37:04.542346] example
 
     '''
-    return "[{}] {}".format(datetime.now().strftime("%Y-%m-%d %H:%M:%S.%f"), string)
+        return "[{}] {}".format(
+            datetime.now().strftime("%Y-%m-%d %H:%M:%S.%f"), string)
 
-  @staticmethod
-  def get_100ms_from_timestamp(timestamp_string):
-    '''Get the 100ms part of a timestamp provided in the trace style
+    @staticmethod
+    def get_100ms_from_timestamp(timestamp_string):
+        '''Get the 100ms part of a timestamp provided in the trace style
 
     **Args**:
        | ``timestamp_string`` (str): string with prepended timestamp
@@ -144,16 +141,16 @@ class ToasterOvenMock(ToasterOven):
       ToasterOven.prepend_trace_timestamp(get_my_ms) # => 542
 
     '''
-    pattern = re.compile(r'\[.+\.([0-9]{3}).+\]')
-    try:
-      result = pattern.search(timestamp_string).group(1)
-    except:
-      result = None
-    return result
+        pattern = re.compile(r'\[.+\.([0-9]{3}).+\]')
+        try:
+            result = pattern.search(timestamp_string).group(1)
+        except:
+            result = None
+        return result
 
-  @staticmethod
-  def time_difference(time_1_string, time_2_string, modulo_base=None):
-    '''Return the time difference between to ms readings of a timestamp
+    @staticmethod
+    def time_difference(time_1_string, time_2_string, modulo_base=None):
+        '''Return the time difference between to ms readings of a timestamp
 
     **Args**:
        | ``time_1_string`` (str|int): part of a timestamp
@@ -177,16 +174,17 @@ class ToasterOvenMock(ToasterOven):
       ToasterOvenMock.time_difference('010', '790') #=> 200
 
     '''
-    if modulo_base is None:
-      modulo_base = 1000
-    time_1 = int(time_1_string)
-    time_2 = int(time_2_string)
-    diff = time_2 - time_1 if time_1 <= time_2 else (time_2 - time_1) % modulo_base
-    return diff
+        if modulo_base is None:
+            modulo_base = 1000
+        time_1 = int(time_1_string)
+        time_2 = int(time_2_string)
+        diff = time_2 - time_1 if time_1 <= time_2 else (time_2 -
+                                                         time_1) % modulo_base
+        return diff
 
-  @staticmethod
-  def instrumentation_line_of_match(spy_or_trace, string):
-    '''Get the line from a instrumentation collection
+    @staticmethod
+    def instrumentation_line_of_match(spy_or_trace, string):
+        '''Get the line from a instrumentation collection
 
     **Args**:
        | ``spy_or_trace`` (str|list): instrumentation output
@@ -208,17 +206,18 @@ class ToasterOvenMock(ToasterOven):
       # => '[2019-02-09 10:50:07.785844] [oven] e->Toasting() off->toasting'
 
     '''
-    result = None
-    i_list = spy_or_trace.split("\n") if type(spy_or_trace) is str else spy_or_trace
-    pattern = re.compile(string)
-    for line in i_list:
-      if pattern.search(line):
-        result = line
-        break
-    return result
+        result = None
+        i_list = spy_or_trace.split(
+            "\n") if type(spy_or_trace) is str else spy_or_trace
+        pattern = re.compile(string)
+        for line in i_list:
+            if pattern.search(line):
+                result = line
+                break
+        return result
 
-  def scribble(self, string):
-    '''prepend a scribble string with the trace instrumentation style timestamp
+    def scribble(self, string):
+        '''prepend a scribble string with the trace instrumentation style timestamp
 
     **Args**:
        | ``string`` (str): String to add to the scribble
@@ -234,287 +233,310 @@ class ToasterOvenMock(ToasterOven):
        oven.scribble("buzz")
 
     '''
-    super().scribble(ToasterOvenMock.prepend_trace_timestamp(string))
+        super().scribble(ToasterOvenMock.prepend_trace_timestamp(string))
 
-  def light_on(self):
-    self.scribble("light_on")
+    def light_on(self):
+        self.scribble("light_on")
 
-  def light_off(self):
-    self.scribble("light_off")
+    def light_off(self):
+        self.scribble("light_off")
 
-  def heater_on(self):
-    self.scribble("heater_on")
+    def heater_on(self):
+        self.scribble("heater_on")
 
-  def heater_off(self):
-    self.scribble("heater_off")
+    def heater_off(self):
+        self.scribble("heater_off")
 
-  def buzz(self):
-    if self.live_spy == False:
-      output = ToasterOvenMock.prepend_trace_timestamp("buzz")
-      print(output)
-    self.scribble("buzz")
+    def buzz(self):
+        if self.live_spy == False:
+            output = ToasterOvenMock.prepend_trace_timestamp("buzz")
+            print(output)
+        self.scribble("buzz")
 
 
 @spy_on
 def common_features(oven, e):
-  status = return_status.UNHANDLED
-  if(e.signal == signals.Buzz):
-    oven.buzz()
-    status = return_status.HANDLED
-  else:
-    oven.temp.fun = oven.top
-    status = return_status.SUPER
-  return status
+    status = return_status.UNHANDLED
+    if (e.signal == signals.Buzz):
+        oven.buzz()
+        status = return_status.HANDLED
+    else:
+        oven.temp.fun = oven.top
+        status = return_status.SUPER
+    return status
+
 
 @spy_on
 def door_closed(oven, e):
-  status = return_status.UNHANDLED
-  if(e.signal == signals.ENTRY_SIGNAL):
-    oven.light_off()
-    status = return_status.HANDLED
-  elif(e.signal == signals.Baking):
-    status = oven.trans(baking)
-  elif(e.signal == signals.Toasting):
-    status = oven.trans(toasting)
-  elif(e.signal == signals.INIT_SIGNAL):
-    status = oven.trans(off)
-  elif(e.signal == signals.Off):
-    status = oven.trans(off)
-  elif(e.signal == signals.Door_Open):
-    status = oven.trans(door_open)
-  else:
-    oven.temp.fun = common_features
-    status = return_status.SUPER
-  return status
+    status = return_status.UNHANDLED
+    if (e.signal == signals.ENTRY_SIGNAL):
+        oven.light_off()
+        status = return_status.HANDLED
+    elif (e.signal == signals.Baking):
+        status = oven.trans(baking)
+    elif (e.signal == signals.Toasting):
+        status = oven.trans(toasting)
+    elif (e.signal == signals.INIT_SIGNAL):
+        status = oven.trans(off)
+    elif (e.signal == signals.Off):
+        status = oven.trans(off)
+    elif (e.signal == signals.Door_Open):
+        status = oven.trans(door_open)
+    else:
+        oven.temp.fun = common_features
+        status = return_status.SUPER
+    return status
+
 
 @spy_on
 def heating(oven, e):
-  status = return_status.UNHANDLED
-  if(e.signal == signals.ENTRY_SIGNAL):
-    oven.heater_on()
-    status = return_status.HANDLED
-  elif(e.signal == signals.Get_Ready):
-    oven.post_fifo(Event(signal=signals.Buzz),
-      times=e.payload.buzz_times,
-      period=oven.done_buzz_period_sec,
-      deferred=False)
-    status = return_status.HANDLED
-  elif(e.signal == signals.Done):
-    oven.post_fifo(Event(signal=signals.Buzz),
-      times=e.payload.buzz_times,
-      period=oven.done_buzz_period_sec,
-      deferred=False)
-    status = oven.trans(off)
-  elif(e.signal == signals.EXIT_SIGNAL):
-    oven.heater_off()
-    status = return_status.HANDLED
-  else:
-    oven.temp.fun = door_closed
-    status = return_status.SUPER
-  return status
+    status = return_status.UNHANDLED
+    if (e.signal == signals.ENTRY_SIGNAL):
+        oven.heater_on()
+        status = return_status.HANDLED
+    elif (e.signal == signals.Get_Ready):
+        oven.post_fifo(Event(signal=signals.Buzz),
+                       times=e.payload.buzz_times,
+                       period=oven.done_buzz_period_sec,
+                       deferred=False)
+        status = return_status.HANDLED
+    elif (e.signal == signals.Done):
+        oven.post_fifo(Event(signal=signals.Buzz),
+                       times=e.payload.buzz_times,
+                       period=oven.done_buzz_period_sec,
+                       deferred=False)
+        status = oven.trans(off)
+    elif (e.signal == signals.EXIT_SIGNAL):
+        oven.heater_off()
+        status = return_status.HANDLED
+    else:
+        oven.temp.fun = door_closed
+        status = return_status.SUPER
+    return status
+
 
 @spy_on
 def baking(oven, e):
-  status = return_status.UNHANDLED
-  if(e.signal == signals.ENTRY_SIGNAL):
-    oven.history = baking
-    oven.cook_time(oven.bake_time_in_sec)
-    status = return_status.HANDLED
-  elif(e.signal == signals.EXIT_SIGNAL):
-    oven.cancel_events(Event(signal=signals.Done))
-    oven.cancel_events(Event(signal=signals.Get_Ready))
-    status = return_status.HANDLED
-  else:
-    oven.temp.fun = heating
-    status = return_status.SUPER
-  return status
+    status = return_status.UNHANDLED
+    if (e.signal == signals.ENTRY_SIGNAL):
+        oven.history = baking
+        oven.cook_time(oven.bake_time_in_sec)
+        status = return_status.HANDLED
+    elif (e.signal == signals.EXIT_SIGNAL):
+        oven.cancel_events(Event(signal=signals.Done))
+        oven.cancel_events(Event(signal=signals.Get_Ready))
+        status = return_status.HANDLED
+    else:
+        oven.temp.fun = heating
+        status = return_status.SUPER
+    return status
+
 
 @spy_on
 def toasting(oven, e):
-  status = return_status.UNHANDLED
-  if(e.signal == signals.ENTRY_SIGNAL):
-    oven.history = toasting
-    oven.cook_time(oven.toast_time_in_sec)
-    status = return_status.HANDLED
-  elif(e.signal == signals.EXIT_SIGNAL):
-    oven.cancel_events(Event(signal=signals.Done))
-    oven.cancel_events(Event(signal=signals.Get_Ready))
-    status = return_status.HANDLED
-  else:
-    oven.temp.fun = heating
-    status = return_status.SUPER
-  return status
+    status = return_status.UNHANDLED
+    if (e.signal == signals.ENTRY_SIGNAL):
+        oven.history = toasting
+        oven.cook_time(oven.toast_time_in_sec)
+        status = return_status.HANDLED
+    elif (e.signal == signals.EXIT_SIGNAL):
+        oven.cancel_events(Event(signal=signals.Done))
+        oven.cancel_events(Event(signal=signals.Get_Ready))
+        status = return_status.HANDLED
+    else:
+        oven.temp.fun = heating
+        status = return_status.SUPER
+    return status
+
 
 @spy_on
 def off(oven, e):
-  status = return_status.UNHANDLED
-  if(e.signal == signals.ENTRY_SIGNAL):
-    oven.history = off
-    status = return_status.HANDLED
-  else:
-    oven.temp.fun = door_closed
-    status = return_status.SUPER
-  return status
+    status = return_status.UNHANDLED
+    if (e.signal == signals.ENTRY_SIGNAL):
+        oven.history = off
+        status = return_status.HANDLED
+    else:
+        oven.temp.fun = door_closed
+        status = return_status.SUPER
+    return status
+
 
 @spy_on
 def door_open(oven, e):
-  status = return_status.UNHANDLED
-  if(e.signal == signals.ENTRY_SIGNAL):
-    oven.light_on()
-  elif(e.signal == signals.Door_Close):
-    status = oven.trans(oven.history)
-  else:
-    oven.temp.fun = common_features
-    status = return_status.SUPER
-  return status
+    status = return_status.UNHANDLED
+    if (e.signal == signals.ENTRY_SIGNAL):
+        oven.light_on()
+    elif (e.signal == signals.Door_Close):
+        status = oven.trans(oven.history)
+    else:
+        oven.temp.fun = common_features
+        status = return_status.SUPER
+    return status
+
 
 if __name__ == '__main__':
 
-
     def trace_through_all_states():
-      oven = ToasterOvenMock(name="oven")
-      oven.start_at(door_closed)
-      # Open the door
-      oven.post_fifo(Event(signal=signals.Door_Open))
-      # Close the door
-      oven.post_fifo(Event(signal=signals.Door_Close))
-      # Bake something
-      oven.post_fifo(Event(signal=signals.Baking))
-      # Open the door
-      oven.post_fifo(Event(signal=signals.Door_Open))
-      # Close the door
-      oven.post_fifo(Event(signal=signals.Door_Close))
-      # Toast something
-      oven.post_fifo(Event(signal=signals.Toasting))
-      # Open the door
-      oven.post_fifo(Event(signal=signals.Door_Open))
-      # Close the door
-      oven.post_fifo(Event(signal=signals.Door_Close))
-      time.sleep(0.01)
-      return oven.trace()
+        oven = ToasterOvenMock(name="oven")
+        oven.start_at(door_closed)
+        # Open the door
+        oven.post_fifo(Event(signal=signals.Door_Open))
+        # Close the door
+        oven.post_fifo(Event(signal=signals.Door_Close))
+        # Bake something
+        oven.post_fifo(Event(signal=signals.Baking))
+        # Open the door
+        oven.post_fifo(Event(signal=signals.Door_Open))
+        # Close the door
+        oven.post_fifo(Event(signal=signals.Door_Close))
+        # Toast something
+        oven.post_fifo(Event(signal=signals.Toasting))
+        # Open the door
+        oven.post_fifo(Event(signal=signals.Door_Open))
+        # Close the door
+        oven.post_fifo(Event(signal=signals.Door_Close))
+        time.sleep(0.01)
+        return oven.trace()
 
     def spy_on_light_on():
-      oven = ToasterOvenMock(name="oven")
-      oven.start_at(door_closed)
-      # Open the door to turn on the light
-      oven.post_fifo(Event(signal=signals.Door_Open))
-      time.sleep(0.01)
-      # turn our array into a paragraph
-      return "\n".join(oven.spy())
+        oven = ToasterOvenMock(name="oven")
+        oven.start_at(door_closed)
+        # Open the door to turn on the light
+        oven.post_fifo(Event(signal=signals.Door_Open))
+        time.sleep(0.01)
+        # turn our array into a paragraph
+        return "\n".join(oven.spy())
 
     def spy_on_light_off():
-      oven = ToasterOvenMock(name="oven")
-      # The light should be turned off when we start
-      oven.start_at(door_closed)
-      time.sleep(0.01)
-      # turn our array into a paragraph
-      return "\n".join(oven.spy())
+        oven = ToasterOvenMock(name="oven")
+        # The light should be turned off when we start
+        oven.start_at(door_closed)
+        time.sleep(0.01)
+        # turn our array into a paragraph
+        return "\n".join(oven.spy())
 
     def spy_on_buzz():
-      oven = ToasterOvenMock(name="oven")
-      oven.start_at(door_closed)
-      # Send the buzz event
-      oven.post_fifo(Event(signal=signals.Buzz))
-      time.sleep(0.01)
-      # turn our array into a paragraph
-      return "\n".join(oven.spy())
+        oven = ToasterOvenMock(name="oven")
+        oven.start_at(door_closed)
+        # Send the buzz event
+        oven.post_fifo(Event(signal=signals.Buzz))
+        time.sleep(0.01)
+        # turn our array into a paragraph
+        return "\n".join(oven.spy())
 
     def spy_on_heater_on():
-      oven = ToasterOvenMock(name="oven")
-      # The light should be turned off when we start
-      oven.start_at(door_closed)
-      oven.post_fifo(Event(signal=signals.Toasting))
-      time.sleep(0.02)
-      # turn our array into a paragraph
-      return "\n".join(oven.spy())
+        oven = ToasterOvenMock(name="oven")
+        # The light should be turned off when we start
+        oven.start_at(door_closed)
+        oven.post_fifo(Event(signal=signals.Toasting))
+        time.sleep(0.02)
+        # turn our array into a paragraph
+        return "\n".join(oven.spy())
 
     def spy_on_heater_off():
-      oven = ToasterOvenMock(name="oven")
-      # The light should be turned off when we start
-      oven.start_at(door_closed)
-      oven.post_fifo(Event(signal=signals.Toasting))
-      oven.clear_spy()
-      oven.post_fifo(Event(signal=signals.Off))
-      time.sleep(0.01)
-      # turn our array into a paragraph
-      return "\n".join(oven.spy())
+        oven = ToasterOvenMock(name="oven")
+        # The light should be turned off when we start
+        oven.start_at(door_closed)
+        oven.post_fifo(Event(signal=signals.Toasting))
+        oven.clear_spy()
+        oven.post_fifo(Event(signal=signals.Off))
+        time.sleep(0.01)
+        # turn our array into a paragraph
+        return "\n".join(oven.spy())
 
     def test_buzz_timing():
-      # Test in the range of ms so we don't have to wait around for results
-      toast_time, bake_time = 5, 10
-      get_ready_sec = 1
-      done_buzz_period_sec = 2
+        # Test in the range of ms so we don't have to wait around for results
+        toast_time, bake_time = 5, 10
+        get_ready_sec = 1
+        done_buzz_period_sec = 2
 
-      oven = ToasterOvenMock(
-        name="oven",
-        toast_time_in_sec=toast_time,
-        bake_time_in_sec=bake_time,
-        get_ready_sec=get_ready_sec,
-        done_buzz_period_sec=done_buzz_period_sec)
+        oven = ToasterOvenMock(name="oven",
+                               toast_time_in_sec=toast_time,
+                               bake_time_in_sec=bake_time,
+                               get_ready_sec=get_ready_sec,
+                               done_buzz_period_sec=done_buzz_period_sec)
 
-      # start our oven in the door_closed state
-      oven.start_at(door_closed)
+        # start our oven in the door_closed state
+        oven.start_at(door_closed)
 
-      # Buzz timing testing specifications and helper functions
-      TS = namedtuple('TargetAndToleranceSpec', ['desc', 'offset', 'tolerance'])
+        # Buzz timing testing specifications and helper functions
+        TS = namedtuple('TargetAndToleranceSpec',
+                        ['desc', 'offset', 'tolerance'])
 
-      def make_test_spec(cook_time_sec, get_ready_sec, done_buzz_period_sec, tolerance_in_ms=3):
-        "create as specification where define everything in ms"
-        ts = [
-          TS(desc="get ready buzz",
-            offset=1000*(cook_time_sec-get_ready_sec),
-            tolerance=tolerance_in_ms),
-          TS(desc="first done buzz" ,
-            offset=1000*(cook_time_sec),
-            tolerance=tolerance_in_ms),
-          TS(desc="second done buzz",
-            offset=1000*(cook_time_sec+done_buzz_period_sec),
-            tolerance=tolerance_in_ms)]
-        return ts
+        def make_test_spec(cook_time_sec,
+                           get_ready_sec,
+                           done_buzz_period_sec,
+                           tolerance_in_ms=3):
+            "create as specification where define everything in ms"
+            ts = [
+                TS(desc="get ready buzz",
+                   offset=1000 * (cook_time_sec - get_ready_sec),
+                   tolerance=tolerance_in_ms),
+                TS(desc="first done buzz",
+                   offset=1000 * (cook_time_sec),
+                   tolerance=tolerance_in_ms),
+                TS(desc="second done buzz",
+                   offset=1000 * (cook_time_sec + done_buzz_period_sec),
+                   tolerance=tolerance_in_ms)
+            ]
+            return ts
 
-      def test_buzz_events(test_type, start_time, spec, buzz_times):
-        for (desc, offset, tolerance), buzz_time in zip(spec, buzz_times):
+        def test_buzz_events(test_type, start_time, spec, buzz_times):
+            for (desc, offset, tolerance), buzz_time in zip(spec, buzz_times):
 
-          # only keep track of ms, allow for wrapping of time
-          bottom_bound = (start_time+offset-tolerance) % 1000
-          top_bound = (start_time+offset+tolerance) % 1000
+                # only keep track of ms, allow for wrapping of time
+                bottom_bound = (start_time + offset - tolerance) % 1000
+                top_bound = (start_time + offset + tolerance) % 1000
 
-          # allow for wrapping of time
-          if bottom_bound > top_bound:
-            bottom_bound -= 1000
-          try:
-            assert(bottom_bound <= float(buzz_time) <= top_bound)
-          except:
-            # if you land here try increasing your tolerance
-            print("FAILED: testing {} {}".format(test_type, desc))
-            print("{} <= {} <= {}".format(bottom_bound, buzz_time, top_bound))
+                # allow for wrapping of time
+                if bottom_bound > top_bound:
+                    bottom_bound -= 1000
+                try:
+                    assert (bottom_bound <= float(buzz_time) <= top_bound)
+                except:
+                    # if you land here try increasing your tolerance
+                    print("FAILED: testing {} {}".format(test_type, desc))
+                    print("{} <= {} <= {}".format(bottom_bound, buzz_time,
+                                                  top_bound))
 
-      toasting_buzz_test_spec = make_test_spec(toast_time, get_ready_sec, done_buzz_period_sec)
+        toasting_buzz_test_spec = make_test_spec(toast_time, get_ready_sec,
+                                                 done_buzz_period_sec)
 
-      # Toast something
-      oven.post_fifo(Event(signal=signals.Toasting))
-      time.sleep(1)
-      trace_line = ToasterOvenMock.instrumentation_line_of_match(oven.trace(), "Toasting")
-      toasting_time_ms = int(ToasterOvenMock.get_100ms_from_timestamp(trace_line))
-      buzz_times = [int(ToasterOvenMock.get_100ms_from_timestamp(line)) for
-                    line in re.findall(r'\[.+\] buzz', "\n".join(oven.spy()))]
-      test_buzz_events('toasting', toasting_time_ms, toasting_buzz_test_spec, buzz_times)
+        # Toast something
+        oven.post_fifo(Event(signal=signals.Toasting))
+        time.sleep(1)
+        trace_line = ToasterOvenMock.instrumentation_line_of_match(
+            oven.trace(), "Toasting")
+        toasting_time_ms = int(
+            ToasterOvenMock.get_100ms_from_timestamp(trace_line))
+        buzz_times = [
+            int(ToasterOvenMock.get_100ms_from_timestamp(line))
+            for line in re.findall(r'\[.+\] buzz', "\n".join(oven.spy()))
+        ]
+        test_buzz_events('toasting', toasting_time_ms, toasting_buzz_test_spec,
+                         buzz_times)
 
-      # clear the spy and trace logs for another test
-      oven.clear_spy()
-      oven.clear_trace()
+        # clear the spy and trace logs for another test
+        oven.clear_spy()
+        oven.clear_trace()
 
-      baking_buzz_test_spec = make_test_spec(bake_time, get_ready_sec, done_buzz_period_sec)
+        baking_buzz_test_spec = make_test_spec(bake_time, get_ready_sec,
+                                               done_buzz_period_sec)
 
-      # Bake something
-      oven.post_fifo(Event(signal=signals.Baking))
-      time.sleep(1)
-      oven.post_fifo(Event(signal=signals.Baking))
-      trace_line = ToasterOvenMock.instrumentation_line_of_match(oven.trace(), "Baking")
-      baking_time_ms = int(ToasterOvenMock.get_100ms_from_timestamp(trace_line))
-      buzz_times = [int(ToasterOvenMock.get_100ms_from_timestamp(line)) for
-                    line in re.findall(r'\[.+\] buzz', "\n".join(oven.spy()))]
-      test_buzz_events('baking', baking_time_ms, baking_buzz_test_spec, buzz_times)
+        # Bake something
+        oven.post_fifo(Event(signal=signals.Baking))
+        time.sleep(1)
+        oven.post_fifo(Event(signal=signals.Baking))
+        trace_line = ToasterOvenMock.instrumentation_line_of_match(
+            oven.trace(), "Baking")
+        baking_time_ms = int(
+            ToasterOvenMock.get_100ms_from_timestamp(trace_line))
+        buzz_times = [
+            int(ToasterOvenMock.get_100ms_from_timestamp(line))
+            for line in re.findall(r'\[.+\] buzz', "\n".join(oven.spy()))
+        ]
+        test_buzz_events('baking', baking_time_ms, baking_buzz_test_spec,
+                         buzz_times)
 
     # Confirm our graph's structure
     trace_target = """
@@ -532,8 +554,8 @@ if __name__ == '__main__':
     with stripped(trace_target) as stripped_target, \
          stripped(trace_through_all_states()) as stripped_trace_result:
 
-      for target, result in zip(stripped_target, stripped_trace_result):
-        assert(target == result)
+        for target, result in zip(stripped_target, stripped_trace_result):
+            assert (target == result)
 
     # Confirm the our statemachine is triggering the methods we want when we want them
     assert re.search(r'light_off', spy_on_light_off())

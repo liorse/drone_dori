@@ -4,7 +4,6 @@ from PyQt5.QtGui import *
 from PyQt5.QtCore import *
 from PyQt5.QtWidgets import *
 
-
 a = QApplication([])
 
 low = QBarSet("Min")
@@ -22,7 +21,10 @@ chart.addSeries(series)
 chart.setTitle("Temperature records in celcius")
 chart.setAnimationOptions(QChart.SeriesAnimations)
 
-categories = ["Jan", "Feb", "Mar", "Apr", "May", "Jun", "Jul", "Aug", "Sep", "Oct", "Nov", "Dec"]
+categories = [
+    "Jan", "Feb", "Mar", "Apr", "May", "Jun", "Jul", "Aug", "Sep", "Oct",
+    "Nov", "Dec"
+]
 
 axis = QBarCategoryAxis()
 axis.append(categories)
