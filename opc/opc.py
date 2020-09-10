@@ -1,9 +1,10 @@
 # -*- coding: utf-8 -*-
 """
-Created on Mon Mar 18 16:52:30 2019
-
-@author: Daniel Jarvis
-OPC N3 record data to a CSV. 
+This is the OPC driver file
+Programmer: Lior Segev
+Date 03 September 2020
+Version 0.0.1
+Based on code by Daniel Jarvis
 """
 
 from __future__ import print_function
@@ -20,11 +21,11 @@ integration = 5
 OPCNAME = "TestOPC"
 OPCPORT = "/dev/ttyACM0"
 LOCATION = "Lab2"
-wait = 1e-06
+wait = 100e-06
 
 
 #
-# Init OPC for spi connection 
+# Init OPC for spi connection
 
 def initOPC(ser):
     # print("Init:")
@@ -45,7 +46,7 @@ def initOPC(ser):
     time.sleep(wait)
 
 
-# Turn fan 
+# Turn fan
 
 def fanOff(ser):
     print("Fan turn off")
@@ -72,11 +73,11 @@ def fanOff(ser):
 
             print("Reset SPI")
             time.sleep(3)  # time for spi buffer to reset
-            # reset SPI  conncetion 
+            # reset SPI  conncetion
             # initOPC(ser)
             T = 0
         else:
-            time.sleep(wait * 10)  # wait 1e-05 before next commnad 
+            time.sleep(wait * 10)  # wait 1e-05 before next commnad
 
 
 # Turn fan and laser on
@@ -102,11 +103,11 @@ def fanOn(ser):
         elif T > 20:
             print("Reset SPI")
             time.sleep(3)  # time for spi buffer to reset
-            # reset SPI  conncetion 
+            # reset SPI  conncetion
             initOPC(ser)
             T = 0
         else:
-            time.sleep(wait * 10)  # wait 1e-05 before next commnad 
+            time.sleep(wait * 10)  # wait 1e-05 before next commnad
 
 
 # Lazer on   0x07 is SPI byte following 0x03 to turn laser ON.
@@ -132,11 +133,11 @@ def LazOn(ser):
         elif T > 20:
             print("Reset SPI")
             time.sleep(3)  # time for spi buffer to reset
-            # reset SPI  conncetion 
+            # reset SPI  conncetion
             initOPC(ser)
             T = 0
         else:
-            time.sleep(wait * 10)  # wait 1e-05 before next commnad 
+            time.sleep(wait * 10)  # wait 1e-05 before next commnad
 
 
 # Lazer off 0x06 is SPI byte following 0x03 to turn laser off.
@@ -162,11 +163,11 @@ def LazOff(ser):
         elif T > 20:
             print("Reset SPI")
             time.sleep(3)  # time for spi buffer to reset
-            # reset SPI  conncetion 
+            # reset SPI  conncetion
             initOPC(ser)
             T = 0
         else:
-            time.sleep(wait * 10)  # wait 1e-05 before next commnad 
+            time.sleep(wait * 10)  # wait 1e-05 before next commnad
 
 
 # add the singal to temp and RH value convertion   from the SPI data sheet
@@ -189,7 +190,7 @@ def combine_bytes(LSB, MSB):
 
 def Histdata(ans):
     # function for all the hist data, to break up the getHist
-    # time.sleep(wait)  
+    # time.sleep(wait)
 
     data = {}
     data['Bin 0'] = combine_bytes(ans[0], ans[1])
@@ -283,7 +284,7 @@ def getData(ser):
         T = T + 1
         print(nl)
         if nl == (b'\xff\xf3' or b'\xf3\xff'):
-            # write to the OPC 
+            # write to the OPC
             for i in range(14):  # Send the whole stream of bytes at once.
                 ser.write([0x61, 0x01])
                 time.sleep(0.00001)
@@ -305,22 +306,22 @@ def getData(ser):
         elif T > 20:
             print("Reset SPI")
             time.sleep(3)  # time for spi buffer to reset
-            # reset SPI  conncetion 
+            # reset SPI  conncetion
             initOPC(ser)
             T = 0
             return
         else:
-            time.sleep(wait * 10)  # wait 1e-05 before next commnad     
+            time.sleep(wait * 10)  # wait 1e-05 before next commnad
 
 
-# get hist data 
+# get hist data
 def getHist(ser):
-    # OPC N2 method 
-    T = 0  # attemt varaible 
+    # OPC N2 method
+    T = 0  # attemt varaible
     while True:
         #    print("get hist attempt ",T)
 
-        # reques the hist data set 
+        # reques the hist data set
         ser.write([0x61, 0x30])
         # time.sleep(wait*10)
         nl = ser.read(2)
@@ -329,7 +330,7 @@ def getHist(ser):
         #  print("Reading Hist data")
         #  # print(nl)
         if nl == (b'\xff\xf3' or b'\xf3\xff'):
-            for i in range(86):  # Send bytes one at a time 
+            for i in range(86):  # Send bytes one at a time
                 ser.write([0x61, 0x01])
                 time.sleep(0.000001)
 
@@ -338,7 +339,7 @@ def getHist(ser):
             time.sleep(wait)  # delay
             ans = bytearray(ser.readall())
             #     print("ans=",ans,"len",len(ans))
-            ans = rightbytes(ans)  # get the wanted data bytes 
+            ans = rightbytes(ans)  # get the wanted data bytes
             # ans=bytearray(test)
             #    print("ans=",ans,"len",len(ans))
             # print("test=",test,'len',len(test))
@@ -347,7 +348,7 @@ def getHist(ser):
         if T > 20:
             #   print("Reset SPI")
             time.sleep(wait)  # time for spi buffer to reset
-            # reset SPI  conncetion 
+            # reset SPI  conncetion
             initOPC(ser)
             print("ERROR")
             data = "ERROR"
@@ -373,7 +374,7 @@ if __name__ == "__main__":
 
     ser = serial.Serial(**serial_opts)
 
-    # start up dance 
+    # start up dance
 
     print("**************************************************")
     print("DID YOU CHECK THE DATE/TIME ????????")
@@ -390,10 +391,11 @@ if __name__ == "__main__":
     time.sleep(5)
 
     print("Fan on:")
+
     fanOn(ser)
     LazOn(ser)
     time.sleep(5)
-    
+
     print(OPCNAME, "Ready")
 
     # time loop
@@ -401,53 +403,38 @@ if __name__ == "__main__":
         pass  # now is in form YYYYMMDD
         datestart = datetime.date.today()
         starttime = datetime.datetime.now()
-        f = initFile(datestart)
+        #f = initFile(datestart)
 
         print("Looping:")
-        for j in range(1):#while True:
+        for j in range(5):#while True:
             t = getHist(ser)
             ts = time.time()
             tnow = datetime.datetime.fromtimestamp(ts).strftime('%Y-%m-%d %H:%M:%S')
             data = t;
             #print(data)
             # Often iff errors occre, the issues is with a failed getHist, but on the next getHist it works.
-            # The try, then except deals with that. 
-            # try:
-            print(tnow + "," + str(data['Bin 0']) + "," + str(data['Bin 1']) + "," + str(data['Bin 2']) + "," + str(
-                data['Bin 3']) + "," + str(data['Bin 4']) + "," + str(data['Bin 5']) + "," + str(
-                data['Bin 6']) + "," + str(data['Bin 7']) + "," + str(data['Bin 8']) + "," + str(
-                data['Bin 9']) + "," + str(data['Bin 10']) + "," + str(data['Bin 11']) + "," + str(
-                data['Bin 12']) + "," + str(data['Bin 13']) + "," + str(data['Bin 14']) + "," + str(
-                data['Bin 15']) + "," + str(data['Bin 16']) + "," + str(data['Bin 17']) + "," + str(
-                data['Bin 18']) + "," + str(data['Bin 19']) + "," + str(data['Bin 20']) + "," + str(
-                data['Bin 21']) + "," + str(data['Bin 22']) + "," + str(data['Bin 23']) + "," + str(data['period']) + "," + str(data['FlowRate']) + "," + str(
-                data['OPC-T']) + "," + str(data['OPC-RH']) + "," + str(data['pm1']) + "," + str(
-                data['pm2.5']) + "," + str(data['pm10']) + "," + str(data['Check']), file=f)
-            print(OPCNAME, " Time", tnow, " Temp:", str(data['OPC-T']), " RH:", str(data['OPC-RH']), " PM1:",
-                  str(data['pm1']), "PM2.5:", str(data['pm2.5']), "PM10:", str(data['pm10']))
-            '''
-	    except:  # if get gist falues and reurn NoData 
+            # The try, then except deals with that.
+            try:
+                print(tnow + "," + str(data['Bin 0']) + "," + str(data['Bin 1']) + "," + str(data['Bin 2']) + "," + str(
+                    data['Bin 3']) + "," + str(data['Bin 4']) + "," + str(data['Bin 5']) + "," + str(
+                    data['Bin 6']) + "," + str(data['Bin 7']) + "," + str(data['Bin 8']) + "," + str(
+                    data['Bin 9']) + "," + str(data['Bin 10']) + "," + str(data['Bin 11']) + "," + str(
+                    data['Bin 12']) + "," + str(data['Bin 13']) + "," + str(data['Bin 14']) + "," + str(
+                    data['Bin 15']) + "," + str(data['Bin 16']) + "," + str(data['Bin 17']) + "," + str(
+                    data['Bin 18']) + "," + str(data['Bin 19']) + "," + str(data['Bin 20']) + "," + str(
+                    data['Bin 21']) + "," + str(data['Bin 22']) + "," + str(data['Bin 23']) + "," + str(data['period']) + "," + str(data['FlowRate']) + "," + str(
+                    data['OPC-T']) + "," + str(data['OPC-RH']) + "," + str(data['pm1']) + "," + str(
+                    data['pm2.5']) + "," + str(data['pm10']) + "," + str(data['Check']))
+                print(OPCNAME, " Time", tnow, " Temp:", str(data['OPC-T']), " RH:", str(data['OPC-RH']), " PM1:",
+                      str(data['pm1']), "PM2.5:", str(data['pm2.5']), "PM10:", str(data['pm10']))
+
+            except: # if get gist falues and reurn NoData
                 print("Error")
                 # Write nan data, need to keep track of how many time these types of errors occure for data coverage
-                print(
-                    tnow + "," + "nan" + "," + "nan" + "," + "nan" + "," + "nan" + "," + "nan" + "," + "nan" + "," + "nan" + "," + "nan" + "," + "nan " + "," + "nan" + "," + "nan" + "," + "nan" + "," + "nan" + "," + "nan" + "," + "nan" + "," + "nan" + "," + "nan" + "," + "nan" + "," + "nan" + "," + "nan" + "," + "nan" + "," + "nan" + "," + "nan" + "," + "nan" + "," + "nan" + "," + "nan" + "," + "nan" + "," + "nan" + "," + "nan" + "," + "nan" + "," + "nan" + "," + "nan" + "," + "nan",
-                    file=f)
-
+                print(tnow + "," + "nan" + "," + "nan" + "," + "nan" + "," + "nan" + "," + "nan" + "," + "nan" + "," + "nan" + "," + "nan" + "," + "nan " + "," + "nan" + "," + "nan" + "," + "nan" + "," + "nan" + "," + "nan" + "," + "nan" + "," + "nan" + "," + "nan" + "," + "nan" + "," + "nan" + "," + "nan" + "," + "nan" + "," + "nan" + "," + "nan" + "," + "nan" + "," + "nan" + "," + "nan" + "," + "nan" + "," + "nan" + "," + "nan" + "," + "nan" + "," + "nan" + "," + "nan" + "," + "nan")
                 pass
-            '''
-            f.flush()
-
-            if (datetime.date.today() - datestart).days > 0:
-                f.close()
-                datestart = datetime.date.today()
-                f = initFile(datestart)
-
-            secondsToRun = (datetime.datetime.now() - starttime).total_seconds() % integration
-            time.sleep(integration - secondsToRun)
-
-    print("Closing:")
-
-    f.close()
+    print("Fan Off:")
     fanOff(ser)
     LazOff(ser)
+    time.sleep(5)
     ser.close()
