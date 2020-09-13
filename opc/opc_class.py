@@ -97,6 +97,44 @@ class OPC():
             else:
                 time.sleep(wait * 10)
 
+    # Lazer on   0x07 is SPI byte following 0x03 to turn laser ON.
+    def laz_ctrl(self, laser_flag=False):
+        '''
+        opc fan control by sending true to turn it on and false to turn it off
+        '''
+
+        T = 0  # Triese counter
+        while True:
+            self.ser.write(bytearray([0x61, 0x03]))
+            nl = self.ser.read(2)
+            T = T + 1
+            if nl == (b"\xff\xf3" or b"xf3\xff"):
+                time.sleep(wait)
+                if laser_flag:
+                    # Lazer on
+                    logging.info("Request laser to turn ON")
+                    self.ser.write(bytearray([0x61, 0x07]))
+                    nl = self.ser.read(2)
+                    time.sleep(wait)
+                    logging.info("Laser is ON")
+                    return 0  # 0 error means success
+                else:
+                    # Lazer off
+                    logging.info("Request laser to turn OFF")
+                    self.ser.write(bytearray([0x61, 0x06]))
+                    nl = self.ser.read(2)
+                    time.sleep(wait)
+                    logging.info("Laser is OFF")
+                    return 0  # 0 error means success
+            elif T > 20:
+                logging.info("Reset SPI")
+                time.sleep(3)  # time for spi buffer to reset
+                # reset SPI  conncetion
+                self.init_opc()
+                T = 0
+            else:
+                time.sleep(wait * 10)  # wait 1e-05 before next commnad
+
 
 if __name__ == '__main__':
     opc = OPC(opc_name="some_opc",
@@ -105,5 +143,7 @@ if __name__ == '__main__':
     opc.init_opc()
     time.sleep(2)
     opc.fan_ctrl(True)
+    opc.laz_ctrl(True)
     opc.fan_ctrl(False)
+    opc.laz_ctrl(False)
     opc.close_opc()
