@@ -35,12 +35,3 @@ sudo apt-get install qt5-default pyqt5-dev pyqt5-dev-tools
 pip install --upgrade pip
 pip install PyQt5
 
-how to instlal rabbitmq-miros on raspberry:
-sudo apt install libffi-dev
-sudo apt install rabbitmq-server
-pip install miros-rabbitmq
-
-to configue rabbit-mq - run ansible
-sudo apt install ansible
-and follow this page:
-https://aleph2c.github.io/miros-rabbitmq/html/installing_infrastructure.html#installing-infrastructure-installing-required-programs
