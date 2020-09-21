@@ -5,6 +5,7 @@ Programmer: Lior Segev
 Date 03 September 2020
 Version 0.0.1
 Based on code by Daniel Jarvis
+
 """
 
 from __future__ import print_function
@@ -15,7 +16,8 @@ from __future__ import print_function
 import logging
 import struct
 import time
-
+import sys
+from miros import ActiveObject
 import serial
 
 integration = 5
@@ -25,12 +27,20 @@ OPCNAME = "TestOPC"
 OPCPORT = "/dev/ttyACM0"
 LOCATION = "Lab2"
 wait = 100e-06
+OK = 0
 
 log_format = '%(asctime)s %(filename)s: %(message)s'
 logging.basicConfig(format=log_format, level=logging.INFO)
 
 
-class OPC():
+class OPC(ActiveObject):
+    '''
+    The following methods are the actual interface:
+    init_opc()
+    laz_ctrl(bool) to start or stop the opc lazer
+    fan_ctrl(bool) to start or stop the opc fan
+    read_data() to read data from the opc - returns a dict with all the information
+    '''
     def __init__(self,
                  opc_name="TEstOPC",
                  opc_port="/dev/ttyACM0",
@@ -39,8 +49,12 @@ class OPC():
         self.OPCPORT = opc_port
         self.LOCATION = opc_location
         logging.info("Instantiated OPC class on port " + self.OPCPORT)
+        super().__init__()
 
     def init_opc(self):
+        '''
+        establish communication with OPC return OK if succedded and -1 if failed
+        '''
 
         serial_opts = {
             "port": self.OPCPORT,
@@ -56,7 +70,28 @@ class OPC():
         time.sleep(2)
 
         logging.info('openning serial port to OPC ' + self.OPCPORT)
-        self.ser = serial.Serial(**serial_opts)
+        try:
+            self.ser = serial.Serial(**serial_opts)
+        except serial.serialutil.SerialException:
+            logging.info(
+                'communication failed - check USB connection to raspberry PI host'
+            )
+            return -1
+        logging.info('initializing communication with OPC')
+        # print("Init:")
+        time.sleep(1)
+        self.ser.write(bytearray([0x5a, 0x01]))
+        nl = self.ser.read(3)
+        time.sleep(wait)
+        self.ser.write(bytearray([0x5a, 0x03]))
+        nl = self.ser.read(9)
+        time.sleep(wait)
+
+        # spi conncetion
+        self.ser.write(bytearray([0x5a, 0x02, 0x92, 0x07]))
+        nl = self.ser.read(2)
+        time.sleep(wait)
+        return OK
 
     def close_opc(self):
         logging.info('closing serial port ' + self.OPCPORT)
@@ -246,7 +281,8 @@ if __name__ == '__main__':
     opc = OPC(opc_name="some_opc",
               opc_port="/dev/ttyACM0",
               opc_location="the_forest")
-    opc.init_opc()
+    if not opc.init_opc() == OK:
+        sys.exit()
     time.sleep(2)
     opc.fan_ctrl(True)
     opc.laz_ctrl(True)

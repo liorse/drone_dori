@@ -19,34 +19,14 @@ from miros import ActiveObject
 from miros import return_status
 import logging
 import numpy as np
+#from opc_dummy_class import OPC
+from opc_class import OPC
 
 TIMEOUT = 100
 OK = 0
 logging.basicConfig(format='%(asctime)s %(message)s',
                     datefmt='%m/%d/%Y %I:%M:%S %p',
                     level=logging.DEBUG)
-
-
-class OPC(ActiveObject):
-    def __init__(self, name, serial_port='/tty/USB0'):
-        self.serial_port = serial_port
-        super().__init__(name)
-
-    def establish_comm(self):
-        logging.info('established communication')
-        return OK  # error code that everything went fine
-
-    def read_data_from_opc(self):
-        logging.info('reading data from OPC')
-        data = 1
-        return data
-
-    def set_fan(self, state=False):
-        logging.info('setting the fan to ' + str(state))
-        return OK
-
-    def set_laser(self, state=False):
-        logging.info('setting the laser to ' + str(state))
 
 
 @spy_on
@@ -106,8 +86,7 @@ def COMM_OFF(opc, e):
         logging.info("disable opc event recieved")
         status = opc.trans(DISABLED)
     elif e.signal == signals.open_comm:
-        time.sleep(0.1)
-        if np.random.random() > 0.9:
+        if opc.init_opc() == OK:
             logging.info("communication established")
             status = opc.trans(COMM_ON)
         else:
@@ -125,25 +104,30 @@ def COMM_ON(opc, e):
     status = return_status.UNHANDLED
     if e.signal == signals.ENTRY_SIGNAL:
         logging.info("Entered COMM_ON state")
-        opc.post_fifo(Event(signal=signals.read_data),
-                      times=0,
-                      period=1,
-                      deferred=True)
+        opc.post_fifo(Event(signal=signals.read_data))
+
+        #opc.post_fifo(Event(signal=signals.read_data),
+        #              times=0,
+        #              period=1,
+        #              deferred=True)
         status = return_status.HANDLED
     elif e.signal == signals.disable_opc:
         logging.info("disable opc event recieved")
         status = opc.trans(DISABLED)
     elif e.signal == signals.read_data:
-        if np.random.random() > 0.2:
-            logging.info("reading data from OPC...")
-            mqttc.publish("opc/data", payload=np.random.random(), qos=2)
+        data = opc.read_data()
+        print(data)
+        if not data == -1:
+            #mqttc.publish("opc/data", payload=data, qos=2)
+            opc.post_fifo(Event(signal=signals.read_data))
             status = return_status.HANDLED
         else:
             logging.info("comm failed !!!")
             status = opc.trans(COMM_OFF)
     elif e.signal == signals.EXIT_SIGNAL:
         logging.info("closing communication to OPC")
-        opc.cancel_events(Event(signal=signals.read_data))
+        opc.close_opc()
+        #opc.cancel_events(Event(signal=signals.read_data))
     else:
         opc.temp.fun = ENABLED
         status = return_status.SUPER
@@ -166,7 +150,11 @@ def on_message(client, userdata, message):
 if __name__ == "__main__":
 
     # set an active object
-    opc = OPC(name='OPC', serial_port='/tty/USB0')
+    #opc = OPC(name='OPC', serial_port='/tty/USB0')
+    opc = OPC(opc_name="some_opc",
+              opc_port="/dev/ttyACM0",
+              opc_location="the_forest")
+
     opc.live_trace = True
     # opc.live_spy = True
 
