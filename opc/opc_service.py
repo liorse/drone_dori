@@ -21,6 +21,7 @@ import logging
 import numpy as np
 #from opc_dummy_class import OPC
 from opc_class import OPC
+import json
 
 TIMEOUT = 100
 OK = 0
@@ -84,6 +85,8 @@ def COMM_OFF(opc, e):
         status = return_status.HANDLED
     elif e.signal == signals.disable_opc:
         logging.info("disable opc event recieved")
+        opc.laz_ctrl(False)
+        opc.fan_ctrl(False)
         status = opc.trans(DISABLED)
     elif e.signal == signals.open_comm:
         if opc.init_opc() == OK:
@@ -113,12 +116,15 @@ def COMM_ON(opc, e):
         status = return_status.HANDLED
     elif e.signal == signals.disable_opc:
         logging.info("disable opc event recieved")
+        opc.laz_ctrl(False)
+        opc.fan_ctrl(False)
         status = opc.trans(DISABLED)
     elif e.signal == signals.read_data:
         data = opc.read_data()
         print(data)
+        data_json_string = json.dumps(data)
         if not data == -1:
-            #mqttc.publish("opc/data", payload=data, qos=2)
+            mqttc.publish("opc/data", payload=data_json_string, qos=2)
             opc.post_fifo(Event(signal=signals.read_data))
             status = return_status.HANDLED
         else:

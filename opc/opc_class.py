@@ -48,6 +48,9 @@ class OPC(ActiveObject):
         self.OPCNAME = opc_name
         self.OPCPORT = opc_port
         self.LOCATION = opc_location
+        self.comm = False
+        self.laser_status = False
+        self.fan_status = False
         logging.info("Instantiated OPC class on port " + self.OPCPORT)
         super().__init__()
 
@@ -72,10 +75,12 @@ class OPC(ActiveObject):
         logging.info('openning serial port to OPC ' + self.OPCPORT)
         try:
             self.ser = serial.Serial(**serial_opts)
+            self.comm = True
         except serial.serialutil.SerialException:
             logging.info(
                 'communication failed - check USB connection to raspberry PI host'
             )
+            self.comm = False
             return -1
         logging.info('initializing communication with OPC')
         # print("Init:")
@@ -91,6 +96,11 @@ class OPC(ActiveObject):
         self.ser.write(bytearray([0x5a, 0x02, 0x92, 0x07]))
         nl = self.ser.read(2)
         time.sleep(wait)
+
+        # turn on Lazer and Fan for the correct operation of the OPC
+        self.laz_ctrl(True)
+        self.fan_ctrl(True)
+
         return OK
 
     def close_opc(self):
@@ -113,6 +123,7 @@ class OPC(ActiveObject):
                     logging.info("Request Fan to turn ON")
                     self.ser.write(bytearray([0x61, 0x03]))
                     nl = self.ser.read(2)
+                    self.fan_status = True
                     logging.info("Fan ON")
                     time.sleep(2)
                     return 0  # success
@@ -120,6 +131,7 @@ class OPC(ActiveObject):
                     logging.info("Request Fan to turn OFF")
                     self.ser.write(bytearray([0x61, 0x02]))
                     nl = self.ser.read(2)
+                    self.fan_status = False
                     logging.info("Fan OFF")
                     time.sleep(2)
                     return 0  # success
@@ -151,6 +163,7 @@ class OPC(ActiveObject):
                     self.ser.write(bytearray([0x61, 0x07]))
                     nl = self.ser.read(2)
                     time.sleep(wait)
+                    self.laser_status = True
                     logging.info("Laser is ON")
                     return 0  # 0 error means success
                 else:
@@ -159,6 +172,7 @@ class OPC(ActiveObject):
                     self.ser.write(bytearray([0x61, 0x06]))
                     nl = self.ser.read(2)
                     time.sleep(wait)
+                    self.laser_status = False
                     logging.info("Laser is OFF")
                     return 0  # 0 error means success
             elif T > 20:
@@ -240,6 +254,9 @@ class OPC(ActiveObject):
         data['pm2.5'] = struct.unpack('f', bytes(ans[64:68]))[0]
         data['pm10'] = struct.unpack('f', bytes(ans[68:72]))[0]
         data['Check'] = self.combine_bytes(ans[84], ans[85])
+        data['comm'] = self.comm
+        data['laser_status'] = self.laser_status
+        data['fan_status'] = self.fan_status
 
         return (data)
 
