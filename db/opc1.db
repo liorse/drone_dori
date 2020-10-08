@@ -1,0 +1,6 @@
+record(ai, "opc:MTof")
+{
+field(DESC, "Needs to check what MTof means")
+}
+record(ai, "opc:period")
+
