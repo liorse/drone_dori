@@ -1,0 +1,196 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<display version="2.0.0">
+  <name>Display</name>
+  <widget type="bool_button" version="2.0.0">
+    <name>Boolean Button</name>
+    <pv_name>opc:enable</pv_name>
+    <x>10</x>
+    <y>560</y>
+    <width>110</width>
+    <height>40</height>
+    <off_label>OPC off</off_label>
+    <on_label>OPC on</on_label>
+  </widget>
+  <widget type="tank" version="2.0.0">
+    <name>Tank</name>
+    <pv_name>opc:humidity</pv_name>
+    <x>180</x>
+    <y>70</y>
+    <width>70</width>
+    <height>140</height>
+  </widget>
+  <widget type="thermometer" version="2.0.0">
+    <name>Thermometer</name>
+    <pv_name>opc:temperature</pv_name>
+    <x>50</x>
+    <y>70</y>
+    <width>60</width>
+    <height>140</height>
+  </widget>
+  <widget type="textupdate" version="2.0.0">
+    <name>Text Update</name>
+    <pv_name>opc:temperature</pv_name>
+    <x>50</x>
+    <y>30</y>
+    <width>70</width>
+    <height>30</height>
+    <precision>2</precision>
+    <horizontal_alignment>1</horizontal_alignment>
+    <vertical_alignment>1</vertical_alignment>
+  </widget>
+  <widget type="textupdate" version="2.0.0">
+    <name>Text Update_1</name>
+    <pv_name>opc:humidity</pv_name>
+    <x>180</x>
+    <y>30</y>
+    <width>70</width>
+    <height>30</height>
+    <precision>2</precision>
+    <horizontal_alignment>1</horizontal_alignment>
+    <vertical_alignment>1</vertical_alignment>
+  </widget>
+  <widget type="textupdate" version="2.0.0">
+    <name>Text Update_2</name>
+    <pv_name>opc:pm1</pv_name>
+    <x>170</x>
+    <y>240</y>
+    <width>70</width>
+    <height>30</height>
+    <precision>2</precision>
+    <horizontal_alignment>1</horizontal_alignment>
+    <vertical_alignment>1</vertical_alignment>
+  </widget>
+  <widget type="textupdate" version="2.0.0">
+    <name>Text Update_3</name>
+    <pv_name>opc:pm2dot5</pv_name>
+    <x>170</x>
+    <y>280</y>
+    <width>70</width>
+    <height>30</height>
+    <precision>2</precision>
+    <horizontal_alignment>1</horizontal_alignment>
+    <vertical_alignment>1</vertical_alignment>
+  </widget>
+  <widget type="textupdate" version="2.0.0">
+    <name>Text Update_4</name>
+    <pv_name>opc:pm10</pv_name>
+    <x>170</x>
+    <y>320</y>
+    <width>70</width>
+    <height>30</height>
+    <precision>2</precision>
+    <horizontal_alignment>1</horizontal_alignment>
+    <vertical_alignment>1</vertical_alignment>
+  </widget>
+  <widget type="label" version="2.0.0">
+    <name>Label</name>
+    <text>PM1</text>
+    <x>60</x>
+    <y>240</y>
+    <width>29</width>
+    <height>16</height>
+    <vertical_alignment>2</vertical_alignment>
+    <auto_size>true</auto_size>
+  </widget>
+  <widget type="label" version="2.0.0">
+    <name>Label_1</name>
+    <text>PM 2.5</text>
+    <x>60</x>
+    <y>290</y>
+    <width>45</width>
+    <height>16</height>
+    <vertical_alignment>2</vertical_alignment>
+    <auto_size>true</auto_size>
+  </widget>
+  <widget type="label" version="2.0.0">
+    <name>Label_2</name>
+    <text>PM 10</text>
+    <x>60</x>
+    <y>330</y>
+    <width>41</width>
+    <height>16</height>
+    <vertical_alignment>2</vertical_alignment>
+    <auto_size>true</auto_size>
+  </widget>
+  <widget type="label" version="2.0.0">
+    <name>Label_3</name>
+    <text>Temp (celcius)</text>
+    <x>50</x>
+    <y>10</y>
+    <width>92</width>
+    <height>16</height>
+    <vertical_alignment>2</vertical_alignment>
+    <auto_size>true</auto_size>
+  </widget>
+  <widget type="label" version="2.0.0">
+    <name>Label_4</name>
+    <text>Humidity(%)</text>
+    <x>180</x>
+    <y>10</y>
+    <width>77</width>
+    <height>16</height>
+    <vertical_alignment>2</vertical_alignment>
+    <auto_size>true</auto_size>
+  </widget>
+  <widget type="xyplot" version="2.0.0">
+    <name>X/Y Plot</name>
+    <y>370</y>
+    <width>300</width>
+    <height>160</height>
+    <x_axis>
+      <title>Bin Number</title>
+      <autoscale>false</autoscale>
+      <log_scale>false</log_scale>
+      <minimum>-1.0</minimum>
+      <maximum>24.0</maximum>
+      <show_grid>false</show_grid>
+      <title_font>
+        <font name="Default Bold" family="Liberation Sans" style="BOLD" size="14.0">
+        </font>
+      </title_font>
+      <scale_font>
+        <font name="Default" family="Liberation Sans" style="REGULAR" size="14.0">
+        </font>
+      </scale_font>
+      <visible>true</visible>
+    </x_axis>
+    <y_axes>
+      <y_axis>
+        <title>Particles</title>
+        <autoscale>true</autoscale>
+        <log_scale>false</log_scale>
+        <minimum>0.0</minimum>
+        <maximum>100.0</maximum>
+        <show_grid>false</show_grid>
+        <title_font>
+          <font name="Default Bold" family="Liberation Sans" style="BOLD" size="14.0">
+          </font>
+        </title_font>
+        <scale_font>
+          <font name="Default" family="Liberation Sans" style="REGULAR" size="14.0">
+          </font>
+        </scale_font>
+        <visible>true</visible>
+      </y_axis>
+    </y_axes>
+    <traces>
+      <trace>
+        <name>$(traces[0].y_pv)</name>
+        <x_pv>[0:23]</x_pv>
+        <y_pv>opc:bins</y_pv>
+        <err_pv></err_pv>
+        <axis>0</axis>
+        <trace_type>5</trace_type>
+        <color>
+          <color red="0" green="0" blue="255">
+          </color>
+        </color>
+        <line_width>4</line_width>
+        <line_style>0</line_style>
+        <point_type>0</point_type>
+        <point_size>10</point_size>
+        <visible>true</visible>
+      </trace>
+    </traces>
+  </widget>
+</display>
