@@ -19,8 +19,8 @@ from miros import ActiveObject
 from miros import return_status
 import logging
 import numpy as np
-from opc_dummy_class import OPC
-#from opc_class import OPC
+#from opc_dummy_class import OPC
+from opc_class import OPC
 import json
 import epics
 
@@ -141,22 +141,26 @@ def COMM_ON(opc, e):
         status = return_status.SUPER
     return status
 
+
 def insert_data_into_epics(data):
-    opc_dev_epics.MTof = data['MTof']
-    opc_dev_epics.period = data['period']
-    opc_dev_epics.Flowrate = data['FlowRate']
-    opc_dev_epics.temperature = data['OPC-T']
-    opc_dev_epics.humidity = data['OPC-RH']
-    opc_dev_epics.pm1 = data['pm1']
-    opc_dev_epics.pm2dot5 = data['pm2.5']
-    opc_dev_epics.pm10 = data['pm10']
-    opc_dev_epics.bins = np.array([data['Bin0'], data['Bin1'], data['Bin2'], data['Bin3'], 
-                                   data['Bin4'], data['Bin5'], data['Bin6'], data['Bin7'], 
-                                   data['Bin8'], data['Bin9'], data['Bin10'], data['Bin11'],
-                                   data['Bin12'], data['Bin13'], data['Bin14'], data['Bin15'], 
-                                   data['Bin16'], data['Bin17'], data['Bin18'], data['Bin19'], 
-                                   data['Bin20'], data['Bin21'], data['Bin22'], data['Bin23']
-                                   ])
+    if isinstance(data, dict):
+        opc_dev_epics.MTof = data['MTof']
+        opc_dev_epics.period = data['period']
+        opc_dev_epics.Flowrate = data['FlowRate']
+        opc_dev_epics.temperature = data['OPC-T']
+        opc_dev_epics.humidity = data['OPC-RH']
+        opc_dev_epics.pm1 = data['pm1']
+        opc_dev_epics.pm2dot5 = data['pm2.5']
+        opc_dev_epics.pm10 = data['pm10']
+        opc_dev_epics.bins = np.array([
+            data['Bin0'], data['Bin1'], data['Bin2'], data['Bin3'], data['Bin4'],
+            data['Bin5'], data['Bin6'], data['Bin7'], data['Bin8'], data['Bin9'],
+            data['Bin10'], data['Bin11'], data['Bin12'], data['Bin13'],
+            data['Bin14'], data['Bin15'], data['Bin16'], data['Bin17'],
+            data['Bin18'], data['Bin19'], data['Bin20'], data['Bin21'],
+            data['Bin22'], data['Bin23']
+            ])
+
 
 def on_message(client, userdata, message):
 
@@ -170,11 +174,13 @@ def on_message(client, userdata, message):
     # print("Received message '" + str(message.payload) + "' on topic '"
     #     + message.topic + "' with QoS " + str(message.qos))
 
+
 def on_opc_enable(value, **kw):
     if value == True:
         opc.post_fifo(Event(signal=signals.enable_opc))
     else:
         opc.post_fifo(Event(signal=signals.disable_opc))
+
 
 if __name__ == "__main__":
 
@@ -202,11 +208,16 @@ if __name__ == "__main__":
     mqttc.on_message = on_message
 
     # establish EPICS variable connection
-    opc_dev_epics = epics.Device('opc:', attrs=['enable', 'bins', 'MTof', 'period', 'Flowrate', 'temperature', 'humidity', 'pm1','pm2dot5', 'pm10'])
+    opc_dev_epics = epics.Device('opc:',
+                                 attrs=[
+                                     'enable', 'bins', 'MTof', 'period',
+                                     'Flowrate', 'temperature', 'humidity',
+                                     'pm1', 'pm2dot5', 'pm10'
+                                 ])
     opc_dev_epics.add_callback('enable', on_opc_enable)
     #epics_opc_enable = epics.PV('opc:enable')
     #epics_opc_enable.add_callback(on_opc_enable)
-    
+
     try:
         while True:
             time.sleep(0.1)
