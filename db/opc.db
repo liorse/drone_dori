@@ -1,5 +1,3 @@
-record(ai, "opc:MTof")
-
 record(ai, "opc:period")
 
 record(ai, "opc:Flowrate")
@@ -19,12 +17,21 @@ record(waveform, "opc:bins")
 	field(FTVL, "DOUBLE")
 	field(NELM, 24)
 }
-record(stringin, "bins:string")
-{
-	field(DESC, "some value")
-	field(VAL, "initial string")
-}
+
+record(ai, "opc:laser_status")
+record(bi, "opc:gain_high_ON")
+record(bi, "opc:auto_gain_ON")
+record(bi, "opc:comm_ON")
+record(bi, "opc:laser_ON")
+record(bi, "opc:fan_ON")
+
+
 record(bi, "opc:enable")
 {
 	field(DESC, "enable or disable communication with OPC")
 }
+
+record(ai, "opc:set_period")
+record(bi, "opc:set_laser")
+record(bi, "opc:set_fan")
+record(bi, "opc:toggle_gain")

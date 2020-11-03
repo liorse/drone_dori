@@ -19,6 +19,7 @@ import time
 import sys
 from miros import ActiveObject
 import serial
+import numpy as np
 
 integration = 5
 
@@ -107,6 +108,45 @@ class OPC(ActiveObject):
         logging.info('closing serial port ' + self.OPCPORT)
         self.ser.close()
 
+    def gain_ctrl(self, ctrl_flag=False):
+        '''
+        setting Gain to HIGH or LOW will automatically remove autogain option
+        The instrument will have to be reset for the autogain option to return to its active state
+        '''
+        T = 0
+        while True:
+            self.ser.write(bytearray([0x61, 0x03]))
+            nl = self.ser.read(2)
+            T = T + 1
+            if nl == (b"\xff\xf3" or b"xf3\xff"):
+                time.sleep(wait)
+                if ctrl_flag:
+                    # GAIN HIGH
+                    logging.info("Request to toggle GAIN to HIGH")
+                    self.ser.write(bytearray([0x61, 0x09]))
+                    nl = self.ser.read(2)
+                    self.fan_status = True
+                    logging.info("Gain is HIGH")
+                    time.sleep(2)
+                    return 0  # success
+                else:
+                    logging.info("Request to toggle GAIN to LOW")
+                    self.ser.write(bytearray([0x61, 0x08]))
+                    nl = self.ser.read(2)
+                    self.fan_status = False
+                    logging.info("Gain is Low")
+                    time.sleep(2)
+                    return 0  # success
+            elif T > 20:
+                logging.info("Reset SPI")
+                time.sleep(3)  # time for spi buffer to reset
+                # reset SPI  conncetion
+                self.init_opc()
+                T = 0
+            else:
+                time.sleep(wait * 10)
+   
+
     def fan_ctrl(self, ctrl_flag=False):
         '''
         opc fan control by sending true to turn it on and false to turn it off
@@ -144,6 +184,58 @@ class OPC(ActiveObject):
             else:
                 time.sleep(wait * 10)
 
+    def interpret_status_data(self, ans):
+
+        status_data = {}
+        status_data['Fan_ON'] = True if ans[0]==1 else False
+        status_data['LaserDAC_ON'] = True if ans[1]==1 else False
+        status_data['FanDACval'] = ans[2]
+        status_data['LaserDACval'] = ans[3]
+        status_data['LaserSwitch'] = True if ans[4]==1 else False
+        status_data['Gain_HIGH'] = True if (ans[5] & 0x1) == 1 else False
+        status_data['AutoGain'] = True if (ans[5] & 0x2) == 2 else False
+        return status_data
+        
+
+    def read_status(self):
+        '''
+        reading the status of the following parameters - each parameter is 8 bit unsigned byte
+        Fan_ON
+        LaserDAC_ON
+        FanDACval
+        LaserDACval
+        LaserSwitch
+        Gain and AutoGain Toggle Settings bit0 is Gain (High/Low), bit1 is AutoGain (On/Off)
+        '''
+        T = 0  # attemt varaible
+        while True:
+            logging.info("Request status from OPC")
+
+            # request the hist data set
+            self.ser.write([0x61, 0x13])
+            # time.sleep(wait*10)
+            nl = self.ser.read(2)
+            T = T + 1
+            if nl == (b'\xff\xf3' or b'\xf3\xff'):
+                for i in range(6):  # Send bytes one at a time
+                    self.ser.write([0x61, 0x01])
+                    time.sleep(0.000001)
+
+                time.sleep(wait)  # delay
+                ans = bytearray(self.ser.readall())
+                ans = self.rightbytes(ans)  # get the wanted data bytes
+                data = self.interpret_status_data(ans)
+                logging.info("Read all data from the OPC")
+                return data
+            if T > 20:
+                logging.info("Reset SPI")
+                time.sleep(wait)  # time for spi buffer to reset
+                self.init_opc()
+                return -999  # error data was not read from the OPC
+            else:
+                time.sleep(wait * 10)  # wait 1e-05 before next commn
+
+    
     # Lazer on   0x07 is SPI byte following 0x03 to turn laser ON.
     def laz_ctrl(self, laser_flag=False):
         '''
@@ -218,7 +310,7 @@ class OPC(ActiveObject):
         '''
         function to read all the hist data, to break up the getHist
         '''
-
+        logging.info("size of ans" + str(len(ans)))
         data = {}
         data['Bin0'] = self.combine_bytes(ans[0], ans[1])
         data['Bin1'] = self.combine_bytes(ans[2], ans[3])
@@ -244,19 +336,23 @@ class OPC(ActiveObject):
         data['Bin21'] = self.combine_bytes(ans[42], ans[43])
         data['Bin22'] = self.combine_bytes(ans[44], ans[45])
         data['Bin23'] = self.combine_bytes(ans[46], ans[47])
-        data['MTof'] = struct.unpack('f', bytes(
-            ans[48:52]))[0]  # MTof is in 1/3 us, value of 10=3.33us
-        data['period'] = self.combine_bytes(ans[52], ans[53])
-        data['FlowRate'] = self.combine_bytes(ans[54], ans[55])
-        data['OPC-T'] = self.Tempcon(self.combine_bytes(ans[56], ans[57]))
-        data['OPC-RH'] = self.RHcon(self.combine_bytes(ans[58], ans[59]))
-        data['pm1'] = struct.unpack('f', bytes(ans[60:64]))[0]
-        data['pm2.5'] = struct.unpack('f', bytes(ans[64:68]))[0]
-        data['pm10'] = struct.unpack('f', bytes(ans[68:72]))[0]
-        data['Check'] = self.combine_bytes(ans[84], ans[85])
+        data['bin1MToF'] = ans[48] # MToF is a an 8 bit unigned integer that represents the mean amount of time that particles sized in the stated bin took to cross the OPC laser beam, each value is 1/3 * us
+        data['bin3MToF'] = ans[49]
+        data['bin5MToF'] = ans[50]
+        data['bin7MTof'] = ans[51]
+        #data['MTof'] = struct.unpack('f', bytes(
+        #    ans[48:52]))[0]  # MTof is in 1/3 us, value of 10=3.33us
+        data['period'] = self.combine_bytes(ans[52], ans[53]) # histogram sampling time in 100 * s
+        data['FlowRate'] = self.combine_bytes(ans[54], ans[55]) # sample flowrate (SFR) in 100 * ml/s
+        data['OPC-T'] = self.Tempcon(self.combine_bytes(ans[56], ans[57])) # temperature in celcius
+        data['OPC-RH'] = self.RHcon(self.combine_bytes(ans[58], ans[59])) # relative humidity in percent
+        data['pm1'] = struct.unpack('f', bytes(ans[60:64]))[0] # particulate matter in microgram/m^3
+        data['pm2.5'] = struct.unpack('f', bytes(ans[64:68]))[0] # particulate matter in microgram/m^3
+        data['pm10'] = struct.unpack('f', bytes(ans[68:72]))[0] # particulate matter in microgram/m^3
+        data['Check'] = self.combine_bytes(ans[84], ans[85]) # checksum
         data['comm'] = self.comm
-        data['laser_status'] = self.laser_status
-        data['fan_status'] = self.fan_status
+        data['laser_status'] = self.combine_bytes(ans[82], ans[83]) # laser status is a 16bit unsigned integer
+        data['fan_rev_count'] = self.combine_bytes(ans[80], ans[81]) # fan rev count in a 16 bit unsigned integer
 
         return (data)
 
@@ -303,8 +399,12 @@ if __name__ == '__main__':
     time.sleep(2)
     opc.fan_ctrl(True)
     opc.laz_ctrl(True)
-    for i in range(10):
+    print(opc.read_status())
+    for i in range(15):
         print(opc.read_data())
+        print(opc.read_status())
     opc.fan_ctrl(False)
     opc.laz_ctrl(False)
+    print(opc.read_status())
+
     opc.close_opc()

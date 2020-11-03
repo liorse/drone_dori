@@ -1,0 +1,18 @@
+Raspberry PI setup
+
+Setting the time 
+sudo date -s "03 NOV 2020 09:31:00"
+
+Running the database server - MariaDB
+
+
+Running the distributed EPICs server
+
+
+Running OPC_service.py
+
+
+Running Phoebus
+
+
+Running 
