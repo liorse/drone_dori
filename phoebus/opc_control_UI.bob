@@ -1,149 +1,228 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <display version="2.0.0">
   <name>Display</name>
-  <widget type="bool_button" version="2.0.0">
-    <name>Boolean Button</name>
-    <pv_name>opc:enable</pv_name>
-    <x>10</x>
-    <y>560</y>
-    <width>110</width>
-    <height>40</height>
-    <off_label>OPC off</off_label>
-    <on_label>OPC on</on_label>
-  </widget>
-  <widget type="tank" version="2.0.0">
-    <name>Tank</name>
-    <pv_name>opc:humidity</pv_name>
-    <x>180</x>
-    <y>70</y>
-    <width>70</width>
-    <height>140</height>
-  </widget>
-  <widget type="thermometer" version="2.0.0">
-    <name>Thermometer</name>
-    <pv_name>opc:temperature</pv_name>
-    <x>50</x>
-    <y>70</y>
-    <width>60</width>
-    <height>140</height>
-  </widget>
-  <widget type="textupdate" version="2.0.0">
-    <name>Text Update</name>
-    <pv_name>opc:temperature</pv_name>
-    <x>50</x>
-    <y>30</y>
-    <width>70</width>
-    <height>30</height>
-    <precision>2</precision>
-    <horizontal_alignment>1</horizontal_alignment>
-    <vertical_alignment>1</vertical_alignment>
-  </widget>
-  <widget type="textupdate" version="2.0.0">
-    <name>Text Update_1</name>
-    <pv_name>opc:humidity</pv_name>
-    <x>180</x>
-    <y>30</y>
-    <width>70</width>
-    <height>30</height>
-    <precision>2</precision>
-    <horizontal_alignment>1</horizontal_alignment>
-    <vertical_alignment>1</vertical_alignment>
-  </widget>
-  <widget type="textupdate" version="2.0.0">
-    <name>Text Update_2</name>
-    <pv_name>opc:pm1</pv_name>
-    <x>170</x>
-    <y>240</y>
-    <width>70</width>
-    <height>30</height>
-    <precision>2</precision>
-    <horizontal_alignment>1</horizontal_alignment>
-    <vertical_alignment>1</vertical_alignment>
-  </widget>
-  <widget type="textupdate" version="2.0.0">
-    <name>Text Update_3</name>
-    <pv_name>opc:pm2dot5</pv_name>
-    <x>170</x>
-    <y>280</y>
-    <width>70</width>
-    <height>30</height>
-    <precision>2</precision>
-    <horizontal_alignment>1</horizontal_alignment>
-    <vertical_alignment>1</vertical_alignment>
-  </widget>
-  <widget type="textupdate" version="2.0.0">
-    <name>Text Update_4</name>
-    <pv_name>opc:pm10</pv_name>
-    <x>170</x>
-    <y>320</y>
-    <width>70</width>
-    <height>30</height>
-    <precision>2</precision>
-    <horizontal_alignment>1</horizontal_alignment>
-    <vertical_alignment>1</vertical_alignment>
-  </widget>
-  <widget type="label" version="2.0.0">
-    <name>Label</name>
-    <text>PM1</text>
-    <x>60</x>
-    <y>240</y>
-    <width>29</width>
-    <height>16</height>
-    <vertical_alignment>2</vertical_alignment>
-    <auto_size>true</auto_size>
-  </widget>
-  <widget type="label" version="2.0.0">
-    <name>Label_1</name>
-    <text>PM 2.5</text>
-    <x>60</x>
-    <y>290</y>
-    <width>45</width>
-    <height>16</height>
-    <vertical_alignment>2</vertical_alignment>
-    <auto_size>true</auto_size>
-  </widget>
-  <widget type="label" version="2.0.0">
-    <name>Label_2</name>
-    <text>PM 10</text>
-    <x>60</x>
-    <y>330</y>
-    <width>41</width>
-    <height>16</height>
-    <vertical_alignment>2</vertical_alignment>
-    <auto_size>true</auto_size>
-  </widget>
-  <widget type="label" version="2.0.0">
-    <name>Label_3</name>
-    <text>Temp (celcius)</text>
-    <x>50</x>
+  <widget type="group" version="2.0.0">
+    <name>Status</name>
+    <x>318</x>
     <y>10</y>
-    <width>92</width>
-    <height>16</height>
-    <vertical_alignment>2</vertical_alignment>
-    <auto_size>true</auto_size>
+    <width>322</width>
+    <height>380</height>
   </widget>
-  <widget type="label" version="2.0.0">
-    <name>Label_4</name>
-    <text>Humidity(%)</text>
-    <x>180</x>
+  <widget type="group" version="2.0.0">
+    <name>Control</name>
+    <x>110</x>
+    <y>610</y>
+    <width>464</width>
+    <height>180</height>
+    <widget type="group" version="2.0.0">
+      <name>Group</name>
+      <x>7</x>
+      <y>7</y>
+      <width>419</width>
+      <height>130</height>
+      <style>3</style>
+      <transparent>true</transparent>
+      <widget type="bool_button" version="2.0.0">
+        <name>Boolean Button</name>
+        <pv_name>opc:enable</pv_name>
+        <y>10</y>
+        <width>160</width>
+        <height>120</height>
+        <off_label>OPC off</off_label>
+        <on_label>OPC on</on_label>
+      </widget>
+      <widget type="slide_button" version="2.0.0">
+        <name>Slide Button</name>
+        <pv_name>opc:toggle_gain</pv_name>
+        <label>Toggle Gain (HIGH/LOW)</label>
+        <x>183</x>
+        <width>230</width>
+        <height>40</height>
+      </widget>
+      <widget type="slide_button" version="2.0.0">
+        <name>Slide Button_1</name>
+        <pv_name>opc:set_laser</pv_name>
+        <label>Set Laser State</label>
+        <x>183</x>
+        <y>30</y>
+        <width>230</width>
+        <height>40</height>
+      </widget>
+      <widget type="slide_button" version="2.0.0">
+        <name>Slide Button_2</name>
+        <pv_name>opc:set_fan</pv_name>
+        <label>Set Fan State</label>
+        <x>183</x>
+        <y>60</y>
+        <width>230</width>
+        <height>40</height>
+      </widget>
+      <widget type="spinner" version="2.0.0">
+        <name>Spinner</name>
+        <pv_name>opc:set_period</pv_name>
+        <x>183</x>
+        <y>100</y>
+        <width>110</width>
+        <height>30</height>
+        <buttons_on_left>true</buttons_on_left>
+        <maximum>1000.0</maximum>
+      </widget>
+      <widget type="label" version="2.0.0">
+        <name>Label_13</name>
+        <text>Acquistion time (s)</text>
+        <x>303</x>
+        <y>106</y>
+        <width>116</width>
+        <height>16</height>
+        <vertical_alignment>2</vertical_alignment>
+        <auto_size>true</auto_size>
+      </widget>
+    </widget>
+  </widget>
+  <widget type="group" version="2.0.0">
+    <name>Readings</name>
+    <x>20</x>
     <y>10</y>
-    <width>77</width>
-    <height>16</height>
-    <vertical_alignment>2</vertical_alignment>
-    <auto_size>true</auto_size>
+    <width>260</width>
+    <height>380</height>
+    <widget type="group" version="2.0.0">
+      <name>Group</name>
+      <x>12</x>
+      <y>-2</y>
+      <width>207</width>
+      <height>340</height>
+      <style>3</style>
+      <transparent>true</transparent>
+      <widget type="tank" version="2.0.0">
+        <name>Tank</name>
+        <pv_name>opc:humidity</pv_name>
+        <x>130</x>
+        <y>60</y>
+        <width>70</width>
+        <height>140</height>
+      </widget>
+      <widget type="thermometer" version="2.0.0">
+        <name>Thermometer</name>
+        <pv_name>opc:temperature</pv_name>
+        <y>60</y>
+        <width>60</width>
+        <height>140</height>
+      </widget>
+      <widget type="textupdate" version="2.0.0">
+        <name>Text Update</name>
+        <pv_name>opc:temperature</pv_name>
+        <y>20</y>
+        <width>70</width>
+        <height>30</height>
+        <precision>2</precision>
+        <horizontal_alignment>1</horizontal_alignment>
+        <vertical_alignment>1</vertical_alignment>
+      </widget>
+      <widget type="textupdate" version="2.0.0">
+        <name>Text Update_1</name>
+        <pv_name>opc:humidity</pv_name>
+        <x>130</x>
+        <y>20</y>
+        <width>70</width>
+        <height>30</height>
+        <precision>2</precision>
+        <horizontal_alignment>1</horizontal_alignment>
+        <vertical_alignment>1</vertical_alignment>
+      </widget>
+      <widget type="textupdate" version="2.0.0">
+        <name>Text Update_2</name>
+        <pv_name>opc:pm1</pv_name>
+        <x>120</x>
+        <y>230</y>
+        <width>70</width>
+        <height>30</height>
+        <precision>2</precision>
+        <horizontal_alignment>1</horizontal_alignment>
+        <vertical_alignment>1</vertical_alignment>
+      </widget>
+      <widget type="textupdate" version="2.0.0">
+        <name>Text Update_3</name>
+        <pv_name>opc:pm2dot5</pv_name>
+        <x>120</x>
+        <y>270</y>
+        <width>70</width>
+        <height>30</height>
+        <precision>2</precision>
+        <horizontal_alignment>1</horizontal_alignment>
+        <vertical_alignment>1</vertical_alignment>
+      </widget>
+      <widget type="textupdate" version="2.0.0">
+        <name>Text Update_4</name>
+        <pv_name>opc:pm10</pv_name>
+        <x>120</x>
+        <y>310</y>
+        <width>70</width>
+        <height>30</height>
+        <precision>2</precision>
+        <horizontal_alignment>1</horizontal_alignment>
+        <vertical_alignment>1</vertical_alignment>
+      </widget>
+      <widget type="label" version="2.0.0">
+        <name>Label</name>
+        <text>PM 1 (ug/m^3)</text>
+        <x>11</x>
+        <y>237</y>
+        <width>92</width>
+        <height>16</height>
+        <vertical_alignment>2</vertical_alignment>
+        <auto_size>true</auto_size>
+      </widget>
+      <widget type="label" version="2.0.0">
+        <name>Label_1</name>
+        <text>PM 2.5 (ug/m^3)</text>
+        <x>10</x>
+        <y>280</y>
+        <width>104</width>
+        <height>16</height>
+        <vertical_alignment>2</vertical_alignment>
+        <auto_size>true</auto_size>
+      </widget>
+      <widget type="label" version="2.0.0">
+        <name>Label_2</name>
+        <text>PM 10 (ug/m^3)</text>
+        <x>10</x>
+        <y>320</y>
+        <height>16</height>
+        <vertical_alignment>2</vertical_alignment>
+        <auto_size>true</auto_size>
+      </widget>
+      <widget type="label" version="2.0.0">
+        <name>Label_3</name>
+        <text>Temp (celcius)</text>
+        <width>92</width>
+        <height>16</height>
+        <vertical_alignment>2</vertical_alignment>
+        <auto_size>true</auto_size>
+      </widget>
+      <widget type="label" version="2.0.0">
+        <name>Label_4</name>
+        <text>Humidity(%)</text>
+        <x>130</x>
+        <width>77</width>
+        <height>16</height>
+        <vertical_alignment>2</vertical_alignment>
+        <auto_size>true</auto_size>
+      </widget>
+    </widget>
   </widget>
   <widget type="xyplot" version="2.0.0">
     <name>X/Y Plot</name>
-    <y>370</y>
-    <width>300</width>
-    <height>160</height>
+    <x>30</x>
+    <y>410</y>
+    <width>600</width>
+    <height>180</height>
     <x_axis>
       <title>Bin Number</title>
       <autoscale>false</autoscale>
       <log_scale>false</log_scale>
       <minimum>-1.0</minimum>
       <maximum>24.0</maximum>
-      <show_grid>false</show_grid>
+      <show_grid>true</show_grid>
       <title_font>
         <font name="Default Bold" family="Liberation Sans" style="BOLD" size="14.0">
         </font>
@@ -156,7 +235,7 @@
     </x_axis>
     <y_axes>
       <y_axis>
-        <title>Particles</title>
+        <title>count/s</title>
         <autoscale>true</autoscale>
         <log_scale>false</log_scale>
         <minimum>0.0</minimum>
@@ -192,5 +271,145 @@
         <visible>true</visible>
       </trace>
     </traces>
+  </widget>
+  <widget type="label" version="2.0.0">
+    <name>Label_5</name>
+    <text>Acquistion time (s)</text>
+    <x>340</x>
+    <y>268</y>
+    <width>116</width>
+    <height>16</height>
+    <vertical_alignment>2</vertical_alignment>
+    <auto_size>true</auto_size>
+  </widget>
+  <widget type="textupdate" version="2.0.0">
+    <name>Text Update_5</name>
+    <pv_name>opc:period</pv_name>
+    <x>510</x>
+    <y>261</y>
+    <height>30</height>
+    <precision>2</precision>
+    <horizontal_alignment>1</horizontal_alignment>
+    <vertical_alignment>1</vertical_alignment>
+  </widget>
+  <widget type="label" version="2.0.0">
+    <name>Label_6</name>
+    <text>Laser Status</text>
+    <x>340</x>
+    <y>308</y>
+    <width>79</width>
+    <height>16</height>
+    <vertical_alignment>2</vertical_alignment>
+    <auto_size>true</auto_size>
+  </widget>
+  <widget type="textupdate" version="2.0.0">
+    <name>Text Update_6</name>
+    <pv_name>opc:laser_status</pv_name>
+    <x>510</x>
+    <y>300</y>
+    <height>30</height>
+    <precision>2</precision>
+    <horizontal_alignment>1</horizontal_alignment>
+    <vertical_alignment>1</vertical_alignment>
+  </widget>
+  <widget type="label" version="2.0.0">
+    <name>Label_7</name>
+    <text>Sample Flow Rate (ml/s)</text>
+    <x>340</x>
+    <y>348</y>
+    <width>154</width>
+    <height>16</height>
+    <vertical_alignment>2</vertical_alignment>
+    <auto_size>true</auto_size>
+  </widget>
+  <widget type="textupdate" version="2.0.0">
+    <name>Text Update_7</name>
+    <pv_name>opc:Flowrate</pv_name>
+    <x>510</x>
+    <y>341</y>
+    <height>30</height>
+    <precision>2</precision>
+    <horizontal_alignment>1</horizontal_alignment>
+    <vertical_alignment>1</vertical_alignment>
+  </widget>
+  <widget type="led" version="2.0.0">
+    <name>LED_1</name>
+    <pv_name>opc:comm_ON</pv_name>
+    <x>340</x>
+    <y>44</y>
+  </widget>
+  <widget type="label" version="2.0.0">
+    <name>Label_8</name>
+    <text>Communication</text>
+    <x>370</x>
+    <y>44</y>
+    <width>98</width>
+    <height>16</height>
+    <vertical_alignment>2</vertical_alignment>
+    <auto_size>true</auto_size>
+  </widget>
+  <widget type="led" version="2.0.0">
+    <name>LED_2</name>
+    <pv_name>opc:laser_ON</pv_name>
+    <x>340</x>
+    <y>74</y>
+  </widget>
+  <widget type="label" version="2.0.0">
+    <name>Label_9</name>
+    <text>Laser</text>
+    <x>370</x>
+    <y>74</y>
+    <width>36</width>
+    <height>16</height>
+    <vertical_alignment>2</vertical_alignment>
+    <auto_size>true</auto_size>
+  </widget>
+  <widget type="led" version="2.0.0">
+    <name>LED_3</name>
+    <pv_name>opc:fan_ON</pv_name>
+    <x>340</x>
+    <y>104</y>
+  </widget>
+  <widget type="label" version="2.0.0">
+    <name>Label_10</name>
+    <text>Fan</text>
+    <x>370</x>
+    <y>104</y>
+    <width>25</width>
+    <height>16</height>
+    <vertical_alignment>2</vertical_alignment>
+    <auto_size>true</auto_size>
+  </widget>
+  <widget type="led" version="2.0.0">
+    <name>LED_4</name>
+    <pv_name>opc:gain_high_ON</pv_name>
+    <x>340</x>
+    <y>140</y>
+  </widget>
+  <widget type="label" version="2.0.0">
+    <name>Label_11</name>
+    <text>Gain (HIGH)</text>
+    <x>370</x>
+    <y>140</y>
+    <width>78</width>
+    <height>16</height>
+    <vertical_alignment>2</vertical_alignment>
+    <auto_size>true</auto_size>
+  </widget>
+  <widget type="led" version="2.0.0">
+    <name>LED_5</name>
+    <pv_name>opc:auto_gain_ON</pv_name>
+    <x>340</x>
+    <y>174</y>
+  </widget>
+  <widget type="label" version="2.0.0">
+    <name>Label_12</name>
+    <text>Auto Gain</text>
+    <x>370</x>
+    <y>174</y>
+    <width>63</width>
+    <height>16</height>
+    <vertical_alignment>2</vertical_alignment>
+    <auto_size>true</auto_size>
   </widget>
 </display>
