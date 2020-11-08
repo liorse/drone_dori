@@ -12,8 +12,14 @@ Welcome to Dori_Drone_Docs's documentation!
 
    state_chart_general/state_chart_gen
 
+.. automodule:: aeth_class
+   :members:
 
+.. automodule:: opc_class
+   :members:
 
+.. autofunction:: opc_service.DISABLED
+      
 Indices and tables
 ==================
 

@@ -49,12 +49,11 @@ class AETH(ActiveObject):
         self.first_id = 0
         self.next_id = 0
         self.current_id = 0
-        self.sampling = False
         self.comm = False
         logging.info("Instantiated AETH class on port " + self.AETHPORT)
         super().__init__()
 
-    def init(self):
+    def init_aeth(self):
         '''
         establish communication with AETH return OK if succedded and -1 if failed
         '''
@@ -80,18 +79,32 @@ class AETH(ActiveObject):
             self.comm = False
             return -1
         logging.info('initializing communication with AETH')
-        self.check_status()
+        self.update_measurment_ids()
         return OK
 
     def close(self):
+        '''
+        closing the the AETH serial port
+        '''
         logging.info('closing serial port ' + self.AETHPORT)
         self.ser.close()
 
-    def check_status(self):
+    def is_sampling(self):
         '''
-        check status of AETH
+        return True if sampling is on going and False otherwise
+        '''
+        self.ser.write(b'cs\r')
+        self.ser.readline()
+        status_str = self.ser.readline()
+        self.ser.readline()
+        status_re = re.findall('[0-9]+', status_str.decode('utf-8'))
+        return True if int(status_re[3])==1 else False
+        
+    def update_measurment_ids(self):
+        '''
+        update measurements ids by checking status of AETH
         command: cs
-        returns: firstid = , nextId=, currentId= , sampling = 0 or 1 
+        udpates state variables  firstid = , nextId=, currentId= , sampling = 0 or 1 
         '''
         self.ser.write(b'cs\r')
         self.ser.readline()
@@ -103,9 +116,8 @@ class AETH(ActiveObject):
         self.first_id = int(status_re[0])
         self.next_id = int(status_re[1])
         self.current_id = int(status_re[2])
-        self.sampling = True if int(status_re[3])==1 else False
         
-        return status_re
+        return 0
 
     def request_data(self):
         '''
@@ -120,7 +132,7 @@ class AETH(ActiveObject):
             return 0 # no new data present
         else:
             # update the new ID
-            self.check_status()
+            self.update_measurment_ids()
             return data        
 
     def check_battery(self):
@@ -134,9 +146,9 @@ class AETH(ActiveObject):
 
     def start_measurement(self):
         '''
-        start measurement
+        start measurement - returns True if sampling started
         '''
-        if not self.sampling:
+        if not self.is_sampling():
             self.ser.write(b'ms\r')
 
             while True:
@@ -144,16 +156,15 @@ class AETH(ActiveObject):
                 if status_text != b'':
                     logging.info(status_text)
                 else:
-                    self.check_status()
-                    return self.sampling == True
+                    return self.is_sampling() == True
         else:
             return True
 
     def stop_measurement(self):
         '''
-        stop measurement
+        stop measurement - return True if sampling stopped
         '''
-        if self.sampling:
+        if self.is_sampling():
             self.ser.write(b'ms\r')
 
             while True:
@@ -161,8 +172,7 @@ class AETH(ActiveObject):
                 if status_text != b'':
                     logging.info(status_text)
                 else:
-                    self.check_status()
-                    return self.sampling == False
+                    return self.is_sampling() == False
         else:
             return True
                        
@@ -170,10 +180,9 @@ if __name__ == '__main__':
     aeth = AETH(aeth_name="MicroAeth",
               aeth_port="/dev/ttyUSB0",
               aeth_location="drone")
-    if not aeth.init() == OK:
+    if not aeth.init_aeth() == OK:
         sys.exit()
     
-    logging.info(aeth.check_status())
     logging.info(aeth.request_data())
     logging.info(aeth.check_battery())
     logging.info(aeth.start_measurement())

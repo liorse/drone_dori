@@ -1,0 +1,7 @@
+record(ai, "aeth:period")
+record(bi, "aeth:comm_ON")
+record(bi, "aeth:enable")
+{
+	field(DESC, "enable or disable communication with OPC")
+}
+record(ai, "aeth:set_period")
