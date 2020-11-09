@@ -8,17 +8,10 @@ Version 0.0.1
 """
 
 from __future__ import print_function
-
-#import datetime
-#import sys
-#import os.path
 import logging
-import struct
-import time
 import sys
 from miros import ActiveObject
 import serial
-import numpy as np
 import re
 
 integration = 5
@@ -49,7 +42,7 @@ class AETH(ActiveObject):
         self.first_id = 0
         self.next_id = 0
         self.current_id = 0
-        self.comm = False
+        self.retry_counter = 10;
         logging.info("Instantiated AETH class on port " + self.AETHPORT)
         super().__init__()
 
@@ -69,16 +62,9 @@ class AETH(ActiveObject):
         }
 
         logging.info('openning serial port to OPC ' + self.AETHPORT)
-        try:
-            self.ser = serial.Serial(**serial_opts)
-            self.comm = True
-        except serial.serialutil.SerialException:
-            logging.info(
-                'communication failed to MICROAETH-MA200- check USB connection to raspberry PI host'
-            )
-            self.comm = False
-            return -1
         logging.info('initializing communication with AETH')
+        self.ser = serial.Serial(**serial_opts)
+        logging.info('updating measurements IDs..')
         self.update_measurment_ids()
         return OK
 
