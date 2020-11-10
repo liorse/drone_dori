@@ -1,6 +1,6 @@
 record(bi, "aeth:comm_ON")
+record(bi, "aeth:tape_at_end_ON")
 record(bi, "aeth:sampling_ON")
-record(bi, "aeth:start_measurement")
 record(bi, "aeth:enable")
 {
 	field(DESC, "enable or disable communication with OPC")

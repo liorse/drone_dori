@@ -8,14 +8,14 @@
 # (via RF serial link via PPP)
 
 import time
-
+import sys
 from miros import Event
 from miros import spy_on
 from miros import signals
 #from miros import ActiveObject
 from miros import return_status
 import logging
-from aeth_class import AETH
+from aeth_class import AETH, NoNewDataRecieved, FailedCommunication
 import epics
 import serial
 
@@ -89,7 +89,7 @@ def COMM_OFF(aeth, e):
             aeth.init_aeth()
             logging.info("communication established")
             status = aeth.trans(COMM_ON)
-        except serial.serialutil.SerialException:
+        except (serial.serialutil.SerialException, FailedCommunication):
             logging.info("comm to AETH failed. kindly check that USB adapter is connected. " +
                          "trying to establish communication.....")
             aeth.post_fifo(Event(signal=signals.open_comm), period=1, times=1, deferred=True)
@@ -110,46 +110,59 @@ def COMM_ON(aeth, e):
     status = return_status.UNHANDLED
     if e.signal == signals.ENTRY_SIGNAL:
         logging.info("Entered COMM_ON state")
-        #aeth.post_fifo(Event(signal=signals.read_data))
+        aeth.post_fifo(Event(signal=signals.read_data))
         aeth_dev_epics.sampling_ON = aeth.is_sampling()
         aeth_dev_epics.comm_ON = True
         status = return_status.HANDLED
     elif e.signal == signals.disable_aeth:
         logging.info("disable aeth event recieved")
+        logging.info("stopping measurements")
         status = aeth.trans(DISABLED)
-    elif e.signal == signals.start_stop_measurement:
-        if e.payload == 1:
-            if not aeth.start_measurement():
-                aeth.post_fifo(Event(signal=signals.read_data))
-            else:
-                logging.error('FAILED to start measurement. Please check if the tape had run out.')
-                aeth_dev_epics.start_measurement = False
-        else:
-            aeth.stop_measurement()
-            aeth.cancel_events(Event(signal=signals.read_data))
-        aeth_dev_epics.sampling_ON = aeth.is_sampling()
-        status = return_status.HANDLED        
     elif e.signal == signals.read_data:
         logging.info("reading data from AETH")
         try:
+            if not aeth.is_sampling():
+                aeth.start_measurement()
+                if aeth.is_sampling():
+                    aeth_dev_epics.sampling_ON = True
+                    aeth_dev_epics.tape_at_end_ON = not aeth_dev_epics.sampling_ON
+                else:
+                    logging.error('FAILED to start measurement. Please check if the tape had run out.')
+                    aeth_dev_epics.tape_at_end_ON = True
+                    aeth_dev_epics.sampling_ON = False
+            else:
+                aeth_dev_epics.tape_at_end_ON = False
             data = aeth.request_data()
+            logging.info(data)
             update_EPICs_var_with_aeth_data(data)
-            print(data)
             aeth.post_fifo(Event(signal=signals.read_data), period=1, times=1, deferred=True)
             aeth.retry_counter = 10
+            logging.info('reached the end of the read_data signal code')
             status = return_status.HANDLED
-        except serial.serialutil.SerialException:
-            status = aeth.trans(COMM_OFF)
-        except (IndexError, ValueError):
+        except NoNewDataRecieved:
+            logging.info('Waiting for new data to become availble in microAETH')
+            aeth.post_fifo(Event(signal=signals.read_data), period=1, times=1, deferred=True)
+            status = return_status.HANDLED            
+        except (IndexError, ValueError, serial.serialutil.SerialException): 
             if aeth.retry_counter == 0:
                 status = aeth.trans(COMM_OFF)
             else:
                 aeth.retry_counter = aeth.retry_counter - 1
                 aeth.post_fifo(Event(signal=signals.read_data), period=1, times=1, deferred=True)
                 status = return_status.HANDLED
+        except:
+            logging.info("Unexpected error:", sys.exc_info()[0])
+            raise
     elif e.signal == signals.EXIT_SIGNAL:
         logging.info("closing communication to AETH")
-        aeth.close()
+        aeth.cancel_events(Event(signal=signals.read_data))
+        try:
+            aeth.stop_measurement()
+            aeth_dev_epics.sampling_ON = aeth.is_sampling()
+            aeth.close()
+        except IndexError:
+            pass
+        
         #aeth.cancel_events(Event(signal=signals.read_data))
     else:
         aeth.temp.fun = ENABLED
@@ -160,7 +173,12 @@ def update_EPICs_var_with_aeth_data(data):
     '''
     copy all data originating from verbose mode - dual point measurement - 5 wavelengths
     any other data will not fit and will cause a run time error
+    replace empty values with -9999
     '''
+    for index in range(len(data)):
+        if data[index] == '':
+            data[index] = -9999
+            
     aeth_dev_epics.datum_id = data[0]
     aeth_dev_epics.session_id = data[1]
     aeth_dev_epics.data_format_ver = data[2]
@@ -184,65 +202,61 @@ def update_EPICs_var_with_aeth_data(data):
     aeth_dev_epics.sample_temp = data[20]
     aeth_dev_epics.sample_RH = data[21]
     aeth_dev_epics.sample_dewpoint = data[22]
-    aeth_dev_epics.int_pressure = data[21]
-    aeth_dev_epics.int_temp = data[22]
-    aeth_dev_epics.optical_config = data[23]
-    '''
-    aeth_dev_epics.UV_sen1 = data[24]
-    aeth_dev_epics.UV_sen2 = data[25]
-    aeth_dev_epics.UV_ref = data[26]
-    aeth_dev_epics.UV_ATN1 = data[27]
-    aeth_dev_epics.UV_ATN2 = data[28]
-    aeth_dev_epics.UV_K = data[29]
-    aeth_dev_epics.blue_sen1 = data[30]
-    aeth_dev_epics.blue_sen2 = data[31]
-    aeth_dev_epics.blue_ref = data[32]
-    aeth_dev_epics.blue_ATN1 = data[33]
-    aeth_dev_epics.blue_ATN2 = data[34]
-    
-    aeth_dev_epics.blue_K = data[35]
-    aeth_dev_epics.green_sen1 = data[36]
-    aeth_dev_epics.green_sen2 = data[37]
-    aeth_dev_epics.green_ref = data[38]
-    aeth_dev_epics.green_ATN1 = data[39]
-    aeth_dev_epics.green_ATN2 = data[40]
-    aeth_dev_epics.green_K = data[41]
-    aeth_dev_epics.red_sen1 = data[42]
-    aeth_dev_epics.red_sen2 = data[43]
-    aeth_dev_epics.red_ref = data[44]
-    aeth_dev_epics.red_ATN1 = data[45]
-    aeth_dev_epics.red_ATN2 = data[46]
-    aeth_dev_epics.red_K = data[47]
-    aeth_dev_epics.IR_sen1 = data[48]
-    aeth_dev_epics.IR_sen2 = data[49]
-    aeth_dev_epics.IR_ref = data[50]
-    aeth_dev_epics.IR_ATN1 = data[51]
-    aeth_dev_epics.IR_ATN2 = data[52]
-    aeth_dev_epics.IR_K = data[53]
-    aeth_dev_epics.UV_BC1 = data[54]
-    aeth_dev_epics.UV_BC2 = data[55]
-    aeth_dev_epics.UV_BCc = data[56]
-    aeth_dev_epics.blue_BC1 = data[57]
-    aeth_dev_epics.blue_BC2 = data[58]
-    aeth_dev_epics.blue_BCc = data[59]
-    aeth_dev_epics.greeen_BC1 = data[60]
-    aeth_dev_epics.green_BC2 = data[61]
-    aeth_dev_epics.green_BCc = data[62]
-    aeth_dev_epics.red_BC1 = data[63]
-    aeth_dev_epics.red_BC2 = data[64]
-    aeth_dev_epics.red_BCc = data[65]
-    aeth_dev_epics.IR_BC1 = data[66]
-    aeth_dev_epics.IR_BC2 = data[67]
-    aeth_dev_epics.IR_BCc = data[68]
-    '''
+    aeth_dev_epics.int_pressure = data[23]
+    aeth_dev_epics.int_temp = data[24]
+    aeth_dev_epics.optical_config = data[25]
+    aeth_dev_epics.UV_sen1 = data[26]
+    aeth_dev_epics.UV_sen2 = data[27]
+    aeth_dev_epics.UV_ref = data[28]
+    aeth_dev_epics.UV_ATN1 = data[29]
+    aeth_dev_epics.UV_ATN2 = data[30]
+    aeth_dev_epics.UV_K = data[31]
+    aeth_dev_epics.blue_sen1 = data[32]
+    aeth_dev_epics.blue_sen2 = data[33]
+    aeth_dev_epics.blue_ref = data[34]
+    aeth_dev_epics.blue_ATN1 = data[35]
+    aeth_dev_epics.blue_ATN2 = data[36]
+    aeth_dev_epics.blue_K = data[37]
+    aeth_dev_epics.green_sen1 = data[38]
+    aeth_dev_epics.green_sen2 = data[39]
+    aeth_dev_epics.green_ref = data[40]
+    aeth_dev_epics.green_ATN1 = data[41]
+    aeth_dev_epics.green_ATN2 = data[42]
+    aeth_dev_epics.green_K = data[43]
+    aeth_dev_epics.red_sen1 = data[44]
+    aeth_dev_epics.red_sen2 = data[45]
+    aeth_dev_epics.red_ref = data[46]
+    aeth_dev_epics.red_ATN1 = data[47]
+    aeth_dev_epics.red_ATN2 = data[48]
+    aeth_dev_epics.red_K = data[49]
+    aeth_dev_epics.IR_sen1 = data[50]
+    aeth_dev_epics.IR_sen2 = data[51]
+    aeth_dev_epics.IR_ref = data[52]
+    aeth_dev_epics.IR_ATN1 = data[53]
+    aeth_dev_epics.IR_ATN2 = data[54]
+    aeth_dev_epics.IR_K = data[55]
+    aeth_dev_epics.UV_BC1 = data[56]
+    aeth_dev_epics.UV_BC2 = data[57]
+    aeth_dev_epics.UV_BCc = data[58]
+    aeth_dev_epics.blue_BC1 = data[59]
+    aeth_dev_epics.blue_BC2 = data[60]
+    aeth_dev_epics.blue_BCc = data[61]
+    aeth_dev_epics.green_BC1 = data[62]
+    aeth_dev_epics.green_BC2 = data[63]
+    aeth_dev_epics.green_BCc = data[64]
+    aeth_dev_epics.red_BC1 = data[65]
+    aeth_dev_epics.red_BC2 = data[66]
+    aeth_dev_epics.red_BCc = data[67]
+    aeth_dev_epics.IR_BC1 = data[68]
+    aeth_dev_epics.IR_BC2 = data[69]
+    aeth_dev_epics.IR_BCc = data[70]
+
 def on_aeth_enable(value, **kw):
     if value == True:
         aeth.post_fifo(Event(signal=signals.enable_aeth))
     else:
         aeth.post_fifo(Event(signal=signals.disable_aeth))
 
-def on_aeth_start_stop_measurement(value, **kw):
-    aeth.post_fifo(Event(signal=signals.start_stop_measurement, payload=value))
     
 '''
 
@@ -265,7 +279,7 @@ if __name__ == "__main__":
     aeth_dev_epics = epics.Device('aeth:',
                                  attrs=[
                                      'enable', 'comm_ON', 'sampling_ON',
-                                     'start_measurement', 'datum_id', 'session_id',
+                                     'datum_id', 'session_id','tape_at_end_ON'
                                      'data_format_ver', 'firmware_version', 'date_time_GMT',
                                      'timezone_offset', 'gps_lat', 'gps_long', 'gps_speed',
                                      'timebase', 'status', 'battery', 'accel_x', 'accel_y',
@@ -282,12 +296,11 @@ if __name__ == "__main__":
                                  ])
                                  
     aeth_dev_epics.add_callback('enable', on_aeth_enable)
-    aeth_dev_epics.add_callback('start_measurement', on_aeth_start_stop_measurement)
     #aeth_dev_epics.add_callback('set_fan', on_aeth_set_fan)
     #aeth_dev_epics.add_callback('toggle_gain', on_aeth_set_gain)
     #aeth_dev_epics.set_period = 0
 
-    #aeth.live_spy = True
+    aeth.live_spy = True
     aeth.live_trace = True
     aeth.start_at(DISABLED)
     

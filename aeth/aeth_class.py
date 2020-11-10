@@ -13,6 +13,7 @@ import sys
 from miros import ActiveObject
 import serial
 import re
+import time
 
 integration = 5
 
@@ -26,7 +27,24 @@ OK = 0
 log_format = '%(asctime)s %(filename)s: %(message)s'
 logging.basicConfig(format=log_format, level=logging.INFO)
 
+class Error(Exception):
+    '''
+    Base class for other exceptions
+    '''
+    pass
 
+class NoNewDataRecieved(Error):
+    '''
+    This is raised when no new data is available when polling the microAETH
+    '''
+    pass
+
+class FailedCommunication(Error):
+    '''
+    failed communication exception
+    '''
+    pass
+    
 class AETH(ActiveObject):
     '''
     The following methods are the actual interface:
@@ -99,6 +117,9 @@ class AETH(ActiveObject):
 
         status_re = re.findall('[0-9]+', status_str.decode('utf-8'))
 
+        if status_re == []:
+            raise FailedCommunication
+            
         self.first_id = int(status_re[0])
         self.next_id = int(status_re[1])
         self.current_id = int(status_re[2])
@@ -114,7 +135,8 @@ class AETH(ActiveObject):
 
         data = self.ser.readline().decode('utf-8').split(',')[1:-1]
 
-        if int(data[0]) != self.current_id:
+        if int(data[0]) == self.current_id:
+            raise NoNewDataRecieved
             return 0 # no new data present
         else:
             # update the new ID
@@ -142,6 +164,7 @@ class AETH(ActiveObject):
                 if status_text != b'':
                     logging.info(status_text)
                 else:
+                    time.sleep(10)
                     return self.is_sampling() == True
         else:
             return True
@@ -169,8 +192,19 @@ if __name__ == '__main__':
     if not aeth.init_aeth() == OK:
         sys.exit()
     
-    logging.info(aeth.request_data())
-    logging.info(aeth.check_battery())
+    #logging.info(aeth.request_data())
+    #logging.info(aeth.check_battery())
+    logging.info(aeth.is_sampling())
     logging.info(aeth.start_measurement())
+    logging.info(aeth.is_sampling())
+    
+    while True:
+        try:
+            data = aeth.request_data()
+            print(data)
+            break
+        except:
+            time.sleep(1)
+
     logging.info(aeth.stop_measurement())
     aeth.close()
