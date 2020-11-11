@@ -110,7 +110,7 @@ def COMM_ON(aeth, e):
     status = return_status.UNHANDLED
     if e.signal == signals.ENTRY_SIGNAL:
         logging.info("Entered COMM_ON state")
-        aeth.post_fifo(Event(signal=signals.read_data))
+        aeth.post_fifo(Event(signal=signals.read_data_aeth))
         aeth_dev_epics.sampling_ON = aeth.is_sampling()
         aeth_dev_epics.comm_ON = True
         status = return_status.HANDLED
@@ -118,51 +118,60 @@ def COMM_ON(aeth, e):
         logging.info("disable aeth event recieved")
         logging.info("stopping measurements")
         status = aeth.trans(DISABLED)
-    elif e.signal == signals.read_data:
+    elif e.signal == signals.read_data_aeth:
         logging.info("reading data from AETH")
         try:
             if not aeth.is_sampling():
                 aeth.start_measurement()
                 if aeth.is_sampling():
                     aeth_dev_epics.sampling_ON = True
-                    aeth_dev_epics.tape_at_end_ON = not aeth_dev_epics.sampling_ON
+                    #aeth_dev_epics.tape_at_end_ON = not aeth_dev_epics.sampling_ON
                 else:
                     logging.error('FAILED to start measurement. Please check if the tape had run out.')
-                    aeth_dev_epics.tape_at_end_ON = True
+                    #aeth_dev_epics.tape_at_end_ON = True
                     aeth_dev_epics.sampling_ON = False
-            else:
-                aeth_dev_epics.tape_at_end_ON = False
+            #else:
+            #    aeth_dev_epics.tape_at_end_ON = False
             data = aeth.request_data()
-            logging.info(data)
-            update_EPICs_var_with_aeth_data(data)
-            aeth.post_fifo(Event(signal=signals.read_data), period=1, times=1, deferred=True)
-            aeth.retry_counter = 10
+            if not data == 0:
+                logging.info(data)
+                update_EPICs_var_with_aeth_data(data)
+                aeth.retry_counter = 10
+            else:
+                logging.info('Waiting for new data to become availble in microAETH')
+            # for some strange reason thread are accumulating and the only way to clear
+            # the queue is by canceling the deferred events.
+            aeth.cancel_events(Event(signal=signals.read_data_aeth))
+            aeth.post_fifo(Event(signal=signals.read_data_aeth), period=1, times=1, deferred=True)
             logging.info('reached the end of the read_data signal code')
             status = return_status.HANDLED
-        except NoNewDataRecieved:
-            logging.info('Waiting for new data to become availble in microAETH')
-            aeth.post_fifo(Event(signal=signals.read_data), period=1, times=1, deferred=True)
-            status = return_status.HANDLED            
+        #except NoNewDataRecieved:
+        #    logging.info('Waiting for new data to become availble in microAETH')
+        #    aeth.post_fifo(Event(signal=signals.read_data_aeth), period=1, times=1, deferred=True)
+        #    status = return_status.HANDLED            
         except (IndexError, ValueError, serial.serialutil.SerialException): 
             if aeth.retry_counter == 0:
                 status = aeth.trans(COMM_OFF)
             else:
                 aeth.retry_counter = aeth.retry_counter - 1
-                aeth.post_fifo(Event(signal=signals.read_data), period=1, times=1, deferred=True)
+                aeth.post_fifo(Event(signal=signals.read_data_aeth), period=1, times=1, deferred=True)
                 status = return_status.HANDLED
         except:
             logging.info("Unexpected error:", sys.exc_info()[0])
+            aeth.cancel_events(Event(signal=signals.read_data_aeth))
+            aeth.post_fifo(Event(signal=signals.read_data_aeth), period=1, times=1, deferred=True)
+            status = return_status.HANDLED
             raise
     elif e.signal == signals.EXIT_SIGNAL:
         logging.info("closing communication to AETH")
-        aeth.cancel_events(Event(signal=signals.read_data))
+        aeth.cancel_events(Event(signal=signals.read_data_aeth))
         try:
             aeth.stop_measurement()
             aeth_dev_epics.sampling_ON = aeth.is_sampling()
             aeth.close()
         except IndexError:
             pass
-        
+        #status = return_status.HANDLED
         #aeth.cancel_events(Event(signal=signals.read_data))
     else:
         aeth.temp.fun = ENABLED

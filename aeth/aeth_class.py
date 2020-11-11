@@ -136,7 +136,7 @@ class AETH(ActiveObject):
         data = self.ser.readline().decode('utf-8').split(',')[1:-1]
 
         if int(data[0]) == self.current_id:
-            raise NoNewDataRecieved
+            #raise NoNewDataRecieved
             return 0 # no new data present
         else:
             # update the new ID

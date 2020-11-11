@@ -147,6 +147,7 @@ def COMM_ON(opc, e):
             status_data = opc.read_status()
             if not status_data == -1:
                 insert_status_data_into_epics(status_data)
+            opc.cancel_events(Event(signal=signals.read_data))
             opc.post_fifo(Event(signal=signals.read_data), period=opc_dev_epics.set_period, times=1, deferred=True)
             status = return_status.HANDLED
         else:
@@ -226,7 +227,7 @@ if __name__ == "__main__":
               opc_location="the_forest")
 
     opc.live_trace = True
-    # opc.live_spy = True
+    opc.live_spy = True
 
     mqttc = mqtt.Client(client_id=str(np.random.random()),
                         clean_session=True,
@@ -259,9 +260,9 @@ if __name__ == "__main__":
     
     #epics_opc_enable = epics.PV('opc:enable')
     #epics_opc_enable.add_callback(on_opc_enable)
-
-    opc.start_at(DISABLED)
     
+    opc.start_at(DISABLED)
+        
     try:
         while True:
             time.sleep(0.1)
