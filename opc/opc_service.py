@@ -11,7 +11,6 @@
 
 import time
 
-import paho.mqtt.client as mqtt
 from miros import Event
 from miros import spy_on
 from miros import signals
@@ -112,10 +111,6 @@ def COMM_ON(opc, e):
         logging.info("Entered COMM_ON state")
         opc.post_fifo(Event(signal=signals.read_data))
         opc_dev_epics.comm_ON = True
-        #opc.post_fifo(Event(signal=signals.read_data),
-        #              times=0,
-        #              period=1,
-        #              deferred=True)
         status = return_status.HANDLED
     elif e.signal == signals.disable_opc:
         logging.info("disable opc event recieved")
@@ -139,12 +134,12 @@ def COMM_ON(opc, e):
             status = return_status.HANDLED
     elif e.signal == signals.read_data:
         data = opc.read_data()
-        print(data)
-        #data_json_string = json.dumps(data)
+        logging.info(data)
         if not data == -1:
-            #mqttc.publish("opc/data", payload=data_json_string, qos=2)
             insert_data_into_epics(data)
+            logging.info('data inserted into EPICS')
             status_data = opc.read_status()
+            logging.info('status read from instrument')
             if not status_data == -1:
                 insert_status_data_into_epics(status_data)
             opc.cancel_events(Event(signal=signals.read_data))
@@ -189,19 +184,6 @@ def insert_data_into_epics(data):
             ])
 
 
-def on_message(client, userdata, message):
-
-    if message.payload == b'1':
-        opc.post_fifo(Event(signal=signals.enable_opc))
-    elif message.payload == b'0':
-        opc.post_fifo(Event(signal=signals.disable_opc))
-    else:
-        print("doing nothing")
-    return 0
-    # print("Received message '" + str(message.payload) + "' on topic '"
-    #     + message.topic + "' with QoS " + str(message.qos))
-
-
 def on_opc_enable(value, **kw):
     if value == True:
         opc.post_fifo(Event(signal=signals.enable_opc))
@@ -229,19 +211,8 @@ if __name__ == "__main__":
     opc.live_trace = True
     opc.live_spy = True
 
-    mqttc = mqtt.Client(client_id=str(np.random.random()),
-                        clean_session=True,
-                        userdata=None)
-    # opc.mqttc = mqttc
-    
-    host = "localhost"
-    port_num = 1883
-    mqttc.connect_async(host, port=port_num, keepalive=60, bind_address="")
-    mqttc.loop_start()
     time.sleep(0.1)
-    mqttc.subscribe("opc/cmd", qos=2)
-    mqttc.on_message = on_message
-
+   
     # establish EPICS variable connection
     opc_dev_epics = epics.Device('opc:',
                                  attrs=[
@@ -267,10 +238,7 @@ if __name__ == "__main__":
         while True:
             time.sleep(0.1)
     except KeyboardInterrupt:
-        mqttc.loop_stop()
-        mqttc.disconnect()
-        #opc_dev_epics.remove_callback('enable')
-        print("Disconnected from Mosquitto broker")
+        pass
     '''
     opc.establish_comm()
     opc.read_data_from_opc()

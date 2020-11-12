@@ -199,7 +199,7 @@ class OPC(ActiveObject):
 
     def read_status(self):
         '''
-        reading the status of the following parameters - each parameter is 8 bit unsigned byte
+        reading the status of the following parameters - each parameter is 8 bit unsigned
         Fan_ON
         LaserDAC_ON
         FanDACval
@@ -310,7 +310,7 @@ class OPC(ActiveObject):
         '''
         function to read all the hist data, to break up the getHist
         '''
-        logging.info("size of ans" + str(len(ans)))
+        logging.info("size of ans: " + str(len(ans)))
         data = {}
         data['Bin0'] = self.combine_bytes(ans[0], ans[1])
         data['Bin1'] = self.combine_bytes(ans[2], ans[3])

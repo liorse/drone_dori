@@ -1,0 +1,139 @@
+record(bi, "sniffer:comm_ON")
+record(bi, "sniffer:enable")
+{
+	field(DESC, "enable or disable communication with OPC")
+}
+record(ai, "sniffer:CO") 
+{
+	field(DESC,"CO concentration") #description
+	#field(SCAN, "1 second") record update rate
+	#field(PREC, "1") #display precision
+	#field(LINR, "typeJdegC") #conversion spec
+	field(EGU, "ppm") #engineering units
+	#field(HOPR, "100") #highest value on GUI
+	#field(LOPR, "0") #lowest value on GUI
+	#field(HIGH, "65") #High alarm limit
+	#field(HSV, "MINOR") #Severity of "high" alarm
+}
+
+record(ai, "sniffer:NO2")
+{
+	field(DESC,"NO2 concentration") #description
+	field(EGU, "ppm") #engineering units
+}
+
+record(ai, "sniffer:Ox")
+{
+	field(DESC,"Ox concentration") #description
+	field(EGU, "ppm") #engineering units
+}
+
+record(ai, "sniffer:PM1")
+{
+	field(DESC,"PM1 concentration") #description
+	field(EGU, "ug/m3") #engineering units
+}
+
+record(ai, "sniffer:PM10")
+{
+	field(DESC,"PM10 concentration") #description
+	field(EGU, "ug/m3") #engineering units
+}
+
+record(ai, "sniffer:PM2dot5")
+{
+	field(DESC,"PM2.5 concentration") #description
+	field(EGU, "ug/m3") #engineering units
+}
+
+record(ai, "sniffer:SO2")
+{
+	field(DESC,"SO2 concentration") #description
+	field(EGU, "ppm") #engineering units
+}
+
+record(ai, "sniffer:altitude")
+{
+	field(DESC,"altitude of drone") #description
+	field(EGU, "m") #engineering units
+}
+
+record(ai, "sniffer:hdop")
+
+
+record(ai, "sniffer:humidity")
+{
+	field(DESC,"humidity") #description
+	field(EGU, "%") #engineering units
+}
+
+
+record(ai, "sniffer:latitude")
+{
+	field(DESC,"latitude") #description
+	field(EGU, "deg") #engineering units
+}
+
+record(ai, "sniffer:longitude")
+{
+	field(DESC,"latitude") #description
+	field(EGU, "deg") #engineering units
+}
+
+
+record(ai, "sniffer:pressure")
+{
+	field(DESC,"atomopheric pressure") #description
+	field(EGU, "Pascal") #engineering units
+}
+
+record(ai, "sniffer:sateNum")
+
+record(ai, "sniffer:seqeunce")
+{
+	field(DESC,"save data id number") #description
+}
+
+record(stringout, "sniffer:serial")
+{
+	field(DESC,"serial number") #description
+}
+
+record(ai, "sniffer:temperature")
+{
+	field(DESC,"atomopheric temperature") #description
+	field(EGU, "C") #engineering units
+}
+
+record(stringout, "sniffer:utcTime")
+{
+	field(DESC,"UTC time - synchronized by GPS") #description
+}
+
+record(ai, "sniffer:sequence")
+{
+	field(DESC,"datum ID of current sample") #description
+}
+
+#{
+#    "airData": {
+#        "CO(ppm)": 0.5857,
+#        "NO2(ppm)": 0.0076,
+#        "Ox(ppm)": 0.0295,
+#        "PM1.0(ug/m3)": 5,
+#        "PM10(ug/m3)": 6,
+#        "PM2.5(ug/m3)": 6,
+#        "SO2(ppm)": 0.0009
+#    },
+#    "altitude": 17.3662,
+#    "hdop": 99.99,
+#    "humidity": 34.9374,
+#    "latitude": -90,
+#    "longitude": -180,
+#    "pressure": 101118.9781,
+#    "sateNum": 0,
+#    "sequence": 2447,
+#    "serial": "8f9f6532",
+#    "temperature": 24.1291,
+#    "utcTime": "1970-01-01-00-40-49"
+#}
