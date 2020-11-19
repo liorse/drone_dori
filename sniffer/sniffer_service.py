@@ -1,3 +1,4 @@
+
 # SNIFFER is the active object that has the following specifications:
 # 1. It will establish communication with SNIFFER (enter exact model name here)
 # 2. It will fail, it will try again endlessly every X seconds (parameter)
@@ -18,8 +19,8 @@ from miros import ActiveObject
 from miros import return_status
 import logging
 import numpy as np
-#from sniffer_dummy_class import SNIFFER
-from sniffer_class import SNIFFER
+from sniffer_dummy_class import SNIFFER
+#from sniffer_class import SNIFFER
 import json
 import epics
 
