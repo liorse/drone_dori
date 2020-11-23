@@ -18,8 +18,8 @@ from miros import ActiveObject
 from miros import return_status
 import logging
 import numpy as np
-#from opc_dummy_class import OPC
-from opc_class import OPC
+from opc_dummy_class import OPC
+#from opc_class import OPC
 import json
 import epics
 

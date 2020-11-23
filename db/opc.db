@@ -1,37 +1,106 @@
 record(ai, "opc:period")
+{
+	field(DESC,"actual acquisition time") #description
+	field(EGU, "s") #engineering units
+}
 
 record(ai, "opc:Flowrate")
+{
+	field(DESC,"measured flow rate") #description
+	field(EGU, "ml/s") #engineering units
+}
 
 record(ai, "opc:temperature")
+{
+	field(DESC,"ambient temperature") #description
+	field(EGU, "C") #engineering units
+}
 
 record(ai, "opc:humidity")
+{
+	field(DESC,"humidity") #description
+	field(EGU, "%") #engineering units
+}
 
 record(ai, "opc:pm1")
+{
+	field(DESC,"particle conc below 1 microns") #description
+	field(EGU, "ug/m^3") #engineering units
+}
 
 record(ai, "opc:pm2dot5")
+{
+	field(DESC,"particle conc below 2.5 microns") #description
+	field(EGU, "ug/m^3") #engineering units
+}
 
 record(ai, "opc:pm10")
-
+ {
+ 	field(DESC,"particle conc below 10 microns") #description
+ 	field(EGU, "ug/m^3") #engineering units
+ }
+ 
 record(waveform, "opc:bins")
 {
 	field(FTVL, "DOUBLE")
+	field(DESC,"particle coutn per s per bin size") #description
 	field(NELM, 24)
+	field(EGU, "count/s")
 }
 
 record(ai, "opc:laser_status")
+{
+ 	field(DESC,"laser power in arb units") #description
+ 	field(EGU, "arb units") #engineering units
+}
 record(bi, "opc:gain_high_ON")
+{
+ 	field(DESC,"high gain status") #description
+}
 record(bi, "opc:auto_gain_ON")
-record(bi, "opc:comm_ON")
-record(bi, "opc:laser_ON")
-record(bi, "opc:fan_ON")
+{
+ 	field(DESC,"auto gain status") #description
+}
 
+record(bi, "opc:comm_ON")
+{
+ 	field(DESC,"communication status") #description
+}
+record(bi, "opc:laser_ON")
+{
+ 	field(DESC,"laser status") #description
+}
+
+record(bi, "opc:fan_ON")
+{
+ 	field(DESC,"fan status") #description
+}
+
+# control commands
 
 record(bi, "opc:enable")
 {
-	field(DESC, "enable or disable communication with OPC")
+	field(DESC, "enable or disable OPC")
 }
 
 record(ai, "opc:set_period")
+{
+	field(DESC, "set period of acq in seconds")
+	field(EGU, "s") #engineering units
+}
+
 record(bi, "opc:set_laser")
+{
+	field(DESC, "enable or disable laser")
+}
+
 record(bi, "opc:set_fan")
+{
+	field(DESC, "enable or disable fan")
+}
+
 record(bi, "opc:toggle_gain")
+{
+	field(DESC, "change the gain from high to low")
+}
+

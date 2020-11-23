@@ -184,12 +184,14 @@ if __name__ == "__main__":
 
     
     # establish EPICS variable connection
-    sniffer_dev_epics = epics.Device('sniffer:',
-                                 attrs=[
-                                     'comm_ON','enable', 'CO', 'NO2', 'Ox', 'PM1', 'PM10',
-                                     'PM2dot5', 'SO2', 'altitude', 'hdop', 'humidity','latitude', 'longitude', 'pressure',
-                                     'sateNum', 'serial', 'temperature', 'utcTime'
-                                 ])
+    #sniffer_dev_epics = epics.Device('sniffer:',
+    #                             attrs=[
+    #                                 'comm_ON','enable', 'CO', 'NO2', 'Ox', 'PM1', 'PM10',
+    #                                 'PM2dot5', 'SO2', 'altitude', 'hdop', 'humidity','latitude', 'longitude', 'pressure',
+    #                                 'sateNum', 'serial', 'temperature', 'utcTime'
+    #                             ])
+
+    sniffer_dev_epics = epics.Device('sniffer:')
                                  
     sniffer_dev_epics.add_callback('enable', on_sniffer_enable)
     sniffer.start_at(DISABLED)

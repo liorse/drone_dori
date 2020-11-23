@@ -7,73 +7,337 @@ record(bi, "aeth:enable")
 }
 
 record(ai, "aeth:datum_id")
+{
+	field(DESC,"sample ID") #description
+}
+
 record(ai, "aeth:session_id")
 record(ai, "aeth:data_format_ver")
 record(ai, "aeth:firmware_version")
+
 record(stringout, "aeth:date_time_GMT")
 record(ai, "aeth:timezone_offset")
+{
+	field(DESC,"timezone offset") #description
+	field(EGU, "minutes") #engineering units
+}
+
 record(ai, "aeth:gps_lat")
+{
+	field(DESC,"GPS Latitude") #description
+	field(EGU, "deg") #engineering units
+}
 record(ai, "aeth:gps_long")
+{
+	field(DESC,"GPS Longtitude") #description
+	field(EGU, "deg") #engineering units
+}
 record(ai, "aeth:gps_speed")
+{
+	field(DESC,"GPS Speed") #description
+	field(EGU, "km/h") #engineering units
+}
 record(ai, "aeth:timebase")
+{
+	field(DESC,"delay between measurements") #description
+	field(EGU, "s") #engineering units
+}
 record(ai, "aeth:status")
+{
+	field(DESC,"status code - see table") #description
+}
 record(ai, "aeth:battery")
+{
+	field(DESC,"remaining battery") #description
+	field(EGU, "%") #engineering units
+}
 record(ai, "aeth:accel_x")
+{
+	field(DESC,"acceleration X") #description
+}
 record(ai, "aeth:accel_y")
+{
+	field(DESC,"acceleration Y") #description
+}
 record(ai, "aeth:accel_z")
+{
+	field(DESC,"acceleration Z") #description
+}
 record(ai, "aeth:tape_pos")
+{
+	field(DESC,"tape position") #description
+}
 record(ai, "aeth:flow_setpoint")
+{
+	field(DESC,"target flow rate") #description
+	field(EGU, "mL/min") #engineering units
+}
 record(ai, "aeth:flow_total")
+{
+	field(DESC,"measured flow rate") #description
+	field(EGU, "mL/min") #engineering units
+}
 record(ai, "aeth:flow1")
+{
+	field(DESC,"meas flow rate spot 1") #description
+	field(EGU, "mL/min") #engineering units
+}
 record(ai, "aeth:flow2")
+{
+	field(DESC,"meas flow rate spot 2") #description
+	field(EGU, "mL/min") #engineering units
+}
 record(ai, "aeth:sample_temp")
+{
+	field(DESC,"temp at sampling stream") #description
+	field(EGU, "C") #engineering units
+}
 record(ai, "aeth:sample_RH")
+{
+	field(DESC,"humidity at sampling stream") #description
+	field(EGU, "%") #engineering units
+}
 record(ai, "aeth:sample_dewpoint")
+{
+	field(DESC,"dewpoint at sampling stream") #description
+	field(EGU, "C") #engineering units
+}
 record(ai, "aeth:int_pressure")
+{
+	field(DESC,"internal instrument pressure") #description
+	field(EGU, "Pascal") #engineering units
+}
 record(ai, "aeth:int_temp")
+{
+	field(DESC,"internal instrument temperature") #description
+	field(EGU, "C") #engineering units
+}
 record(stringout, "aeth:optical_config")
+{
+	field(DESC,"optical configuration") #description
+}
 record(ai, "aeth:UV_sen1")
+{
+	field(DESC,"optical intensity in UV spot 1") #description
+	field(EGU, "counts") #engineering units
+}
 record(ai, "aeth:UV_sen2")
+{
+	field(DESC,"optical intensity in UV spot 2") #description
+	field(EGU, "counts") #engineering units
+}
 record(ai, "aeth:UV_ref")
+{
+	field(DESC,"optical intensity in UV ref spot") #description
+	field(EGU, "counts") #engineering units
+}
 record(ai, "aeth:UV_ATN1")
+{
+	field(DESC,"calculated atten of UV at spot 1") #description
+	field(EGU, "att_units") #engineering units
+}
 record(ai, "aeth:UV_ATN2")
+{
+	field(DESC,"calculated atten of UV at spot 2") #description
+	field(EGU, "att_units") #engineering units
+}
 record(ai, "aeth:UV_K")
+{
+	field(DESC,"calculated loading compensation for UV") #description
+	field(EGU, "unitless") #engineering units
+}
 record(ai, "aeth:blue_sen1")
+{
+	field(DESC,"optical intensity in BLUE spot 1") #description
+	field(EGU, "counts") #engineering units
+}
 record(ai, "aeth:blue_sen2")
+{
+	field(DESC,"optical intensity in BLUE spot 2") #description
+	field(EGU, "counts") #engineering units
+}
 record(ai, "aeth:blue_ref")
+{
+	field(DESC,"optical intensity in BLUE ref spot") #description
+	field(EGU, "counts") #engineering units
+}
 record(ai, "aeth:blue_ATN1")
+{
+	field(DESC,"calculated atten of BLUE at spot 1") #description
+	field(EGU, "att_units") #engineering units
+}
 record(ai, "aeth:blue_ATN2")
+{
+	field(DESC,"calculated atten of BLUE at spot 2") #description
+	field(EGU, "att_units") #engineering units
+}
 record(ai, "aeth:blue_K")
+{
+	field(DESC,"calculated loading compensation for BLUE") #description
+	field(EGU, "unitless") #engineering units
+}
 record(ai, "aeth:green_sen1")
+{
+	field(DESC,"optical intensity in GREEN spot 1") #description
+	field(EGU, "counts") #engineering units
+}
 record(ai, "aeth:green_sen2")
+{
+	field(DESC,"optical intensity in GREEN spot 1") #description
+	field(EGU, "counts") #engineering units
+}
 record(ai, "aeth:green_ref")
+{
+	field(DESC,"optical intensity in GREEN ref spot") #description
+	field(EGU, "counts") #engineering units
+}
 record(ai, "aeth:green_ATN1")
+{
+	field(DESC,"calculated atten of GREEN at spot 1") #description
+	field(EGU, "att_units") #engineering units
+}
 record(ai, "aeth:green_ATN2")
+{
+	field(DESC,"calculated atten of GREEN at spot 2") #description
+	field(EGU, "att_units") #engineering units
+}
 record(ai, "aeth:green_K")
+{
+	field(DESC,"calc loading compensation for GREEN") #description
+	field(EGU, "unitless") #engineering units
+}
 record(ai, "aeth:red_sen1")
+{
+	field(DESC,"optical intensity in RED spot 1") #description
+	field(EGU, "counts") #engineering units
+}
 record(ai, "aeth:red_sen2")
+{
+	field(DESC,"optical intensity in RED spot 2") #description
+	field(EGU, "counts") #engineering units
+}
 record(ai, "aeth:red_ref")
+{
+	field(DESC,"optical intensity in RED ref spot") #description
+	field(EGU, "counts") #engineering units
+}
 record(ai, "aeth:red_ATN1")
+{
+	field(DESC,"calculated atten of RED at spot 1") #description
+	field(EGU, "att_units") #engineering units
+}
 record(ai, "aeth:red_ATN2")
+{
+	field(DESC,"calculated atten of RED at spot 2") #description
+	field(EGU, "att_units") #engineering units
+}
 record(ai, "aeth:red_K")
+{
+	field(DESC,"calculated loading compensation for RED") #description
+	field(EGU, "unitless") #engineering units
+}
 record(ai, "aeth:IR_sen1")
+{
+	field(DESC,"optical intensity in IR spot 1") #description
+	field(EGU, "counts") #engineering units
+}
 record(ai, "aeth:IR_sen2")
+{
+	field(DESC,"optical intensity in IR spot 2") #description
+	field(EGU, "counts") #engineering units
+}
 record(ai, "aeth:IR_ref")
+{
+	field(DESC,"optical intensity in IR ref spot") #description
+	field(EGU, "counts") #engineering units
+}
 record(ai, "aeth:IR_ATN1")
+{
+	field(DESC,"calculated atten of IR at spot 1") #description
+	field(EGU, "att_units") #engineering units
+}
 record(ai, "aeth:IR_ATN2")
+{
+	field(DESC,"calculated atten of IR at spot 2") #description
+	field(EGU, "att_units") #engineering units
+}
 record(ai, "aeth:IR_K")
+{
+	field(DESC,"calculated loading compensation for IR") #description
+	field(EGU, "unitless") #engineering units
+}
 record(ai, "aeth:UV_BC1")
+{
+	field(DESC,"calculated mass conc for UV at spot 1") #description
+	field(EGU, "ng/m^3") #engineering units
+}
 record(ai, "aeth:UV_BC2")
+{
+	field(DESC,"calculated mass conc for UV at spot 2") #description
+	field(EGU, "ng/m^3") #engineering units
+}
 record(ai, "aeth:UV_BCc")
+{
+	field(DESC,"calculated mass conc for UV at DualSpot") #description
+	field(EGU, "ng/m^3") #engineering units
+}
 record(ai, "aeth:blue_BC1")
+{
+	field(DESC,"calculated mass conc for BLUE at spot 1") #description
+	field(EGU, "ng/m^3") #engineering units
+}
 record(ai, "aeth:blue_BC2")
+{
+	field(DESC,"calculated mass conc for BLUE at spot 2") #description
+	field(EGU, "ng/m^3") #engineering units
+}
 record(ai, "aeth:blue_BCc")
+{
+	field(DESC,"calc mass conc for BLUE at DualSpot") #description
+	field(EGU, "ng/m^3") #engineering units
+}
 record(ai, "aeth:green_BC1")
+{
+	field(DESC,"calculated mass conc for GREEN at spot 1") #description
+	field(EGU, "ng/m^3") #engineering units
+}
 record(ai, "aeth:green_BC2")
+{
+	field(DESC,"calculated mass conc for GREEN at spot 2") #description
+	field(EGU, "ng/m^3") #engineering units
+}
 record(ai, "aeth:green_BCc")
+{
+	field(DESC,"calc mass conc for GREEN at DualSpot") #description
+	field(EGU, "ng/m^3") #engineering units
+}
 record(ai, "aeth:red_BC1")
+{
+	field(DESC,"calculated mass conc for RED at spot 1") #description
+	field(EGU, "ng/m^3") #engineering units
+}
 record(ai, "aeth:red_BC2")
+{
+	field(DESC,"calculated mass conc for RED at spot 2") #description
+	field(EGU, "ng/m^3") #engineering units
+}
 record(ai, "aeth:red_BCc")
+{
+	field(DESC,"calculated mass conc for RED at DualSpot") #description
+	field(EGU, "ng/m^3") #engineering units
+}
 record(ai, "aeth:IR_BC1")
+{
+	field(DESC,"calculated mass conc for IR at spot 1") #description
+	field(EGU, "ng/m^3") #engineering units
+}
 record(ai, "aeth:IR_BC2")
+{
+	field(DESC,"calculated mass conc for IR at spot 2") #description
+	field(EGU, "ng/m^3") #engineering units
+}
 record(ai, "aeth:IR_BCc")
+{
+	field(DESC,"calculated mass conc for IR at DualSpot") #description
+	field(EGU, "ng/m^3") #engineering units
+}
