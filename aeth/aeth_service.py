@@ -260,6 +260,7 @@ def update_EPICs_var_with_aeth_data(data):
     aeth_dev_epics.IR_BC1 = data[68]
     aeth_dev_epics.IR_BC2 = data[69]
     aeth_dev_epics.IR_BCc = data[70]
+    aeth_dev_epics.data_ready = 0 if aeth_dev_epics.data_ready==1 else 1
 
 def on_aeth_enable(value, **kw):
     if value == True:

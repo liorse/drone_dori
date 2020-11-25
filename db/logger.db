@@ -1,0 +1,18 @@
+record(ai, "logger:save_interval")
+{
+	field(DESC,"saving to file interval") #description
+	field(EGU, "s") #engineering units
+	field(INP, "4")
+	field(PREC, "1")
+	field(LOPR, "2")
+	field(HOPR, "100")
+}
+
+record(stringout, "logger:filename")
+
+# control commands
+record(bi, "logger:enable")
+{
+	field(DESC, "enable or disable OPC")
+}
+

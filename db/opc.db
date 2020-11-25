@@ -104,3 +104,7 @@ record(bi, "opc:toggle_gain")
 	field(DESC, "change the gain from high to low")
 }
 
+record(bi, "opc:data_ready")
+{
+	field(DESC, "change means new data")
+}

@@ -162,6 +162,7 @@ def insert_data_into_epics(data):
         sniffer_dev_epics.serial = data['serial']
         sniffer_dev_epics.temperature = data['temperature']
         sniffer_dev_epics.utcTime = data['utcTime']
+        sniffer_dev_epics.data_ready = 0 if sniffer_dev_epics.data_ready==1 else 1
     
 
 def on_sniffer_enable(value, **kw):

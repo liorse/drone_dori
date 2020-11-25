@@ -3,6 +3,10 @@ record(bi, "sniffer:enable")
 {
 	field(DESC, "enable or disable communication with OPC")
 }
+record(bi, "sniffer:data_ready")
+{
+	field(DESC, "change means new data")
+}
 record(ai, "sniffer:CO") 
 {
 	field(DESC,"CO concentration") #description

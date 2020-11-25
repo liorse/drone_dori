@@ -6,6 +6,11 @@ record(bi, "aeth:enable")
 	field(DESC, "enable or disable communication with OPC")
 }
 
+record(bi, "aeth:data_ready")
+{
+	field(DESC, "change means new data")
+}
+
 record(ai, "aeth:datum_id")
 {
 	field(DESC,"sample ID") #description

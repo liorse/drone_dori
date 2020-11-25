@@ -182,6 +182,7 @@ def insert_data_into_epics(data):
             data['Bin18'], data['Bin19'], data['Bin20'], data['Bin21'],
             data['Bin22'], data['Bin23']
             ])
+        opc_dev_epics.data_ready = 0 if opc_dev_epics.data_ready == 1 else 1
 
 
 def on_opc_enable(value, **kw):
