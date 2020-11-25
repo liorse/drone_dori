@@ -19,6 +19,8 @@ import numpy as np
 import json
 import epics
 import pandas as pd
+import os
+from datetime import datetime
 
 OK = 0
 logging.basicConfig(format='%(asctime)s %(message)s',
@@ -31,13 +33,52 @@ class LOGGER(ActiveObject):
     state measurements from all instruments
     '''
 
-    def __init__(self, save_folder='/home/pi/data', save_interval_s=5):
+    def __init__(self, save_folder='/home/pi/data'):
         self.save_folder = save_folder
-        self.save_interval_s = save_interval_s # 5 seconds default interval
         self.thread_save_to_file_id = None
         logging.info("Instantiated Logger class!")
         super().__init__()
+        self.opc_df_array = pd.DataFrame(columns=['period', 'Flowrate'])
+        self.temp_save_interval = 1
+        print(self.opc_df_array)
         
+    def update_opc_dataframe(self):
+        '''
+        update opc local dataframe from EPIC variables upon data_ready signal
+        '''
+        self.opc_df_single = pd.DataFrame.from_dict({'period': [opc_dev_epics.period],
+                                                     'Flowrate': [opc_dev_epics.Flowrate] }) 
+        # append to array dataframe of OPC data
+        self.opc_df_array = self.opc_df_array.append(self.opc_df_single, ignore_index=True)
+
+    def write_to_file(self):
+        '''
+        calculate mean of all different instruments
+        construct a new dataframe
+        append this dataframe to file if it exists
+        report how long this process took in seconds
+        '''
+        self.opc_mean_df = self.opc_df_array.mean().to_frame().T
+        
+        print(self.opc_df_array)
+        print(len(self.opc_df_array))
+        
+        # add the count column
+        self.opc_mean_df.insert(0,'opc_mean_count', [len(self.opc_df_array)])
+        self.opc_mean_df.insert(0,'date_time',[datetime.now().strftime('%Y/%m/%d %H:%M:%S')])
+        # join this frame with other dataframes
+        # to be done
+
+        # write to file
+        self.file_name_and_path = os.path.join(self.save_folder,'test.csv')
+        self.opc_mean_df.to_csv(self.file_name_and_path, 
+                                mode='a', 
+                                header=not os.path.exists(self.file_name_and_path),
+                                index=False)
+
+        # restart the opc array
+        self.opc_df_array = pd.DataFrame(columns=['period', 'Flowrate'])
+                
 @spy_on
 def LOGGER_COMMON_BEHAVIOUR(logger, e):
     status = return_status.UNHANDLED
@@ -72,16 +113,21 @@ def LOGGER_ENABLED(logger, e):
         status = return_status.HANDLED
     elif e.signal == signals.INIT_SIGNAL:
         # setup a recurring signal to keep saving data to file every logger.save_interval_s
+        if logger_dev_epics.save_interval<1 or logger_dev_epics.save_interval>100: # return to default value
+            logger.temp_save_interval = 5
+            logger_dev_epics.save_interval = logger.temp_save_interval
+        else:
+            logger.temp_save_interval = logger_dev_epics.save_interval # return to default value
+            
         
         logger.thread_save_to_file_id = logger.post_fifo(
                                                             Event(signal=signals.SAVE_TO_FILE),
-                                                            period=logger.save_interval_s,
-                                                            deferred=False
+                                                            period=logger.temp_save_interval,
+                                                            deferred=True
                                                         )
         logging.info('created periodic thread id' + str(logger.thread_save_to_file_id))
         status = logger.trans(LOGGER_IDLE)
     elif e.signal == signals.SAVE_INTERVAL_VALUE_UPDATE:
-        logger.save_interval_s = e.payload
         status = logger.trans(LOGGER_ENABLED)
     elif e.signal == signals.EXIT_SIGNAL:
         logging.info('cancelling thread id' + str(logger.thread_save_to_file_id))
@@ -100,9 +146,11 @@ def LOGGER_IDLE(logger, e):
         status = return_status.HANDLED
     elif e.signal == signals.SAVE_TO_FILE:
         logging.info('writing to file')
+        logger.write_to_file()
         status = return_status.HANDLED
     elif e.signal == signals.OPC_DATA_READY:
         logging.info('new OPC data recieved - updating internal dataframe')
+        logger.update_opc_dataframe()
         status = return_status.HANDLED
     elif e.signal == signals.AETH_DATA_READY:
         logging.info('new AETH data recieved - updating internal dataframe')
@@ -116,6 +164,7 @@ def LOGGER_IDLE(logger, e):
     return status
 
 
+
 def on_logger_enable(value, **kw):
     if value == True:
         logger.post_fifo(Event(signal=signals.enable_logger))
@@ -124,7 +173,8 @@ def on_logger_enable(value, **kw):
 
 def on_save_interval_value_change(value, **kw):
     logger.post_fifo(Event(signal=signals.SAVE_INTERVAL_VALUE_UPDATE, payload=value))
-
+        
+  
 def on_opc_data_ready(value, **kw):
     logger.post_lifo(Event(signal=signals.OPC_DATA_READY))
 
@@ -144,13 +194,13 @@ if __name__ == "__main__":
     #                                 'sateNum', 'serial', 'temperature', 'utcTime'
     #                             ])
 
-    logger_dev_epics = epics.Device('logger:')
+    logger_dev_epics = epics.Device('logger:',attrs=['save_interval'])
     opc_dev_epics = epics.Device('opc:')
     aeth_dev_epics = epics.Device('aeth:')
     sniffer_dev_epics = epics.Device('sniffer:')
     
     # set an active object
-    logger = LOGGER(save_interval_s=logger_dev_epics.save_interval)
+    logger = LOGGER()
     logger.live_trace = True
     #logger.live_spy = True
     time.sleep(0.1)
@@ -160,9 +210,12 @@ if __name__ == "__main__":
     opc_dev_epics.add_callback('data_ready', on_opc_data_ready)
     aeth_dev_epics.add_callback('data_ready', on_aeth_data_ready)
     sniffer_dev_epics.add_callback('data_ready', on_sniffer_data_ready)
+
+    save_interval_PV = epics.PV('logger:save_interval')
     
     logger.start_at(LOGGER_DISABLED)
-        
+
+            
     try:
         while True:
             time.sleep(0.1)
