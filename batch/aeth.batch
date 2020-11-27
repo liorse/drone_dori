@@ -1,9 +1,8 @@
 #!/bin/bash
 #SBATCH --job-name=aeth
-#SBATCH --ntasks=1
-#SBATCH --nodes=1
 #SBATCH --nodelist=node01
 #SBATCH --partition=drone_queue
+#SBATCH --oversubscribe
 
 cd ../aeth
 srun python aeth_service.py

@@ -1,9 +1,8 @@
 #!/bin/bash
 #SBATCH --job-name=logger
-#SBATCH --ntasks=1
-#SBATCH --nodes=1
 #SBATCH --nodelist=node01
 #SBATCH --partition=drone_queue
+#SBATCH --oversubscribe
 
 cd ../logger
 srun python logger_csv_service.py

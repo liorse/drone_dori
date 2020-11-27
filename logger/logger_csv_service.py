@@ -33,7 +33,7 @@ class LOGGER(ActiveObject):
     state measurements from all instruments
     '''
 
-    def __init__(self, save_folder='/home/pi/data'):
+    def __init__(self, save_folder='/home/liors/data'):
         self.save_folder = save_folder
         self.thread_save_to_file_id = None
         logging.info("Instantiated Logger class!")

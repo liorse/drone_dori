@@ -1,9 +1,8 @@
 #!/bin/bash
 #SBATCH --job-name=softIoc
-#SBATCH --ntasks=1
-#SBATCH --nodes=1
 #SBATCH --nodelist=node01
 #SBATCH --partition=drone_queue
+#SBATCH --oversubscribe
 
 cd ../db
 srun softIoc -S -d logger.db -d opc.db -d aeth.db -d sniffer.db
