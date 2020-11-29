@@ -1,0 +1,8 @@
+#!/bin/bash
+#SBATCH --job-name=mariadb
+#SBATCH --nodelist=node01
+#SBATCH --partition=drone_queue
+#SBATCH --oversubscribe
+
+cd /home/pi/Apps/phoebus/services/archive-engine/target 
+srun java -jar service-archive-engine-4.6.4-SNAPSHOT.jar -engine Drone
