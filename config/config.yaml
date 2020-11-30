@@ -1,0 +1,11 @@
+logger:
+    opc_PVs: ['pm1', 'pm2dot5', 'pm10', 'temperature', 'humidity', 'Flowrate', 'period', 'gain_high_ON', 'laser_status']
+    opc_array_PV: bins
+    aeth_PVs: []
+    sniffer_PVs: []
+    save_folder: '/home/pi/data'
+    interval_bewteen_save_s: 5
+    project_name: 'test'
+    save_opc_bool: True
+    save_aeth_bool: True    
+    save_sniffer: True
