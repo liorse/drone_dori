@@ -63,6 +63,10 @@ record(ai, "sniffer:altitude")
 }
 
 record(ai, "sniffer:hdop")
+{
+	field(DESC,"Unknown") #description
+	field(EGU, "None") #engineering units
+}
 
 
 record(ai, "sniffer:humidity")
@@ -92,6 +96,10 @@ record(ai, "sniffer:pressure")
 }
 
 record(ai, "sniffer:sateNum")
+{
+	field(DESC,"Unknown") #description
+	field(EGU, "None") #engineering units
+}
 
 record(ai, "sniffer:seqeunce")
 {
@@ -117,6 +125,7 @@ record(stringout, "sniffer:utcTime")
 record(ai, "sniffer:sequence")
 {
 	field(DESC,"datum ID of current sample") #description
+	field(EGU, "None") #engineering units
 }
 
 #{

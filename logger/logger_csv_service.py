@@ -33,7 +33,7 @@ class LOGGER(ActiveObject):
     LOGGER class will include methods for updating its local 
     state measurements from all instruments
     '''
-    def __init__(self, config_data, opc_dev_epics, aeth_dev_epics):
+    def __init__(self, config_data, opc_dev_epics, aeth_dev_epics, sniffer_dev_epics):
 
         logging.info("Instantiated Logger class!")
         self.config_data = config_data
@@ -41,11 +41,32 @@ class LOGGER(ActiveObject):
         self.thread_save_to_file_id = None
         self.temp_save_interval = self.config_data['logger']['interval_between_save_s']
 
+        # Sniffer initializatoin
+        self.sniffer_dev_epics = sniffer_dev_epics
+        self.list_sniffer_PVs = self.config_data['logger']['sniffer_PVs']
+        self.save_sniffer_bool = self.config_data['logger']['save_sniffer_bool']
+        
         # AETH initialization
         self.aeth_dev_epics = aeth_dev_epics
         self.list_aeth_PVs = self.config_data['logger']['aeth_PVs']
         self.save_aeth_bool = self.config_data['logger']['save_aeth_bool']
-       
+
+        # initialize sniffer meta file
+        self.sniffer_meta=[]
+        self.sniffer_meta.append('None') # the counts units for aeth records
+        for pv_name in self.list_sniffer_PVs:
+            self.pv_type = self.sniffer_dev_epics.PV(pv_name).type
+            if self.pv_type == 'time_double':
+                self.sniffer_meta.append(self.sniffer_dev_epics.get(pv_name + '.EGU'))
+                # opc_device.PV('pm1').get_ctrlvars()  to get units in another method
+            elif self.pv_type == 'time_enum':
+                self.sniffer_meta.append("BOOL")
+            else:
+                self.sniffer_meta.append("None")
+
+        sniffer_header = ['sniffer_' + sniffer_pv_name for sniffer_pv_name in self.list_sniffer_PVs]
+        self.sniffer_df_array = pd.DataFrame(columns=sniffer_header)
+        
         # intialize aeth meta file                
         self.aeth_meta=[]
         self.aeth_meta.append('None') # the counts units for aeth records
@@ -61,7 +82,6 @@ class LOGGER(ActiveObject):
 
         
         aeth_header = ['aeth_' + aeth_pv_name for aeth_pv_name in self.list_aeth_PVs]
-        print(aeth_header)
         self.aeth_df_array = pd.DataFrame(columns=aeth_header)
         
         # OPC initialization
@@ -99,6 +119,20 @@ class LOGGER(ActiveObject):
         #self.opc_df_array = pd.DataFrame(columns=self.list_opc_PVs)
             
         super().__init__()
+
+
+    def update_sniffer_dataframe(self):
+        '''
+        update sniffer local dataframe from EPIC variables upon data_ready signal
+        '''
+        self.sniffer_dict_single = dict()
+        for pv_name in self.list_sniffer_PVs:
+            self.sniffer_dict_single['sniffer_' + pv_name] = [self.sniffer_dev_epics.get(pv_name)]
+        
+        self.sniffer_df_single = pd.DataFrame.from_dict(self.sniffer_dict_single) 
+        # append to array dataframe of sniffer data
+        self.sniffer_df_array = self.sniffer_df_array.append(self.sniffer_df_single)#, ignore_index=True)
+    
                 
     def update_aeth_dataframe(self):
         '''
@@ -139,6 +173,18 @@ class LOGGER(ActiveObject):
         append this dataframe to file if it exists
         report how long this process took in seconds
         '''
+
+        ##########################################
+        # sniffer start of analysis
+        ##########################################
+        self.sniffer_mean_df = self.sniffer_df_array.mean().to_frame().T
+        self.sniffer_mean_df.insert(0,'sniffer_mean_count', [len(self.sniffer_df_array)])
+        
+        # add meta data of aeth
+        self.sniffer_mean_df.columns = pd.MultiIndex.from_tuples(zip(self.sniffer_mean_df.columns, self.sniffer_meta))
+        
+        
+
         ##########################################
         # OPC start of analysis
         ##########################################
@@ -147,8 +193,6 @@ class LOGGER(ActiveObject):
         # initialize date and tiem dataframe
         self.concat_df = pd.DataFrame({'date_time':[datetime.now().strftime('%Y/%m/%d %H:%M:%S')]})
         self.concat_df.columns = pd.MultiIndex.from_tuples(zip(self.concat_df.columns, ['None']))
-        
-        print(self.opc_df_array)
                
         # add the count column
         self.opc_mean_df.insert(0,'opc_mean_count', [len(self.opc_df_array)])
@@ -165,19 +209,24 @@ class LOGGER(ActiveObject):
         
         # add meta data of aeth
         self.aeth_mean_df.columns = pd.MultiIndex.from_tuples(zip(self.aeth_mean_df.columns, self.aeth_meta))
-        print(self.aeth_df_array)
         
         # join this frame with other dataframes
         # to be done
 
         # write to file
         self.file_name_and_path = os.path.join(self.save_folder,'test.csv')
-        if self.save_opc_bool or self.save_aeth_bool:
+        if self.save_opc_bool or self.save_aeth_bool or self.save_sniffer_bool:
  
             if self.save_opc_bool:
                 self.concat_df = pd.concat([self.concat_df, self.opc_mean_df], axis=1, sort=False)
+                logging.info(self.opc_df_array)
             if self.save_aeth_bool:
-                self.concat_df = pd.concat([self.concat_df, self.aeth_mean_df], axis=1, sort=False)                        
+                self.concat_df = pd.concat([self.concat_df, self.aeth_mean_df], axis=1, sort=False)
+                logging.info(self.aeth_df_array)
+            if self.save_sniffer_bool:
+                self.concat_df = pd.concat([self.concat_df, self.sniffer_mean_df], axis=1, sort=False)          
+                logging.info(self.sniffer_df_array)
+                
             # concat df
             #self.concat_df = pd.concat([self.opc_mean_df, self.aeth_mean_df], axis=1, sort=False)
             self.concat_df.to_csv(self.file_name_and_path, 
@@ -192,6 +241,11 @@ class LOGGER(ActiveObject):
         # restart the aeth array
         aeth_header = ['aeth_' + aeth_pv_name for aeth_pv_name in self.list_aeth_PVs]
         self.aeth_df_array = pd.DataFrame(columns=aeth_header)
+
+        # restart the sniffer array
+        sniffer_header = ['sniffer_' + sniffer_pv_name for sniffer_pv_name in self.list_sniffer_PVs]
+        self.sniffer_df_array = pd.DataFrame(columns=sniffer_header)
+                
                 
                 
 @spy_on
@@ -273,6 +327,7 @@ def LOGGER_IDLE(logger, e):
         status = return_status.HANDLED
     elif e.signal == signals.SNIFFER_DATA_READY:
         logging.info('new SNIFFER data recieved - updating internal dataframe')
+        logger.update_sniffer_dataframe()
         status = return_status.HANDLED
     else:
         logger.temp.fun = LOGGER_ENABLED
@@ -320,7 +375,7 @@ if __name__ == "__main__":
     with open('../config/config.yaml') as file:
         config_data = yaml.load(file, Loader=yaml.FullLoader)
         
-    logger = LOGGER(config_data, opc_dev_epics, aeth_dev_epics)
+    logger = LOGGER(config_data, opc_dev_epics, aeth_dev_epics, sniffer_dev_epics)
     logger.live_trace = True
     #logger.live_spy = True
     time.sleep(0.1)
