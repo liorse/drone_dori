@@ -177,14 +177,23 @@ class LOGGER(ActiveObject):
         ##########################################
         # sniffer start of analysis
         ##########################################
-        self.sniffer_mean_df = self.sniffer_df_array.mean().to_frame().T
-        self.sniffer_mean_df.insert(0,'sniffer_mean_count', [len(self.sniffer_df_array)])
+        if 'sniffer_utcTime' in self.sniffer_df_array:
+            # get the original column of utc time, add 1 to compensate for adding the sniffer count at the beginning
+            self.col_location = self.sniffer_df_array.columns.get_loc('sniffer_utcTime') + 1
+            # exclude the utc column from the mean operation
+            self.sniffer_mean_df = self.sniffer_df_array.loc[:,self.sniffer_df_array.columns != 'sniffer_utcTime'].mean().to_frame().T
+            # insert the count number of the mean
+            self.sniffer_mean_df.insert(0,'sniffer_mean_count', [len(self.sniffer_df_array)])
+            # reinsert the date and time in to the correct column position to maintain its position relative to the meta data
+            self.sniffer_mean_df.insert(self.col_location,'sniffer_utcTime', [self.sniffer_dev_epics.get('utcTime')])
+        else:
+            self.sniffer_mean_df = self.sniffer_df_array.mean().to_frame().T
+            self.sniffer_mean_df.insert(0,'sniffer_mean_count', [len(self.sniffer_df_array)])
+        
         
         # add meta data of aeth
         self.sniffer_mean_df.columns = pd.MultiIndex.from_tuples(zip(self.sniffer_mean_df.columns, self.sniffer_meta))
         
-        
-
         ##########################################
         # OPC start of analysis
         ##########################################
@@ -226,6 +235,7 @@ class LOGGER(ActiveObject):
             if self.save_sniffer_bool:
                 self.concat_df = pd.concat([self.concat_df, self.sniffer_mean_df], axis=1, sort=False)          
                 logging.info(self.sniffer_df_array)
+                logging.info(self.sniffer_mean_df)
                 
             # concat df
             #self.concat_df = pd.concat([self.opc_mean_df, self.aeth_mean_df], axis=1, sort=False)

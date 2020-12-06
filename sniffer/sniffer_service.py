@@ -19,8 +19,8 @@ from miros import ActiveObject
 from miros import return_status
 import logging
 import numpy as np
-from sniffer_dummy_class import SNIFFER
-#from sniffer_class import SNIFFER
+#from sniffer_dummy_class import SNIFFER
+from sniffer_class import SNIFFER
 import json
 import epics
 
