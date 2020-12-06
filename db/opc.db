@@ -51,7 +51,7 @@ record(waveform, "opc:bins")
 record(ai, "opc:laser_status")
 {
  	field(DESC,"laser power in arb units") #description
- 	field(EGU, "arb units") #engineering units
+ 	field(EGU, "None") #engineering units
 }
 record(bi, "opc:gain_high_ON")
 {

@@ -14,6 +14,7 @@ record(bi, "aeth:data_ready")
 record(ai, "aeth:datum_id")
 {
 	field(DESC,"sample ID") #description
+	field(EGU, "None") #engineering units
 }
 
 record(ai, "aeth:session_id")
@@ -50,6 +51,7 @@ record(ai, "aeth:timebase")
 record(ai, "aeth:status")
 {
 	field(DESC,"status code - see table") #description
+	field(EGU, "None") #engineering units
 }
 record(ai, "aeth:battery")
 {
@@ -59,18 +61,22 @@ record(ai, "aeth:battery")
 record(ai, "aeth:accel_x")
 {
 	field(DESC,"acceleration X") #description
+	field(EGU, "None") #engineering units
 }
 record(ai, "aeth:accel_y")
 {
 	field(DESC,"acceleration Y") #description
+	field(EGU, "None") #engineering units
 }
 record(ai, "aeth:accel_z")
 {
 	field(DESC,"acceleration Z") #description
+	field(EGU, "None") #engineering units
 }
 record(ai, "aeth:tape_pos")
 {
 	field(DESC,"tape position") #description
+	field(EGU, "None") #engineering units
 }
 record(ai, "aeth:flow_setpoint")
 {

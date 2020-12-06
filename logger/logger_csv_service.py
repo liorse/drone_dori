@@ -21,6 +21,7 @@ import epics
 import pandas as pd
 import os
 from datetime import datetime
+import yaml
 
 OK = 0
 logging.basicConfig(format='%(asctime)s %(message)s',
@@ -32,25 +33,106 @@ class LOGGER(ActiveObject):
     LOGGER class will include methods for updating its local 
     state measurements from all instruments
     '''
+    def __init__(self, config_data, opc_dev_epics, aeth_dev_epics):
 
-    def __init__(self, save_folder='/home/pi/data'):
-        self.save_folder = save_folder
-        self.thread_save_to_file_id = None
         logging.info("Instantiated Logger class!")
-        super().__init__()
-        self.opc_df_array = pd.DataFrame(columns=['period', 'Flowrate'])
-        self.temp_save_interval = 1
-        print(self.opc_df_array)
+        self.config_data = config_data
+        self.save_folder = self.config_data['logger']['save_folder']
+        self.thread_save_to_file_id = None
+        self.temp_save_interval = self.config_data['logger']['interval_between_save_s']
+
+        # AETH initialization
+        self.aeth_dev_epics = aeth_dev_epics
+        self.list_aeth_PVs = self.config_data['logger']['aeth_PVs']
+        self.save_aeth_bool = self.config_data['logger']['save_aeth_bool']
+       
+        # intialize aeth meta file                
+        self.aeth_meta=[]
+        self.aeth_meta.append('None') # the counts units for aeth records
+        for pv_name in self.list_aeth_PVs:
+            self.pv_type = self.aeth_dev_epics.PV(pv_name).type
+            if self.pv_type == 'time_double':
+                self.aeth_meta.append(self.aeth_dev_epics.get(pv_name + '.EGU'))
+                # opc_device.PV('pm1').get_ctrlvars()  to get units in another method
+            elif self.pv_type == 'time_enum':
+                self.aeth_meta.append("BOOL")
+            else:
+                self.aeth_meta.append("None")
+
         
+        aeth_header = ['aeth_' + aeth_pv_name for aeth_pv_name in self.list_aeth_PVs]
+        print(aeth_header)
+        self.aeth_df_array = pd.DataFrame(columns=aeth_header)
+        
+        # OPC initialization
+        self.opc_dev_epics = opc_dev_epics
+        self.list_opc_PVs = self.config_data['logger']['opc_PVs']
+        
+        self.save_opc_bool = self.config_data['logger']['save_opc_bool']
+        self.bins_opc_PV_name = self.config_data['logger']['opc_array_PV']
+        self.bins_names = ['0.35-0.46_um', '0.46-0.66_um', '0.66-1.0_um', '1.0-1.3_um', '1.3-1.7_um', 
+                           '1.7-2.3_um', '2.3-3.0_um', '3.0-4.0_um', '4.0-5.2_um', '5.2-6.5_um', '6.5-8.0_um',
+                           '8.0-10.0_um', '10.0-12.0_um', '12.0-14.0_um', '14.0-16.0_um', '16.0-18.0_um', '18.0-20.0_um',
+                           '20.0-22.0_um', '22.0-25.0_um', '25.0-28.0_um', '28.0-31.0_um', '31.0-34.0_um', '34.0-37.0_um',
+                           '37.0_-40.0um']
+        self.bins_names = ['opc_' + bin_name for bin_name in self.bins_names]
+        
+        # intialize opc meta file                
+        self.opc_meta=[]
+        self.opc_meta.append('None') # the date and time units
+        self.opc_meta.append('None') # the counts units
+        for pv_name in self.list_opc_PVs:
+            self.pv_type = self.opc_dev_epics.PV(pv_name).type
+            if self.pv_type == 'time_double':
+                self.opc_meta.append(self.opc_dev_epics.get(pv_name + '.EGU'))
+                # opc_device.PV('pm1').get_ctrlvars()  to get units in another method
+            elif self.pv_type == 'time_enum':
+                self.opc_meta.append("BOOL")
+            else:
+                self.opc_meta.append("None")
+
+        for bins_name in self.bins_names:
+            self.opc_meta.append(self.opc_dev_epics.get('bins.EGU'))
+
+        opc_header = ['opc_' + opc_pv_name for opc_pv_name in self.list_opc_PVs]
+        self.opc_df_array = pd.DataFrame(columns=opc_header + self.bins_names)
+
+        #self.opc_df_array = pd.DataFrame(columns=self.list_opc_PVs)
+            
+        super().__init__()
+                
+    def update_aeth_dataframe(self):
+        '''
+        update aeth local dataframe from EPIC variables upon data_ready signal
+        '''
+        self.aeth_dict_single = dict()
+        for pv_name in self.list_aeth_PVs:
+            self.aeth_dict_single['aeth_' + pv_name] = [self.aeth_dev_epics.get(pv_name)]
+
+        
+        self.aeth_df_single = pd.DataFrame.from_dict(self.aeth_dict_single) 
+        # append to array dataframe of aeth data
+        self.aeth_df_array = self.aeth_df_array.append(self.aeth_df_single)#, ignore_index=True)
+        
+    
     def update_opc_dataframe(self):
         '''
         update opc local dataframe from EPIC variables upon data_ready signal
         '''
-        self.opc_df_single = pd.DataFrame.from_dict({'period': [opc_dev_epics.period],
-                                                     'Flowrate': [opc_dev_epics.Flowrate] }) 
-        # append to array dataframe of OPC data
-        self.opc_df_array = self.opc_df_array.append(self.opc_df_single, ignore_index=True)
+        self.opc_dict_single = dict()
+        for pv_name in self.list_opc_PVs:
+            self.opc_dict_single['opc_' + pv_name] = [self.opc_dev_epics.get(pv_name)]
 
+        self.opc_bins = self.opc_dev_epics.get(self.bins_opc_PV_name)
+
+        for i, bin_value in enumerate(self.opc_bins):
+            self.opc_dict_single[self.bins_names[i]] = bin_value
+            
+        
+        self.opc_df_single = pd.DataFrame.from_dict(self.opc_dict_single) 
+        # append to array dataframe of OPC data
+        self.opc_df_array = self.opc_df_array.append(self.opc_df_single)#, ignore_index=True)
+        
     def write_to_file(self):
         '''
         calculate mean of all different instruments
@@ -61,23 +143,44 @@ class LOGGER(ActiveObject):
         self.opc_mean_df = self.opc_df_array.mean().to_frame().T
         
         print(self.opc_df_array)
-        print(len(self.opc_df_array))
         
         # add the count column
         self.opc_mean_df.insert(0,'opc_mean_count', [len(self.opc_df_array)])
         self.opc_mean_df.insert(0,'date_time',[datetime.now().strftime('%Y/%m/%d %H:%M:%S')])
+
+        # add meta data of measurement
+        self.opc_mean_df.columns = pd.MultiIndex.from_tuples(zip(self.opc_mean_df.columns, self.opc_meta))
+
+        ##########################################
+        # AETH start of analysis
+        ##########################################
+        self.aeth_mean_df = self.aeth_df_array.mean().to_frame().T
+        self.aeth_mean_df.insert(0,'aeth_mean_count', [len(self.aeth_df_array)])
+        
+        # add meta data of aeth
+        self.aeth_mean_df.columns = pd.MultiIndex.from_tuples(zip(self.aeth_mean_df.columns, self.aeth_meta))
+        print(self.aeth_df_array)
+        
         # join this frame with other dataframes
         # to be done
 
         # write to file
         self.file_name_and_path = os.path.join(self.save_folder,'test.csv')
-        self.opc_mean_df.to_csv(self.file_name_and_path, 
+        # concat df
+        self.concat_df = pd.concat([self.opc_mean_df, self.aeth_mean_df], axis=1, sort=False)
+        self.concat_df.to_csv(self.file_name_and_path, 
                                 mode='a', 
                                 header=not os.path.exists(self.file_name_and_path),
                                 index=False)
 
         # restart the opc array
-        self.opc_df_array = pd.DataFrame(columns=['period', 'Flowrate'])
+        opc_header = ['opc_' + opc_pv_name for opc_pv_name in self.list_opc_PVs]
+        self.opc_df_array = pd.DataFrame(columns=opc_header + self.bins_names)
+
+        # restart the aeth array
+        aeth_header = ['aeth_' + aeth_pv_name for aeth_pv_name in self.list_aeth_PVs]
+        self.aeth_df_array = pd.DataFrame(columns=aeth_header)
+                
                 
 @spy_on
 def LOGGER_COMMON_BEHAVIOUR(logger, e):
@@ -154,6 +257,7 @@ def LOGGER_IDLE(logger, e):
         status = return_status.HANDLED
     elif e.signal == signals.AETH_DATA_READY:
         logging.info('new AETH data recieved - updating internal dataframe')
+        logger.update_aeth_dataframe()
         status = return_status.HANDLED
     elif e.signal == signals.SNIFFER_DATA_READY:
         logging.info('new SNIFFER data recieved - updating internal dataframe')
@@ -200,7 +304,11 @@ if __name__ == "__main__":
     sniffer_dev_epics = epics.Device('sniffer:')
     
     # set an active object
-    logger = LOGGER()
+    # read config file and send to logger object
+    with open('../config/config.yaml') as file:
+        config_data = yaml.load(file, Loader=yaml.FullLoader)
+        
+    logger = LOGGER(config_data, opc_dev_epics, aeth_dev_epics)
     logger.live_trace = True
     #logger.live_spy = True
     time.sleep(0.1)

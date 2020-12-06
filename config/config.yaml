@@ -1,11 +1,25 @@
 logger:
-    opc_PVs: ['pm1', 'pm2dot5', 'pm10', 'temperature', 'humidity', 'Flowrate', 'period', 'gain_high_ON', 'laser_status']
-    opc_array_PV: bins
-    aeth_PVs: []
+    opc_PVs: ['pm1', 'pm2dot5', 'pm10', 'temperature', 'humidity', 'Flowrate', 'period', 'laser_status', 'gain_high_ON']
+    opc_array_PV: 'bins'
+    aeth_PVs: ['accel_x', 'accel_y', 'accel_z', 'battery', 'blue_ATN1', 'blue_ATN2', 'blue_BC1', 'blue_BC2',
+               'blue_BCc', 'blue_K', 'blue_ref', 'blue_sen1', 'blue_sen2', 'date_time_GMT', 'datum_id',
+               'flow1', 'flow2', 'flow_setpoint', 'flow_total', 'gps_lat', 'gps_long', 'gps_speed',
+               'green_ATN1', 'green_ATN2', 'green_BC1', 'green_BC2', 'green_BCc', 'green_K', 'green_ref',
+               'green_sen1', 'green_sen2', 'int_pressure', 'int_temp', 'IR_ATN1', 'IR_ATN2','IR_BC1',
+               'IR_BC2', 'IR_BCc', 'IR_K', 'IR_ref', 'IR_sen1', 'IR_sen2', 'optical_config', 'red_ATN1',
+               'red_ATN2', 'red_BC1', 'red_BC2', 'red_BCc', 'red_K', 'red_ref', 'red_sen1', 'red_sen2',
+               'sample_dewpoint', 'sample_RH', 'sample_temp', 'status','tape_pos', 'timebase', 'timezone_offset',
+               'UV_ATN1', 'UV_ATN2', 'UV_BC1', 'UV_BC2', 'UV_BCc', 'UV_K', 'UV_ref', 'UV_sen1', 'UV_sen2']
+    #aeth_PVs: ['accel_x', 'accel_y', 'accel_z', 'battery', 'blue_ATN1', 'blue_ATN2', 'blue_BC1', 'blue_BC2',
+    #           'blue_BCc', 'blue_K', 'blue_ref', 'blue_sen1', 'blue_sen2', 'date_time_GMT', 'datum_id',
+    #           'flow1', 'flow2', 'flow_setpoint', 'flow_total', 'gps_lat', 'gps_long', 'gps_speed',
+    #           'green_ATN1', 'green_ATN2', 'green_BC1', 'green_BC2', 'green_BCc', 'green_K', 'green_ref',
+    #           'green_sen1', 'green_sen1', 'int_pressure', 'int_temp', 'IR_ATN1', 'IR_ATN2','IR_BC1',
+    #           'IR_BC2', 'IR_BCc', 'IR_K', 'IR_ref', 'IR_sen1', 'IR_sen2', 'optical_config', 'red_ATN1' ]
     sniffer_PVs: []
     save_folder: '/home/pi/data'
-    interval_bewteen_save_s: 5
+    interval_between_save_s: 5 # time in seconds to gather and mean results
     project_name: 'test'
-    save_opc_bool: True
-    save_aeth_bool: True    
-    save_sniffer: True
+    save_opc_bool: True # save opc data to file
+    save_aeth_bool: True # save MICROAETH data to file   
+    save_sniffer_bool: True # save sniffer data to file
