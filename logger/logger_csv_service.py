@@ -79,7 +79,6 @@ class LOGGER(ActiveObject):
         
         # intialize opc meta file                
         self.opc_meta=[]
-        self.opc_meta.append('None') # the date and time units
         self.opc_meta.append('None') # the counts units
         for pv_name in self.list_opc_PVs:
             self.pv_type = self.opc_dev_epics.PV(pv_name).type
@@ -140,13 +139,20 @@ class LOGGER(ActiveObject):
         append this dataframe to file if it exists
         report how long this process took in seconds
         '''
+        ##########################################
+        # OPC start of analysis
+        ##########################################
         self.opc_mean_df = self.opc_df_array.mean().to_frame().T
+
+        # initialize date and tiem dataframe
+        self.concat_df = pd.DataFrame({'date_time':[datetime.now().strftime('%Y/%m/%d %H:%M:%S')]})
+        self.concat_df.columns = pd.MultiIndex.from_tuples(zip(self.concat_df.columns, ['None']))
         
         print(self.opc_df_array)
-        
+               
         # add the count column
         self.opc_mean_df.insert(0,'opc_mean_count', [len(self.opc_df_array)])
-        self.opc_mean_df.insert(0,'date_time',[datetime.now().strftime('%Y/%m/%d %H:%M:%S')])
+        #self.opc_mean_df.insert(0,'date_time',[datetime.now().strftime('%Y/%m/%d %H:%M:%S')])
 
         # add meta data of measurement
         self.opc_mean_df.columns = pd.MultiIndex.from_tuples(zip(self.opc_mean_df.columns, self.opc_meta))
@@ -166,12 +172,18 @@ class LOGGER(ActiveObject):
 
         # write to file
         self.file_name_and_path = os.path.join(self.save_folder,'test.csv')
-        # concat df
-        self.concat_df = pd.concat([self.opc_mean_df, self.aeth_mean_df], axis=1, sort=False)
-        self.concat_df.to_csv(self.file_name_and_path, 
-                                mode='a', 
-                                header=not os.path.exists(self.file_name_and_path),
-                                index=False)
+        if self.save_opc_bool or self.save_aeth_bool:
+ 
+            if self.save_opc_bool:
+                self.concat_df = pd.concat([self.concat_df, self.opc_mean_df], axis=1, sort=False)
+            if self.save_aeth_bool:
+                self.concat_df = pd.concat([self.concat_df, self.aeth_mean_df], axis=1, sort=False)                        
+            # concat df
+            #self.concat_df = pd.concat([self.opc_mean_df, self.aeth_mean_df], axis=1, sort=False)
+            self.concat_df.to_csv(self.file_name_and_path, 
+                                    mode='a', 
+                                    header=not os.path.exists(self.file_name_and_path),
+                                    index=False)
 
         # restart the opc array
         opc_header = ['opc_' + opc_pv_name for opc_pv_name in self.list_opc_PVs]
