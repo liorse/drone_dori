@@ -213,9 +213,19 @@ class LOGGER(ActiveObject):
         ##########################################
         # AETH start of analysis
         ##########################################
-        self.aeth_mean_df = self.aeth_df_array.mean().to_frame().T
-        self.aeth_mean_df.insert(0,'aeth_mean_count', [len(self.aeth_df_array)])
-        
+        if 'aeth_date_time_GMT' in self.aeth_df_array:
+            # get the original column of utc time, add 1 to compensate for adding the aeth count at the beginning
+            self.col_location = self.aeth_df_array.columns.get_loc('aeth_date_time_GMT') + 1
+            # exclude the utc column from the mean operation
+            self.aeth_mean_df = self.aeth_df_array.loc[:,self.aeth_df_array.columns != 'aeth_date_time_GMT'].mean().to_frame().T
+            # insert the count number of the mean
+            self.aeth_mean_df.insert(0,'aeth_mean_count', [len(self.aeth_df_array)])
+            # reinsert the date and time in to the correct column position to maintain its position relative to the meta data
+            self.aeth_mean_df.insert(self.col_location,'aeth_date_time_GMT', [self.aeth_dev_epics.get('date_time_GMT')])
+        else:
+            self.aeth_mean_df = self.aeth_df_array.mean().to_frame().T
+            self.aeth_mean_df.insert(0,'aeth_mean_count', [len(self.aeth_df_array)])
+            
         # add meta data of aeth
         self.aeth_mean_df.columns = pd.MultiIndex.from_tuples(zip(self.aeth_mean_df.columns, self.aeth_meta))
         

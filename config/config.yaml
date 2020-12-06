@@ -9,7 +9,7 @@ logger:
                'IR_BC2', 'IR_BCc', 'IR_K', 'IR_ref', 'IR_sen1', 'IR_sen2', 'red_ATN1',
                'red_ATN2', 'red_BC1', 'red_BC2', 'red_BCc', 'red_K', 'red_ref', 'red_sen1', 'red_sen2',
                'sample_dewpoint', 'sample_RH', 'sample_temp', 'status','tape_pos', 'timebase', 'timezone_offset',
-               'UV_ATN1', 'UV_ATN2', 'UV_BC1', 'UV_BC2', 'UV_BCc', 'UV_K', 'UV_ref', 'UV_sen1', 'UV_sen2'] #'date_time_GMT',
+               'UV_ATN1', 'UV_ATN2', 'UV_BC1', 'UV_BC2', 'UV_BCc', 'UV_K', 'UV_ref', 'UV_sen1', 'UV_sen2', 'date_time_GMT'] #'date_time_GMT',
     sniffer_PVs: ['altitude', 'CO', 'hdop', 'humidity', 'latitude', 'longitude', 'NO2', 'Ox', 'PM1', 'PM10',
                   'PM2dot5', 'pressure', 'sateNum', 'sequence', 'SO2', 'utcTime', 'temperature']#, 'utcTime']
     save_folder: '/home/pi/data'

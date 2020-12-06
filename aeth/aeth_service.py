@@ -15,8 +15,8 @@ from miros import signals
 #from miros import ActiveObject
 from miros import return_status
 import logging
-#from aeth_class import AETH, NoNewDataRecieved, FailedCommunication
-from aeth_dummy_class import AETH, NoNewDataRecieved, FailedCommunication
+from aeth_class import AETH, NoNewDataRecieved, FailedCommunication
+#from aeth_dummy_class import AETH, NoNewDataRecieved, FailedCommunication
 import epics
 import serial
 
