@@ -15,11 +15,21 @@ from miros import signals
 #from miros import ActiveObject
 from miros import return_status
 import logging
-from aeth_class import AETH, NoNewDataRecieved, FailedCommunication
+#from aeth_class import AETH, NoNewDataRecieved, FailedCommunication
 #from aeth_dummy_class import AETH, NoNewDataRecieved, FailedCommunication
 import epics
 import serial
+import yaml
 
+# read config file and send to logger object
+with open('../config/config.yaml') as file:
+    config_data = yaml.load(file, Loader=yaml.FullLoader)
+
+if config_data['aeth']['demo']:
+    from aeth_dummy_class import AETH, NoNewDataRecieved, FailedCommunication
+else:
+    from aeth_class import AETH, NoNewDataRecieved, FailedCommunication
+    
 retry_counter = 10
 TIMEOUT = 100
 OK = 0
@@ -282,7 +292,7 @@ if __name__ == "__main__":
 
     # set an active object
     aeth = AETH(aeth_name="MicroAeth",
-              aeth_port="/dev/ttyUSB0",
+              aeth_port=config_data['aeth']['port'],
               aeth_location="drone")
     
 
@@ -313,7 +323,13 @@ if __name__ == "__main__":
 
     aeth.live_spy = True
     aeth.live_trace = True
-    aeth.start_at(DISABLED)
+
+    if config_data['aeth']['auto_start']:
+        aeth.start_at(ENABLED)
+        aeth_dev_epics.enable = 1
+    else:
+        aeth.start_at(DISABLED)
+        aeth_dev_epics.enable = 0
     
     try:
         while True:

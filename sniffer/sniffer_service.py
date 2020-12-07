@@ -20,16 +20,25 @@ from miros import return_status
 import logging
 import numpy as np
 #from sniffer_dummy_class import SNIFFER
-from sniffer_class import SNIFFER
+#from sniffer_class import SNIFFER
 import json
 import epics
+import yaml
 
+# read config file and send to logger object
+with open('../config/config.yaml') as file:
+    config_data = yaml.load(file, Loader=yaml.FullLoader)
+
+if config_data['sniffer']['demo']:
+    from sniffer_dummy_class import SNIFFER
+else:
+    from sniffer_class import SNIFFER
+    
 TIMEOUT = 100
 OK = 0
 logging.basicConfig(format='%(asctime)s %(message)s',
                     datefmt='%m/%d/%Y %I:%M:%S %p',
                     level=logging.DEBUG)
-
 
 @spy_on
 def COMMON_BEHAVIOUR(sniffer, e):
@@ -175,7 +184,7 @@ if __name__ == "__main__":
 
     # set an active object
     sniffer = SNIFFER(sniffer_name="Sniffer4d",
-              sniffer_port="/dev/ttyUSB1",
+              sniffer_port=config_data['sniffer']['port'], #sniffer_port="/dev/ttyUSB1",
               sniffer_location="drone")
     
     sniffer.live_trace = True
@@ -195,7 +204,13 @@ if __name__ == "__main__":
     sniffer_dev_epics = epics.Device('sniffer:')
                                  
     sniffer_dev_epics.add_callback('enable', on_sniffer_enable)
-    sniffer.start_at(DISABLED)
+
+    if config_data['sniffer']['auto_start']:
+        sniffer_dev_epics.enable = 1
+        sniffer.start_at(ENABLED)
+    else:
+        sniffer_dev_epics.enable = 0
+        sniffer.start_at(DISABLED)
         
     try:
         while True:

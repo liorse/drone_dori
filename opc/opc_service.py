@@ -19,9 +19,18 @@ from miros import return_status
 import logging
 import numpy as np
 #from opc_dummy_class import OPC
-from opc_class import OPC
+#from opc_class import OPC
 import json
 import epics
+import yaml
+
+with open('../config/config.yaml') as file:
+    config_data = yaml.load(file, Loader=yaml.FullLoader)
+
+if config_data['opc']['demo']:
+    from opc_dummy_class import OPC
+else:
+    from opc_class import OPC
 
 TIMEOUT = 100
 OK = 0
@@ -203,10 +212,12 @@ def on_opc_set_gain(value, **kw):
 
 if __name__ == "__main__":
 
+    # read config file and send to logger object
+    
     # set an active object
     #opc = OPC(name='OPC', serial_port='/tty/USB0')
     opc = OPC(opc_name="some_opc",
-              opc_port="/dev/ttyACM0",
+              opc_port=config_data['opc']['port'],# opc_port="/dev/ttyACM0",
               opc_location="the_forest")
 
     opc.live_trace = True
@@ -232,8 +243,12 @@ if __name__ == "__main__":
     
     #epics_opc_enable = epics.PV('opc:enable')
     #epics_opc_enable.add_callback(on_opc_enable)
-    
-    opc.start_at(DISABLED)
+    if config_data['opc']['auto_start']:
+        opc.start_at(ENABLED)
+        opc_dev_epics.enable = 1
+    else:
+        opc.start_at(DISABLED)
+        opc_dev_epics.enable = 0
         
     try:
         while True:
