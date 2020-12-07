@@ -185,7 +185,11 @@ class LOGGER(ActiveObject):
             # insert the count number of the mean
             self.sniffer_mean_df.insert(0,'sniffer_mean_count', [len(self.sniffer_df_array)])
             # reinsert the date and time in to the correct column position to maintain its position relative to the meta data
-            self.sniffer_mean_df.insert(self.col_location,'sniffer_utcTime', [self.sniffer_dev_epics.get('utcTime')])
+            try:
+                date_time_string = self.sniffer_df_array.iloc[-1, self.sniffer_df_array.columns.get_loc('sniffer_utcTime')]
+            except IndexError:
+                date_time_string = ""                
+            self.sniffer_mean_df.insert(self.col_location,'sniffer_utcTime', [date_time_string])# [self.sniffer_dev_epics.get('utcTime')])
         else:
             self.sniffer_mean_df = self.sniffer_df_array.mean().to_frame().T
             self.sniffer_mean_df.insert(0,'sniffer_mean_count', [len(self.sniffer_df_array)])
@@ -221,7 +225,12 @@ class LOGGER(ActiveObject):
             # insert the count number of the mean
             self.aeth_mean_df.insert(0,'aeth_mean_count', [len(self.aeth_df_array)])
             # reinsert the date and time in to the correct column position to maintain its position relative to the meta data
-            self.aeth_mean_df.insert(self.col_location,'aeth_date_time_GMT', [self.aeth_dev_epics.get('date_time_GMT')])
+            # get the last data in the aeth_df_array, if it doesn't exist put an empty string
+            try:
+                date_time_string = self.aeth_df_array.iloc[-1, self.aeth_df_array.columns.get_loc('aeth_date_time_GMT')]
+            except IndexError:
+                date_time_string = ""                
+            self.aeth_mean_df.insert(self.col_location,'aeth_date_time_GMT', [date_time_string]) # [self.aeth_dev_epics.get('date_time_GMT')])
         else:
             self.aeth_mean_df = self.aeth_df_array.mean().to_frame().T
             self.aeth_mean_df.insert(0,'aeth_mean_count', [len(self.aeth_df_array)])
