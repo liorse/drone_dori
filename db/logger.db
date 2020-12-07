@@ -8,9 +8,30 @@ record(ai, "logger:save_interval")
 	field(HOPR, "100")
 }
 
-record(lso, "logger:file_name")
-record(lso, "logger:folder_name")
-record(lso, "logger:project_name")
+#record(lso, "logger:file_name")
+#record(lso, "logger:folder_name")
+#record(lso, "logger:project_name")
+
+record(waveform, "logger:file_name")
+{
+	field(DESC, "file_name")
+	field(NELM, "256")
+	field(FTVL, "CHAR")
+}
+
+record(waveform, "logger:folder_name")
+{
+	field(DESC, "folder_name")
+	field(NELM, "256")
+	field(FTVL, "CHAR")
+}
+
+record(waveform, "logger:project_name")
+{
+	field(DESC, "project_name")
+	field(NELM, "256")
+	field(FTVL, "CHAR")
+}
 
 record(bi, "logger:save_opc")
 record(bi, "logger:save_sniffer")

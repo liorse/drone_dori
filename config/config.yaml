@@ -17,4 +17,4 @@ logger:
     save_aeth_bool: True # save MICROAETH data to file   
     save_sniffer_bool: True # save sniffer data to file
     save_folder: '/home/pi/data'
-    interval_between_save_s: 5 # time in seconds to gather and mean results
+    interval_between_save_s: 12 # time in seconds to gather and mean results

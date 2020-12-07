@@ -255,7 +255,9 @@ class LOGGER(ActiveObject):
         self.save_opc_bool = True if self.logger_dev_epics.save_opc == 1 else False
         self.save_aeth_bool = True if self.logger_dev_epics.save_aeth == 1 else False
         self.save_sniffer_bool = True if self.logger_dev_epics.save_sniffer == 1 else False
-        self.file_name_and_path = os.path.join(self.logger_dev_epics.folder_name, self.logger_dev_epics.file_name)
+        self.file_name_and_path = os.path.join(self.logger_dev_epics.get('folder_name', as_string=True), 
+                                               self.logger_dev_epics.get('file_name', as_string=True))
+
         if self.save_opc_bool or self.save_aeth_bool or self.save_sniffer_bool:
  
             if self.save_opc_bool:
@@ -266,7 +268,7 @@ class LOGGER(ActiveObject):
                 logging.info(self.aeth_df_array)
             if self.save_sniffer_bool:
                 self.concat_df = pd.concat([self.concat_df, self.sniffer_mean_df], axis=1, sort=False)          
-                logging.info(self.sniffer_df_array)
+                #logging.info(self.sniffer_df_array)
                 logging.info(self.sniffer_mean_df)
                 
             # concat df
@@ -337,11 +339,18 @@ def LOGGER_ENABLED(logger, e):
                                                             deferred=True
                                                         )
         # update the the file name with a new project name
-        logger.logger_dev_epics.file_name = logger.logger_dev_epics.project_name + datetime.now().strftime('_%Y-%m-%d_%H-%M-%S.csv')
+        logger.logger_dev_epics.file_name = logger.logger_dev_epics.get('project_name' , as_string=True) \
+                                            + datetime.now().strftime('_%Y-%m-%d_%H-%M-%S.csv')
         
         logging.info('created periodic thread id' + str(logger.thread_save_to_file_id))
         status = logger.trans(LOGGER_IDLE)
-    elif e.signal == signals.SAVE_INTERVAL_VALUE_UPDATE:
+    elif e.signal == signals.SAVE_INTERVAL_VALUE_UPDATE or e.signal == signals.PROJECT_NAME_UPDATE:
+        status = logger.trans(LOGGER_ENABLED)
+    elif e.signal == signals.SAVE_OPC_UPDATE:
+        status = logger.trans(LOGGER_ENABLED)
+    elif e.signal == signals.SAVE_SNIFFER_UPDATE:
+        status = logger.trans(LOGGER_ENABLED)
+    elif e.signal == signals.SAVE_AETH_UPDATE:
         status = logger.trans(LOGGER_ENABLED)
     elif e.signal == signals.EXIT_SIGNAL:
         logging.info('cancelling thread id' + str(logger.thread_save_to_file_id))
@@ -399,6 +408,19 @@ def on_aeth_data_ready(value, **kw):
 
 def on_sniffer_data_ready(value, **kw):
     logger.post_lifo(Event(signal=signals.SNIFFER_DATA_READY))
+
+def on_change_project_name(value, **kw):
+    logger.post_fifo(Event(signal=signals.PROJECT_NAME_UPDATE))
+
+def on_change_save_opc(value, **kw):
+    logger.post_fifo(Event(signal=signals.SAVE_OPC_UPDATE))
+
+def on_change_save_sniffer(value, **kw):
+    logger.post_fifo(Event(signal=signals.SAVE_SNIFFER_UPDATE))
+
+def on_change_save_aeth(value, **kw):
+    logger.post_fifo(Event(signal=signals.SAVE_AETH_UPDATE))
+
     
 if __name__ == "__main__":
 
@@ -427,6 +449,11 @@ if __name__ == "__main__":
 
     logger_dev_epics.add_callback('enable', on_logger_enable)
     logger_dev_epics.add_callback('save_interval', on_save_interval_value_change)
+    logger_dev_epics.add_callback('project_name', on_change_project_name)
+    logger_dev_epics.add_callback('save_opc', on_change_save_opc)
+    logger_dev_epics.add_callback('save_sniffer', on_change_save_sniffer)
+    logger_dev_epics.add_callback('save_aeth', on_change_save_aeth)
+                                
     opc_dev_epics.add_callback('data_ready', on_opc_data_ready)
     aeth_dev_epics.add_callback('data_ready', on_aeth_data_ready)
     sniffer_dev_epics.add_callback('data_ready', on_sniffer_data_ready)
