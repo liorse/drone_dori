@@ -33,24 +33,29 @@ class LOGGER(ActiveObject):
     LOGGER class will include methods for updating its local 
     state measurements from all instruments
     '''
-    def __init__(self, config_data, opc_dev_epics, aeth_dev_epics, sniffer_dev_epics):
+    def __init__(self, config_data, opc_dev_epics, aeth_dev_epics, sniffer_dev_epics, logger_dev_epics):
 
         logging.info("Instantiated Logger class!")
+        self.logger_dev_epics = logger_dev_epics
         self.config_data = config_data
-        self.save_folder = self.config_data['logger']['save_folder']
+        self.logger_dev_epics.folder_name = self.config_data['logger']['save_folder']
         self.thread_save_to_file_id = None
         self.temp_save_interval = self.config_data['logger']['interval_between_save_s']
-
+        self.logger_dev_epics.save_interval = self.temp_save_interval
+        self.logger_dev_epics.project_name = self.config_data['logger']['project_name']
+              
         # Sniffer initializatoin
         self.sniffer_dev_epics = sniffer_dev_epics
         self.list_sniffer_PVs = self.config_data['logger']['sniffer_PVs']
         self.save_sniffer_bool = self.config_data['logger']['save_sniffer_bool']
+        self.logger_dev_epics.save_sniffer = self.save_sniffer_bool
         
         # AETH initialization
         self.aeth_dev_epics = aeth_dev_epics
         self.list_aeth_PVs = self.config_data['logger']['aeth_PVs']
         self.save_aeth_bool = self.config_data['logger']['save_aeth_bool']
-
+        self.logger_dev_epics.save_aeth = self.save_aeth_bool
+        
         # initialize sniffer meta file
         self.sniffer_meta=[]
         self.sniffer_meta.append('None') # the counts units for aeth records
@@ -88,7 +93,8 @@ class LOGGER(ActiveObject):
         self.opc_dev_epics = opc_dev_epics
         self.list_opc_PVs = self.config_data['logger']['opc_PVs']
         
-        self.save_opc_bool = self.config_data['logger']['save_opc_bool']
+        self.logger_dev_epics.save_opc = self.config_data['logger']['save_opc_bool']
+        
         self.bins_opc_PV_name = self.config_data['logger']['opc_array_PV']
         self.bins_names = ['0.35-0.46_um', '0.46-0.66_um', '0.66-1.0_um', '1.0-1.3_um', '1.3-1.7_um', 
                            '1.7-2.3_um', '2.3-3.0_um', '3.0-4.0_um', '4.0-5.2_um', '5.2-6.5_um', '6.5-8.0_um',
@@ -116,7 +122,7 @@ class LOGGER(ActiveObject):
         opc_header = ['opc_' + opc_pv_name for opc_pv_name in self.list_opc_PVs]
         self.opc_df_array = pd.DataFrame(columns=opc_header + self.bins_names)
 
-        #self.opc_df_array = pd.DataFrame(columns=self.list_opc_PVs)
+        # update default values
             
         super().__init__()
 
@@ -193,7 +199,8 @@ class LOGGER(ActiveObject):
         else:
             self.sniffer_mean_df = self.sniffer_df_array.mean().to_frame().T
             self.sniffer_mean_df.insert(0,'sniffer_mean_count', [len(self.sniffer_df_array)])
-        
+
+        self.logger_dev_epics.no_records_saved_sniffer = len(self.sniffer_df_array)
         
         # add meta data of aeth
         self.sniffer_mean_df.columns = pd.MultiIndex.from_tuples(zip(self.sniffer_mean_df.columns, self.sniffer_meta))
@@ -209,6 +216,7 @@ class LOGGER(ActiveObject):
                
         # add the count column
         self.opc_mean_df.insert(0,'opc_mean_count', [len(self.opc_df_array)])
+        self.logger_dev_epics.no_records_saved_opc = len(self.opc_df_array)
         #self.opc_mean_df.insert(0,'date_time',[datetime.now().strftime('%Y/%m/%d %H:%M:%S')])
 
         # add meta data of measurement
@@ -234,7 +242,9 @@ class LOGGER(ActiveObject):
         else:
             self.aeth_mean_df = self.aeth_df_array.mean().to_frame().T
             self.aeth_mean_df.insert(0,'aeth_mean_count', [len(self.aeth_df_array)])
-            
+
+        self.logger_dev_epics.no_records_saved_aeth = len(self.aeth_df_array)
+        
         # add meta data of aeth
         self.aeth_mean_df.columns = pd.MultiIndex.from_tuples(zip(self.aeth_mean_df.columns, self.aeth_meta))
         
@@ -242,7 +252,10 @@ class LOGGER(ActiveObject):
         # to be done
 
         # write to file
-        self.file_name_and_path = os.path.join(self.save_folder,'test.csv')
+        self.save_opc_bool = True if self.logger_dev_epics.save_opc == 1 else False
+        self.save_aeth_bool = True if self.logger_dev_epics.save_aeth == 1 else False
+        self.save_sniffer_bool = True if self.logger_dev_epics.save_sniffer == 1 else False
+        self.file_name_and_path = os.path.join(self.logger_dev_epics.folder_name, self.logger_dev_epics.file_name)
         if self.save_opc_bool or self.save_aeth_bool or self.save_sniffer_bool:
  
             if self.save_opc_bool:
@@ -313,9 +326,9 @@ def LOGGER_ENABLED(logger, e):
         # setup a recurring signal to keep saving data to file every logger.save_interval_s
         if logger_dev_epics.save_interval<1 or logger_dev_epics.save_interval>100: # return to default value
             logger.temp_save_interval = 5
-            logger_dev_epics.save_interval = logger.temp_save_interval
+            logger.logger_dev_epics.save_interval = logger.temp_save_interval
         else:
-            logger.temp_save_interval = logger_dev_epics.save_interval # return to default value
+            logger.temp_save_interval = logger.logger_dev_epics.save_interval # return to default value
             
         
         logger.thread_save_to_file_id = logger.post_fifo(
@@ -323,6 +336,9 @@ def LOGGER_ENABLED(logger, e):
                                                             period=logger.temp_save_interval,
                                                             deferred=True
                                                         )
+        # update the the file name with a new project name
+        logger.logger_dev_epics.file_name = logger.logger_dev_epics.project_name + datetime.now().strftime('_%Y-%m-%d_%H-%M-%S.csv')
+        
         logging.info('created periodic thread id' + str(logger.thread_save_to_file_id))
         status = logger.trans(LOGGER_IDLE)
     elif e.signal == signals.SAVE_INTERVAL_VALUE_UPDATE:
@@ -404,7 +420,7 @@ if __name__ == "__main__":
     with open('../config/config.yaml') as file:
         config_data = yaml.load(file, Loader=yaml.FullLoader)
         
-    logger = LOGGER(config_data, opc_dev_epics, aeth_dev_epics, sniffer_dev_epics)
+    logger = LOGGER(config_data, opc_dev_epics, aeth_dev_epics, sniffer_dev_epics, logger_dev_epics)
     logger.live_trace = True
     #logger.live_spy = True
     time.sleep(0.1)

@@ -8,7 +8,26 @@ record(ai, "logger:save_interval")
 	field(HOPR, "100")
 }
 
-record(stringout, "logger:filename")
+record(lso, "logger:file_name")
+record(lso, "logger:folder_name")
+record(lso, "logger:project_name")
+
+record(bi, "logger:save_opc")
+record(bi, "logger:save_sniffer")
+record(bi, "logger:save_aeth")
+
+record(ai, "logger:no_records_saved_opc")
+{
+	field(EGU, "records")
+}
+record(ai, "logger:no_records_saved_sniffer")
+{
+	field(EGU, "records")
+}
+record(ai, "logger:no_records_saved_aeth")
+{
+	field(EGU, "records")
+}
 
 # control commands
 record(bi, "logger:enable")

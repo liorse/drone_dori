@@ -12,9 +12,9 @@ logger:
                'UV_ATN1', 'UV_ATN2', 'UV_BC1', 'UV_BC2', 'UV_BCc', 'UV_K', 'UV_ref', 'UV_sen1', 'UV_sen2', 'date_time_GMT'] #'date_time_GMT',
     sniffer_PVs: ['altitude', 'CO', 'hdop', 'humidity', 'latitude', 'longitude', 'NO2', 'Ox', 'PM1', 'PM10',
                   'PM2dot5', 'pressure', 'sateNum', 'sequence', 'SO2', 'utcTime', 'temperature']#, 'utcTime']
-    project_name: 'test'
-    save_opc_bool: False # save opc data to file
-    save_aeth_bool: False # save MICROAETH data to file   
+    project_name: 'Project_name'
+    save_opc_bool: True # save opc data to file
+    save_aeth_bool: True # save MICROAETH data to file   
     save_sniffer_bool: True # save sniffer data to file
     save_folder: '/home/pi/data'
     interval_between_save_s: 5 # time in seconds to gather and mean results
