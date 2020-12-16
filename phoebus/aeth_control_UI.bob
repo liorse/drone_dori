@@ -1,0 +1,686 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<display version="2.0.0">
+  <name>AETH Control Panel</name>
+  <height>800</height>
+  <widget type="bool_button" version="2.0.0">
+    <name>Boolean Button</name>
+    <pv_name>aeth:enable</pv_name>
+    <x>60</x>
+    <y>660</y>
+    <width>160</width>
+    <height>120</height>
+    <off_label>AETH off</off_label>
+    <on_label>AETH on</on_label>
+  </widget>
+  <widget type="group" version="2.0.0">
+    <name>Environmental parameters</name>
+    <x>450</x>
+    <y>60</y>
+    <width>270</width>
+    <height>260</height>
+    <widget type="thermometer" version="2.0.0">
+      <name>Thermometer</name>
+      <pv_name>aeth:sample_temp</pv_name>
+      <x>42</x>
+      <y>72</y>
+      <width>60</width>
+      <height>140</height>
+    </widget>
+    <widget type="tank" version="2.0.0">
+      <name>Tank</name>
+      <pv_name>aeth:sample_RH</pv_name>
+      <x>142</x>
+      <y>72</y>
+      <width>70</width>
+      <height>140</height>
+    </widget>
+    <widget type="textupdate" version="2.0.0">
+      <name>Text Update_1</name>
+      <pv_name>aeth:sample_RH</pv_name>
+      <x>142</x>
+      <y>32</y>
+      <width>70</width>
+      <height>30</height>
+      <precision>2</precision>
+      <horizontal_alignment>1</horizontal_alignment>
+      <vertical_alignment>1</vertical_alignment>
+    </widget>
+    <widget type="label" version="2.0.0">
+      <name>Label_11</name>
+      <text>Temp</text>
+      <x>52</x>
+      <y>12</y>
+      <width>36</width>
+      <height>16</height>
+      <vertical_alignment>2</vertical_alignment>
+      <auto_size>true</auto_size>
+    </widget>
+    <widget type="textupdate" version="2.0.0">
+      <name>Text Update_2</name>
+      <pv_name>aeth:sample_temp</pv_name>
+      <x>32</x>
+      <y>28</y>
+      <width>80</width>
+      <height>34</height>
+      <precision>2</precision>
+      <horizontal_alignment>1</horizontal_alignment>
+      <vertical_alignment>1</vertical_alignment>
+    </widget>
+    <widget type="label" version="2.0.0">
+      <name>Label_12</name>
+      <text>Humidity</text>
+      <x>152</x>
+      <y>12</y>
+      <width>55</width>
+      <height>16</height>
+      <vertical_alignment>2</vertical_alignment>
+      <auto_size>true</auto_size>
+    </widget>
+  </widget>
+  <widget type="label" version="2.0.0">
+    <name>Label_13</name>
+    <text>MICROAETH - MA200</text>
+    <x>310</x>
+    <y>20</y>
+    <width>220</width>
+    <font>
+      <font family="Liberation Sans" style="BOLD" size="20.0">
+      </font>
+    </font>
+  </widget>
+  <widget type="group" version="2.0.0">
+    <name>Flows</name>
+    <x>50</x>
+    <y>60</y>
+    <width>390</width>
+    <height>170</height>
+    <widget type="textupdate" version="2.0.0">
+      <name>Array_2-textupdate-1</name>
+      <pv_name>aeth:flow_total</pv_name>
+      <x>162</x>
+      <y>42</y>
+      <width>90</width>
+      <format>1</format>
+      <precision>2</precision>
+      <tooltip>
+null</tooltip>
+    </widget>
+    <widget type="textupdate" version="2.0.0">
+      <name>Array_2-textupdate-2</name>
+      <pv_name>aeth:flow1</pv_name>
+      <x>162</x>
+      <y>72</y>
+      <width>90</width>
+      <format>1</format>
+      <precision>2</precision>
+      <tooltip>
+null</tooltip>
+    </widget>
+    <widget type="textupdate" version="2.0.0">
+      <name>Array_2-textupdate-3</name>
+      <pv_name>aeth:flow2</pv_name>
+      <x>162</x>
+      <y>102</y>
+      <width>90</width>
+      <format>1</format>
+      <precision>2</precision>
+      <tooltip>
+null</tooltip>
+    </widget>
+    <widget type="textupdate" version="2.0.0">
+      <name>Text Update_5</name>
+      <pv_name>aeth:flow_setpoint</pv_name>
+      <x>162</x>
+      <y>12</y>
+      <width>90</width>
+    </widget>
+    <widget type="label" version="2.0.0">
+      <name>Label_14</name>
+      <text>Flow Setpoint</text>
+      <x>2</x>
+      <y>12</y>
+      <width>150</width>
+    </widget>
+    <widget type="label" version="2.0.0">
+      <name>Label_15</name>
+      <text>Flow Total</text>
+      <x>2</x>
+      <y>42</y>
+      <width>150</width>
+    </widget>
+    <widget type="label" version="2.0.0">
+      <name>Label_16</name>
+      <text>Flow 1</text>
+      <x>2</x>
+      <y>72</y>
+      <width>150</width>
+    </widget>
+    <widget type="label" version="2.0.0">
+      <name>Label_17</name>
+      <text>Flow 2</text>
+      <x>2</x>
+      <y>102</y>
+      <width>150</width>
+    </widget>
+  </widget>
+  <widget type="group" version="2.0.0">
+    <name>GPS data</name>
+    <x>50</x>
+    <y>230</y>
+    <width>390</width>
+    <height>130</height>
+    <widget type="textupdate" version="2.0.0">
+      <name>Array_2-textupdate-3_1</name>
+      <pv_name>aeth:gps_lat</pv_name>
+      <x>155</x>
+      <y>12</y>
+      <width>155</width>
+      <format>1</format>
+      <precision>10</precision>
+      <tooltip>
+null</tooltip>
+    </widget>
+    <widget type="textupdate" version="2.0.0">
+      <name>Array_2-textupdate-1</name>
+      <pv_name>aeth:gps_long</pv_name>
+      <x>155</x>
+      <y>42</y>
+      <width>155</width>
+      <format>1</format>
+      <precision>10</precision>
+      <tooltip>
+null</tooltip>
+    </widget>
+    <widget type="textupdate" version="2.0.0">
+      <name>Array_2-textupdate-2</name>
+      <pv_name>aeth:gps_speed</pv_name>
+      <x>155</x>
+      <y>72</y>
+      <width>155</width>
+      <format>1</format>
+      <precision>10</precision>
+      <tooltip>
+null</tooltip>
+    </widget>
+    <widget type="label" version="2.0.0">
+      <name>Label_18</name>
+      <text>GPS Lat</text>
+      <x>2</x>
+      <y>12</y>
+      <width>150</width>
+    </widget>
+    <widget type="label" version="2.0.0">
+      <name>Label_19</name>
+      <text>GPS Long</text>
+      <x>2</x>
+      <y>42</y>
+      <width>150</width>
+    </widget>
+    <widget type="label" version="2.0.0">
+      <name>Label_20</name>
+      <text>GPS Speed</text>
+      <x>2</x>
+      <y>72</y>
+      <width>150</width>
+    </widget>
+  </widget>
+  <widget type="picture" version="2.0.0">
+    <name>status_codes_img</name>
+    <file>status_codes.PNG</file>
+    <x>70</x>
+    <y>770</y>
+    <width>500</width>
+    <height>486</height>
+  </widget>
+  <widget type="group" version="2.0.0">
+    <name>General</name>
+    <x>50</x>
+    <y>360</y>
+    <width>390</width>
+    <height>240</height>
+    <widget type="textupdate" version="2.0.0">
+      <name>Array_2-textupdate-3_2</name>
+      <pv_name>aeth:timebase</pv_name>
+      <x>155</x>
+      <y>2</y>
+      <width>121</width>
+      <format>1</format>
+      <tooltip>
+null</tooltip>
+    </widget>
+    <widget type="textupdate" version="2.0.0">
+      <name>Array_2-textupdate-3_3</name>
+      <pv_name>aeth:battery</pv_name>
+      <x>155</x>
+      <y>32</y>
+      <width>121</width>
+      <format>1</format>
+      <tooltip>
+null</tooltip>
+    </widget>
+    <widget type="textupdate" version="2.0.0">
+      <name>Array_2-textupdate-3_4</name>
+      <pv_name>aeth:tape_pos</pv_name>
+      <x>155</x>
+      <y>62</y>
+      <width>121</width>
+      <format>1</format>
+      <tooltip>
+null</tooltip>
+    </widget>
+    <widget type="label" version="2.0.0">
+      <name>Label_21</name>
+      <text>Timebase</text>
+      <x>2</x>
+      <y>2</y>
+      <width>150</width>
+    </widget>
+    <widget type="label" version="2.0.0">
+      <name>Label_22</name>
+      <text>Battery</text>
+      <x>2</x>
+      <y>32</y>
+      <width>150</width>
+    </widget>
+    <widget type="label" version="2.0.0">
+      <name>Label_23</name>
+      <text>Tape Position</text>
+      <x>2</x>
+      <y>62</y>
+      <width>150</width>
+    </widget>
+    <widget type="textupdate" version="2.0.0">
+      <name>Array_2-textupdate-3_5</name>
+      <pv_name>aeth:datum_id</pv_name>
+      <x>155</x>
+      <y>92</y>
+      <width>121</width>
+      <format>1</format>
+      <tooltip>
+null</tooltip>
+    </widget>
+    <widget type="label" version="2.0.0">
+      <name>Label_24</name>
+      <text>Datum ID</text>
+      <x>2</x>
+      <y>92</y>
+      <width>150</width>
+    </widget>
+    <widget type="textupdate" version="2.0.0">
+      <name>Array_2-textupdate-3_6</name>
+      <pv_name>aeth:date_time_GMT</pv_name>
+      <x>155</x>
+      <y>122</y>
+      <width>177</width>
+      <format>6</format>
+      <tooltip>
+null</tooltip>
+    </widget>
+    <widget type="label" version="2.0.0">
+      <name>Label_25</name>
+      <text>Date and Time (UTC)</text>
+      <x>2</x>
+      <y>122</y>
+      <width>150</width>
+    </widget>
+    <widget type="textupdate" version="2.0.0">
+      <name>aeth_status_ctl</name>
+      <pv_name>aeth:status</pv_name>
+      <x>155</x>
+      <y>152</y>
+      <width>177</width>
+      <format>1</format>
+      <actions>
+      </actions>
+      <tooltip></tooltip>
+    </widget>
+    <widget type="label" version="2.0.0">
+      <name>Label_26</name>
+      <text>Status</text>
+      <x>2</x>
+      <y>152</y>
+      <width>150</width>
+    </widget>
+    <widget type="textupdate" version="2.0.0">
+      <name>aeth_status_ctl_1</name>
+      <pv_name>aeth:optical_config</pv_name>
+      <x>152</x>
+      <y>182</y>
+      <width>177</width>
+      <format>6</format>
+      <vertical_alignment>1</vertical_alignment>
+      <actions>
+      </actions>
+      <tooltip></tooltip>
+    </widget>
+    <widget type="label" version="2.0.0">
+      <name>Label_43</name>
+      <text>Optical configuration</text>
+      <x>2</x>
+      <y>182</y>
+      <width>150</width>
+    </widget>
+  </widget>
+  <widget type="group" version="2.0.0">
+    <name>Status</name>
+    <x>230</x>
+    <y>650</y>
+    <width>200</width>
+    <height>140</height>
+    <widget type="group" version="2.0.0">
+      <name>Group</name>
+      <x>32</x>
+      <y>12</y>
+      <width>128</width>
+      <height>20</height>
+      <style>3</style>
+      <transparent>true</transparent>
+      <widget type="label" version="2.0.0">
+        <name>Label_8</name>
+        <text>Communication</text>
+        <width>98</width>
+        <height>16</height>
+        <vertical_alignment>1</vertical_alignment>
+        <auto_size>true</auto_size>
+      </widget>
+    </widget>
+    <widget type="led" version="2.0.0">
+      <name>LED_2</name>
+      <pv_name>aeth:sampling_ON</pv_name>
+      <x>2</x>
+      <y>47</y>
+    </widget>
+    <widget type="label" version="2.0.0">
+      <name>Label_9</name>
+      <text>Sampling</text>
+      <x>32</x>
+      <y>47</y>
+      <width>75</width>
+      <vertical_alignment>1</vertical_alignment>
+      <auto_size>true</auto_size>
+    </widget>
+    <widget type="led" version="2.0.0">
+      <name>LED_1</name>
+      <pv_name>aeth:comm_ON</pv_name>
+      <x>2</x>
+      <y>12</y>
+    </widget>
+  </widget>
+  <widget type="group" version="2.0.0">
+    <name>Readings</name>
+    <x>450</x>
+    <y>320</y>
+    <width>270</width>
+    <height>470</height>
+    <widget type="textupdate" version="2.0.0">
+      <name>Text Update_6</name>
+      <pv_name>aeth:UV_BC1</pv_name>
+      <x>87</x>
+      <y>2</y>
+      <width>145</width>
+      <format>1</format>
+      <precision>2</precision>
+    </widget>
+    <widget type="label" version="2.0.0">
+      <name>Label_27</name>
+      <text>UV BC1</text>
+      <x>5</x>
+      <y>2</y>
+      <tooltip>Calculated mass concentration for ultraviolet (UV) wavelength for 
+sample spot sense1 in nanograms percubic meter. Calculated in SingleSpot
+and DualSpot sampling modes.</tooltip>
+    </widget>
+    <widget type="textupdate" version="2.0.0">
+      <name>Text Update_7</name>
+      <pv_name>aeth:UV_BC2</pv_name>
+      <x>87</x>
+      <y>32</y>
+      <width>145</width>
+      <format>1</format>
+      <precision>2</precision>
+    </widget>
+    <widget type="textupdate" version="2.0.0">
+      <name>Text Update_8</name>
+      <pv_name>aeth:UV_BCc</pv_name>
+      <x>87</x>
+      <y>62</y>
+      <width>145</width>
+      <format>1</format>
+      <precision>2</precision>
+    </widget>
+    <widget type="label" version="2.0.0">
+      <name>Label_28</name>
+      <text>UV BC2</text>
+      <x>5</x>
+      <y>32</y>
+      <tooltip>Calculated mass concentration for ultraviolet (UV) wavelength for 
+sample spot sense1 in nanograms percubic meter. Calculated in SingleSpot
+and DualSpot sampling modes.</tooltip>
+    </widget>
+    <widget type="label" version="2.0.0">
+      <name>Label_29</name>
+      <text>UV BCc</text>
+      <x>5</x>
+      <y>62</y>
+      <tooltip>Calculated mass concentration for ultraviolet (UV) wavelength for 
+sample spot sense1 in nanograms percubic meter. Calculated in SingleSpot
+and DualSpot sampling modes.</tooltip>
+    </widget>
+    <widget type="textupdate" version="2.0.0">
+      <name>Text Update_9</name>
+      <pv_name>aeth:blue_BC1</pv_name>
+      <x>87</x>
+      <y>92</y>
+      <width>145</width>
+      <format>1</format>
+      <precision>2</precision>
+    </widget>
+    <widget type="label" version="2.0.0">
+      <name>Label_31</name>
+      <text>Blue BC1</text>
+      <x>5</x>
+      <y>92</y>
+      <tooltip>Calculated mass concentration for ultraviolet (UV) wavelength for 
+sample spot sense1 in nanograms percubic meter. Calculated in SingleSpot
+and DualSpot sampling modes.</tooltip>
+    </widget>
+    <widget type="textupdate" version="2.0.0">
+      <name>Text Update_10</name>
+      <pv_name>aeth:blue_BC2</pv_name>
+      <x>87</x>
+      <y>122</y>
+      <width>145</width>
+      <format>1</format>
+      <precision>2</precision>
+    </widget>
+    <widget type="textupdate" version="2.0.0">
+      <name>Text Update_11</name>
+      <pv_name>aeth:blue_BCc</pv_name>
+      <x>87</x>
+      <y>152</y>
+      <width>145</width>
+      <format>1</format>
+      <precision>2</precision>
+    </widget>
+    <widget type="label" version="2.0.0">
+      <name>Label_32</name>
+      <text>Blue BC2</text>
+      <x>5</x>
+      <y>122</y>
+      <tooltip>Calculated mass concentration for ultraviolet (UV) wavelength for 
+sample spot sense1 in nanograms percubic meter. Calculated in SingleSpot
+and DualSpot sampling modes.</tooltip>
+    </widget>
+    <widget type="label" version="2.0.0">
+      <name>Label_33</name>
+      <text>Blue BCc</text>
+      <x>5</x>
+      <y>152</y>
+      <tooltip>Calculated mass concentration for ultraviolet (UV) wavelength for 
+sample spot sense1 in nanograms percubic meter. Calculated in SingleSpot
+and DualSpot sampling modes.</tooltip>
+    </widget>
+    <widget type="textupdate" version="2.0.0">
+      <name>Text Update_12</name>
+      <pv_name>aeth:green_BC1</pv_name>
+      <x>87</x>
+      <y>182</y>
+      <width>145</width>
+      <format>1</format>
+      <precision>2</precision>
+    </widget>
+    <widget type="label" version="2.0.0">
+      <name>Label_34</name>
+      <text>Green BC1</text>
+      <x>5</x>
+      <y>182</y>
+      <tooltip>Calculated mass concentration for ultraviolet (UV) wavelength for 
+sample spot sense1 in nanograms percubic meter. Calculated in SingleSpot
+and DualSpot sampling modes.</tooltip>
+    </widget>
+    <widget type="textupdate" version="2.0.0">
+      <name>Text Update_13</name>
+      <pv_name>aeth:green_BC2</pv_name>
+      <x>87</x>
+      <y>212</y>
+      <width>145</width>
+      <format>1</format>
+      <precision>2</precision>
+    </widget>
+    <widget type="textupdate" version="2.0.0">
+      <name>Text Update_14</name>
+      <pv_name>aeth:green_BCc</pv_name>
+      <x>87</x>
+      <y>242</y>
+      <width>145</width>
+      <format>1</format>
+      <precision>2</precision>
+    </widget>
+    <widget type="label" version="2.0.0">
+      <name>Label_35</name>
+      <text>Green BC2</text>
+      <x>5</x>
+      <y>212</y>
+      <tooltip>Calculated mass concentration for ultraviolet (UV) wavelength for 
+sample spot sense1 in nanograms percubic meter. Calculated in SingleSpot
+and DualSpot sampling modes.</tooltip>
+    </widget>
+    <widget type="label" version="2.0.0">
+      <name>Label_36</name>
+      <text>Green BCc</text>
+      <x>5</x>
+      <y>242</y>
+      <tooltip>Calculated mass concentration for ultraviolet (UV) wavelength for 
+sample spot sense1 in nanograms percubic meter. Calculated in SingleSpot
+and DualSpot sampling modes.</tooltip>
+    </widget>
+    <widget type="textupdate" version="2.0.0">
+      <name>Text Update_15</name>
+      <pv_name>aeth:red_BC1</pv_name>
+      <x>87</x>
+      <y>272</y>
+      <width>145</width>
+      <format>1</format>
+      <precision>2</precision>
+    </widget>
+    <widget type="label" version="2.0.0">
+      <name>Label_37</name>
+      <text>Red BC1</text>
+      <x>5</x>
+      <y>272</y>
+      <tooltip>Calculated mass concentration for ultraviolet (UV) wavelength for 
+sample spot sense1 in nanograms percubic meter. Calculated in SingleSpot
+and DualSpot sampling modes.</tooltip>
+    </widget>
+    <widget type="textupdate" version="2.0.0">
+      <name>Text Update_16</name>
+      <pv_name>aeth:red_BC2</pv_name>
+      <x>87</x>
+      <y>302</y>
+      <width>145</width>
+      <format>1</format>
+      <precision>2</precision>
+    </widget>
+    <widget type="textupdate" version="2.0.0">
+      <name>Text Update_17</name>
+      <pv_name>aeth:red_BCc</pv_name>
+      <x>87</x>
+      <y>332</y>
+      <width>145</width>
+      <format>1</format>
+      <precision>2</precision>
+    </widget>
+    <widget type="label" version="2.0.0">
+      <name>Label_38</name>
+      <text>Red BC2</text>
+      <x>5</x>
+      <y>302</y>
+      <tooltip>Calculated mass concentration for ultraviolet (UV) wavelength for 
+sample spot sense1 in nanograms percubic meter. Calculated in SingleSpot
+and DualSpot sampling modes.</tooltip>
+    </widget>
+    <widget type="label" version="2.0.0">
+      <name>Label_39</name>
+      <text>Red BCc</text>
+      <x>5</x>
+      <y>332</y>
+      <tooltip>Calculated mass concentration for ultraviolet (UV) wavelength for 
+sample spot sense1 in nanograms percubic meter. Calculated in SingleSpot
+and DualSpot sampling modes.</tooltip>
+    </widget>
+    <widget type="textupdate" version="2.0.0">
+      <name>Text Update_18</name>
+      <pv_name>aeth:IR_BC1</pv_name>
+      <x>87</x>
+      <y>357</y>
+      <width>145</width>
+      <format>1</format>
+      <precision>2</precision>
+    </widget>
+    <widget type="label" version="2.0.0">
+      <name>Label_40</name>
+      <text>IR BC1</text>
+      <x>5</x>
+      <y>357</y>
+      <tooltip>Calculated mass concentration for ultraviolet (UV) wavelength for 
+sample spot sense1 in nanograms percubic meter. Calculated in SingleSpot
+and DualSpot sampling modes.</tooltip>
+    </widget>
+    <widget type="textupdate" version="2.0.0">
+      <name>Text Update_19</name>
+      <pv_name>aeth:IR_BC2</pv_name>
+      <x>87</x>
+      <y>387</y>
+      <width>145</width>
+      <format>1</format>
+      <precision>2</precision>
+    </widget>
+    <widget type="textupdate" version="2.0.0">
+      <name>Text Update_20</name>
+      <pv_name>aeth:IR_BCc</pv_name>
+      <x>87</x>
+      <y>417</y>
+      <width>145</width>
+      <format>1</format>
+      <precision>2</precision>
+    </widget>
+    <widget type="label" version="2.0.0">
+      <name>Label_41</name>
+      <text>IR BC2</text>
+      <x>5</x>
+      <y>387</y>
+      <tooltip>Calculated mass concentration for ultraviolet (UV) wavelength for 
+sample spot sense1 in nanograms percubic meter. Calculated in SingleSpot
+and DualSpot sampling modes.</tooltip>
+    </widget>
+    <widget type="label" version="2.0.0">
+      <name>Label_42</name>
+      <text>IR BCc</text>
+      <x>5</x>
+      <y>417</y>
+      <tooltip>Calculated mass concentration for ultraviolet (UV) wavelength for 
+sample spot sense1 in nanograms percubic meter. Calculated in SingleSpot
+and DualSpot sampling modes.</tooltip>
+    </widget>
+  </widget>
+</display>

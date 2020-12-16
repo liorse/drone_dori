@@ -5,7 +5,7 @@
   <update_period>3.0</update_period>
   <scroll_step>5</scroll_step>
   <scroll>true</scroll>
-  <start>-1 minutes</start>
+  <start>-1 hours</start>
   <end>now</end>
   <archive_rescale>STAGGER</archive_rescale>
   <foreground>
@@ -34,8 +34,8 @@
         <green>0</green>
         <blue>0</blue>
       </color>
-      <min>-44.1</min>
-      <max>9.9</max>
+      <min>-34.300000000000004</min>
+      <max>7.7</max>
       <grid>false</grid>
       <autoscale>false</autoscale>
       <log_scale>false</log_scale>
@@ -51,8 +51,8 @@
         <green>0</green>
         <blue>0</blue>
       </color>
-      <min>-33.300000000000004</min>
-      <max>20.8</max>
+      <min>-22.200000000000003</min>
+      <max>13.8</max>
       <grid>false</grid>
       <autoscale>false</autoscale>
       <log_scale>false</log_scale>
@@ -68,8 +68,8 @@
         <green>0</green>
         <blue>0</blue>
       </color>
-      <min>-22.5</min>
-      <max>31.5</max>
+      <min>-20.1</min>
+      <max>28.0</max>
       <grid>false</grid>
       <autoscale>false</autoscale>
       <log_scale>false</log_scale>
@@ -85,8 +85,8 @@
         <green>0</green>
         <blue>0</blue>
       </color>
-      <min>-11.700000000000001</min>
-      <max>42.300000000000004</max>
+      <min>-7.800000000000001</min>
+      <max>28.200000000000003</max>
       <grid>false</grid>
       <autoscale>false</autoscale>
       <log_scale>false</log_scale>
@@ -102,8 +102,8 @@
         <green>0</green>
         <blue>0</blue>
       </color>
-      <min>-0.9</min>
-      <max>53.1</max>
+      <min>-0.7000000000000001</min>
+      <max>41.300000000000004</max>
       <grid>false</grid>
       <autoscale>false</autoscale>
       <log_scale>false</log_scale>
@@ -113,14 +113,14 @@
   </annotations>
   <pvlist>
     <pv>
-      <display_name>opc:humidity</display_name>
+      <display_name>aeth:blue_BCc</display_name>
       <visible>true</visible>
-      <name>opc:humidity</name>
+      <name>aeth:blue_BCc</name>
       <axis>0</axis>
       <color>
-        <red>0</red>
-        <green>255</green>
-        <blue>127</blue>
+        <red>255</red>
+        <green>0</green>
+        <blue>0</blue>
       </color>
       <trace_type>AREA</trace_type>
       <linewidth>2</linewidth>
@@ -133,32 +133,12 @@
       <request>OPTIMIZED</request>
     </pv>
     <pv>
-      <display_name>opc:pm1</display_name>
+      <display_name>aeth:green_BCc</display_name>
       <visible>true</visible>
-      <name>opc:pm1</name>
+      <name>aeth:green_BCc</name>
       <axis>1</axis>
       <color>
-        <red>127</red>
-        <green>0</green>
-        <blue>255</blue>
-      </color>
-      <trace_type>AREA</trace_type>
-      <linewidth>2</linewidth>
-      <line_style>SOLID</line_style>
-      <point_type>NONE</point_type>
-      <point_size>2</point_size>
-      <waveform_index>0</waveform_index>
-      <period>0.0</period>
-      <ring_size>5000</ring_size>
-      <request>OPTIMIZED</request>
-    </pv>
-    <pv>
-      <display_name>opc:pm10</display_name>
-      <visible>true</visible>
-      <name>opc:pm10</name>
-      <axis>2</axis>
-      <color>
-        <red>255</red>
+        <red>0</red>
         <green>255</green>
         <blue>0</blue>
       </color>
@@ -173,13 +153,13 @@
       <request>OPTIMIZED</request>
     </pv>
     <pv>
-      <display_name>opc:pm2dot5</display_name>
+      <display_name>aeth:IR_BCc</display_name>
       <visible>true</visible>
-      <name>opc:pm2dot5</name>
-      <axis>3</axis>
+      <name>aeth:IR_BCc</name>
+      <axis>2</axis>
       <color>
         <red>0</red>
-        <green>255</green>
+        <green>0</green>
         <blue>255</blue>
       </color>
       <trace_type>AREA</trace_type>
@@ -193,14 +173,34 @@
       <request>OPTIMIZED</request>
     </pv>
     <pv>
-      <display_name>opc:temperature</display_name>
+      <display_name>aeth:red_BCc</display_name>
       <visible>true</visible>
-      <name>opc:temperature</name>
-      <axis>4</axis>
+      <name>aeth:red_BCc</name>
+      <axis>3</axis>
       <color>
         <red>255</red>
-        <green>0</green>
-        <blue>255</blue>
+        <green>127</green>
+        <blue>0</blue>
+      </color>
+      <trace_type>AREA</trace_type>
+      <linewidth>2</linewidth>
+      <line_style>SOLID</line_style>
+      <point_type>NONE</point_type>
+      <point_size>2</point_size>
+      <waveform_index>0</waveform_index>
+      <period>0.0</period>
+      <ring_size>5000</ring_size>
+      <request>OPTIMIZED</request>
+    </pv>
+    <pv>
+      <display_name>aeth:UV_BCc</display_name>
+      <visible>true</visible>
+      <name>aeth:UV_BCc</name>
+      <axis>4</axis>
+      <color>
+        <red>0</red>
+        <green>255</green>
+        <blue>127</blue>
       </color>
       <trace_type>AREA</trace_type>
       <linewidth>2</linewidth>

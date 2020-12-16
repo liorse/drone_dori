@@ -1,17 +1,18 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <display version="2.0.0">
-  <name>Display</name>
+  <name>OPC-N3 Optical Particle Counter</name>
+  <height>1000</height>
   <widget type="group" version="2.0.0">
     <name>Status</name>
     <x>318</x>
-    <y>10</y>
+    <y>60</y>
     <width>322</width>
     <height>380</height>
   </widget>
   <widget type="group" version="2.0.0">
     <name>Control</name>
     <x>110</x>
-    <y>610</y>
+    <y>660</y>
     <width>464</width>
     <height>180</height>
     <widget type="group" version="2.0.0">
@@ -64,6 +65,7 @@
         <y>100</y>
         <width>110</width>
         <height>30</height>
+        <show_units>true</show_units>
         <buttons_on_left>true</buttons_on_left>
         <maximum>1000.0</maximum>
       </widget>
@@ -82,7 +84,7 @@
   <widget type="group" version="2.0.0">
     <name>Readings</name>
     <x>20</x>
-    <y>10</y>
+    <y>60</y>
     <width>260</width>
     <height>380</height>
     <widget type="group" version="2.0.0">
@@ -132,9 +134,9 @@
       <widget type="textupdate" version="2.0.0">
         <name>Text Update_2</name>
         <pv_name>opc:pm1</pv_name>
-        <x>120</x>
+        <x>70</x>
         <y>230</y>
-        <width>70</width>
+        <width>120</width>
         <height>30</height>
         <precision>2</precision>
         <horizontal_alignment>1</horizontal_alignment>
@@ -143,9 +145,9 @@
       <widget type="textupdate" version="2.0.0">
         <name>Text Update_3</name>
         <pv_name>opc:pm2dot5</pv_name>
-        <x>120</x>
+        <x>70</x>
         <y>270</y>
-        <width>70</width>
+        <width>120</width>
         <height>30</height>
         <precision>2</precision>
         <horizontal_alignment>1</horizontal_alignment>
@@ -154,9 +156,9 @@
       <widget type="textupdate" version="2.0.0">
         <name>Text Update_4</name>
         <pv_name>opc:pm10</pv_name>
-        <x>120</x>
+        <x>70</x>
         <y>310</y>
-        <width>70</width>
+        <width>120</width>
         <height>30</height>
         <precision>2</precision>
         <horizontal_alignment>1</horizontal_alignment>
@@ -164,29 +166,30 @@
       </widget>
       <widget type="label" version="2.0.0">
         <name>Label</name>
-        <text>PM 1 (ug/m^3)</text>
+        <text>PM 1</text>
         <x>11</x>
         <y>237</y>
-        <width>92</width>
+        <width>33</width>
         <height>16</height>
         <vertical_alignment>2</vertical_alignment>
         <auto_size>true</auto_size>
       </widget>
       <widget type="label" version="2.0.0">
         <name>Label_1</name>
-        <text>PM 2.5 (ug/m^3)</text>
+        <text>PM 2.5</text>
         <x>10</x>
         <y>280</y>
-        <width>104</width>
+        <width>45</width>
         <height>16</height>
         <vertical_alignment>2</vertical_alignment>
         <auto_size>true</auto_size>
       </widget>
       <widget type="label" version="2.0.0">
         <name>Label_2</name>
-        <text>PM 10 (ug/m^3)</text>
+        <text>PM 10</text>
         <x>10</x>
         <y>320</y>
+        <width>41</width>
         <height>16</height>
         <vertical_alignment>2</vertical_alignment>
         <auto_size>true</auto_size>
@@ -213,7 +216,7 @@
   <widget type="xyplot" version="2.0.0">
     <name>X/Y Plot</name>
     <x>30</x>
-    <y>410</y>
+    <y>460</y>
     <width>600</width>
     <height>180</height>
     <x_axis>
@@ -276,7 +279,7 @@
     <name>Label_5</name>
     <text>Acquistion time (s)</text>
     <x>340</x>
-    <y>268</y>
+    <y>318</y>
     <width>116</width>
     <height>16</height>
     <vertical_alignment>2</vertical_alignment>
@@ -286,7 +289,7 @@
     <name>Text Update_5</name>
     <pv_name>opc:period</pv_name>
     <x>510</x>
-    <y>261</y>
+    <y>311</y>
     <height>30</height>
     <precision>2</precision>
     <horizontal_alignment>1</horizontal_alignment>
@@ -296,7 +299,7 @@
     <name>Label_6</name>
     <text>Laser Status</text>
     <x>340</x>
-    <y>308</y>
+    <y>358</y>
     <width>79</width>
     <height>16</height>
     <vertical_alignment>2</vertical_alignment>
@@ -306,7 +309,7 @@
     <name>Text Update_6</name>
     <pv_name>opc:laser_status</pv_name>
     <x>510</x>
-    <y>300</y>
+    <y>350</y>
     <height>30</height>
     <precision>2</precision>
     <horizontal_alignment>1</horizontal_alignment>
@@ -316,7 +319,7 @@
     <name>Label_7</name>
     <text>Sample Flow Rate (ml/s)</text>
     <x>340</x>
-    <y>348</y>
+    <y>398</y>
     <width>154</width>
     <height>16</height>
     <vertical_alignment>2</vertical_alignment>
@@ -326,7 +329,7 @@
     <name>Text Update_7</name>
     <pv_name>opc:Flowrate</pv_name>
     <x>510</x>
-    <y>341</y>
+    <y>391</y>
     <height>30</height>
     <precision>2</precision>
     <horizontal_alignment>1</horizontal_alignment>
@@ -336,13 +339,13 @@
     <name>LED_1</name>
     <pv_name>opc:comm_ON</pv_name>
     <x>340</x>
-    <y>44</y>
+    <y>94</y>
   </widget>
   <widget type="label" version="2.0.0">
     <name>Label_8</name>
     <text>Communication</text>
     <x>370</x>
-    <y>44</y>
+    <y>94</y>
     <width>98</width>
     <height>16</height>
     <vertical_alignment>2</vertical_alignment>
@@ -352,13 +355,13 @@
     <name>LED_2</name>
     <pv_name>opc:laser_ON</pv_name>
     <x>340</x>
-    <y>74</y>
+    <y>124</y>
   </widget>
   <widget type="label" version="2.0.0">
     <name>Label_9</name>
     <text>Laser</text>
     <x>370</x>
-    <y>74</y>
+    <y>124</y>
     <width>36</width>
     <height>16</height>
     <vertical_alignment>2</vertical_alignment>
@@ -368,13 +371,13 @@
     <name>LED_3</name>
     <pv_name>opc:fan_ON</pv_name>
     <x>340</x>
-    <y>104</y>
+    <y>154</y>
   </widget>
   <widget type="label" version="2.0.0">
     <name>Label_10</name>
     <text>Fan</text>
     <x>370</x>
-    <y>104</y>
+    <y>154</y>
     <width>25</width>
     <height>16</height>
     <vertical_alignment>2</vertical_alignment>
@@ -384,13 +387,13 @@
     <name>LED_4</name>
     <pv_name>opc:gain_high_ON</pv_name>
     <x>340</x>
-    <y>140</y>
+    <y>190</y>
   </widget>
   <widget type="label" version="2.0.0">
     <name>Label_11</name>
     <text>Gain (HIGH)</text>
     <x>370</x>
-    <y>140</y>
+    <y>190</y>
     <width>78</width>
     <height>16</height>
     <vertical_alignment>2</vertical_alignment>
@@ -400,16 +403,27 @@
     <name>LED_5</name>
     <pv_name>opc:auto_gain_ON</pv_name>
     <x>340</x>
-    <y>174</y>
+    <y>224</y>
   </widget>
   <widget type="label" version="2.0.0">
     <name>Label_12</name>
     <text>Auto Gain</text>
     <x>370</x>
-    <y>174</y>
+    <y>224</y>
     <width>63</width>
     <height>16</height>
     <vertical_alignment>2</vertical_alignment>
     <auto_size>true</auto_size>
+  </widget>
+  <widget type="label" version="2.0.0">
+    <name>Label_14</name>
+    <text>OPC-N3 Optical Particle Counter</text>
+    <x>153</x>
+    <y>20</y>
+    <width>358</width>
+    <font>
+      <font family="Liberation Sans" style="BOLD" size="20.0">
+      </font>
+    </font>
   </widget>
 </display>

@@ -1,0 +1,429 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<display version="2.0.0">
+  <name>Sniffer 4D control panel</name>
+  <widget type="bool_button" version="2.0.0">
+    <name>Boolean Button</name>
+    <pv_name>sniffer:enable</pv_name>
+    <x>40</x>
+    <y>350</y>
+    <width>160</width>
+    <height>120</height>
+    <off_label>Sniffer off</off_label>
+    <on_label>Sniffer on</on_label>
+  </widget>
+  <widget type="group" version="2.0.0">
+    <name>Group</name>
+    <x>255</x>
+    <y>450</y>
+    <width>128</width>
+    <height>20</height>
+    <style>3</style>
+    <transparent>true</transparent>
+    <widget type="label" version="2.0.0">
+      <name>Label_8</name>
+      <text>Communication</text>
+      <width>98</width>
+      <height>16</height>
+      <vertical_alignment>1</vertical_alignment>
+      <auto_size>true</auto_size>
+    </widget>
+  </widget>
+  <widget type="led" version="2.0.0">
+    <name>LED_3</name>
+    <pv_name>sniffer:comm_ON</pv_name>
+    <x>225</x>
+    <y>450</y>
+  </widget>
+  <widget type="group" version="2.0.0">
+    <name>GPS data</name>
+    <x>270</x>
+    <y>180</y>
+    <width>318</width>
+    <height>120</height>
+    <widget type="textupdate" version="2.0.0">
+      <name>Array_2-textupdate-3_1</name>
+      <pv_name>sniffer:latitude</pv_name>
+      <x>155</x>
+      <y>12</y>
+      <width>121</width>
+      <format>1</format>
+      <precision>10</precision>
+      <tooltip>
+null</tooltip>
+    </widget>
+    <widget type="textupdate" version="2.0.0">
+      <name>Array_2-textupdate-1</name>
+      <pv_name>sniffer:longitude</pv_name>
+      <x>155</x>
+      <y>37</y>
+      <width>121</width>
+      <format>1</format>
+      <precision>10</precision>
+      <tooltip>
+null</tooltip>
+    </widget>
+    <widget type="label" version="2.0.0">
+      <name>Label_18</name>
+      <text>GPS Lat</text>
+      <x>2</x>
+      <y>12</y>
+      <width>150</width>
+    </widget>
+    <widget type="label" version="2.0.0">
+      <name>Label_19</name>
+      <text>GPS Long</text>
+      <x>2</x>
+      <y>37</y>
+      <width>150</width>
+    </widget>
+    <widget type="textupdate" version="2.0.0">
+      <name>Array_2-textupdate-1_1</name>
+      <pv_name>sniffer:altitude</pv_name>
+      <x>155</x>
+      <y>62</y>
+      <width>121</width>
+      <format>1</format>
+      <precision>10</precision>
+      <tooltip>
+null</tooltip>
+    </widget>
+    <widget type="label" version="2.0.0">
+      <name>Label_59</name>
+      <text>GPS Altitude</text>
+      <x>2</x>
+      <y>62</y>
+      <width>150</width>
+    </widget>
+  </widget>
+  <widget type="group" version="2.0.0">
+    <name>Readings</name>
+    <x>30</x>
+    <y>110</y>
+    <width>220</width>
+    <height>240</height>
+    <widget type="textupdate" version="2.0.0">
+      <name>Text Update_6</name>
+      <pv_name>sniffer:CO</pv_name>
+      <x>87</x>
+      <y>2</y>
+      <width>90</width>
+      <foreground_color>
+        <color red="0" green="0" blue="255">
+        </color>
+      </foreground_color>
+      <format>1</format>
+      <precision>4</precision>
+    </widget>
+    <widget type="label" version="2.0.0">
+      <name>Label_27</name>
+      <text>CO</text>
+      <x>5</x>
+      <y>2</y>
+      <tooltip>Calculated mass concentration for ultraviolet (UV) wavelength for 
+sample spot sense1 in nanograms percubic meter. Calculated in SingleSpot
+and DualSpot sampling modes.</tooltip>
+    </widget>
+    <widget type="textupdate" version="2.0.0">
+      <name>Text Update_7</name>
+      <pv_name>sniffer:NO2</pv_name>
+      <x>87</x>
+      <y>32</y>
+      <width>90</width>
+      <foreground_color>
+        <color red="0" green="0" blue="255">
+        </color>
+      </foreground_color>
+      <format>1</format>
+      <precision>4</precision>
+    </widget>
+    <widget type="textupdate" version="2.0.0">
+      <name>Text Update_8</name>
+      <pv_name>sniffer:Ox</pv_name>
+      <x>87</x>
+      <y>62</y>
+      <width>90</width>
+      <foreground_color>
+        <color red="0" green="0" blue="255">
+        </color>
+      </foreground_color>
+      <format>1</format>
+      <precision>4</precision>
+    </widget>
+    <widget type="label" version="2.0.0">
+      <name>Label_28</name>
+      <text>NO2</text>
+      <x>5</x>
+      <y>32</y>
+      <tooltip>Calculated mass concentration for ultraviolet (UV) wavelength for 
+sample spot sense1 in nanograms percubic meter. Calculated in SingleSpot
+and DualSpot sampling modes.</tooltip>
+    </widget>
+    <widget type="label" version="2.0.0">
+      <name>Label_29</name>
+      <text>Ox</text>
+      <x>5</x>
+      <y>62</y>
+      <tooltip>Calculated mass concentration for ultraviolet (UV) wavelength for 
+sample spot sense1 in nanograms percubic meter. Calculated in SingleSpot
+and DualSpot sampling modes.</tooltip>
+    </widget>
+    <widget type="textupdate" version="2.0.0">
+      <name>Text Update_9</name>
+      <pv_name>sniffer:PM1</pv_name>
+      <x>87</x>
+      <y>92</y>
+      <width>90</width>
+      <foreground_color>
+        <color red="0" green="0" blue="255">
+        </color>
+      </foreground_color>
+      <format>1</format>
+    </widget>
+    <widget type="label" version="2.0.0">
+      <name>Label_31</name>
+      <text>PM1.0</text>
+      <x>5</x>
+      <y>92</y>
+      <tooltip>Calculated mass concentration for ultraviolet (UV) wavelength for 
+sample spot sense1 in nanograms percubic meter. Calculated in SingleSpot
+and DualSpot sampling modes.</tooltip>
+    </widget>
+    <widget type="textupdate" version="2.0.0">
+      <name>Text Update_10</name>
+      <pv_name>sniffer:PM2dot5</pv_name>
+      <x>87</x>
+      <y>122</y>
+      <width>90</width>
+      <foreground_color>
+        <color red="0" green="0" blue="255">
+        </color>
+      </foreground_color>
+      <format>1</format>
+    </widget>
+    <widget type="textupdate" version="2.0.0">
+      <name>Text Update_11</name>
+      <pv_name>sniffer:PM10</pv_name>
+      <x>87</x>
+      <y>152</y>
+      <width>90</width>
+      <foreground_color>
+        <color red="0" green="0" blue="255">
+        </color>
+      </foreground_color>
+      <format>1</format>
+    </widget>
+    <widget type="label" version="2.0.0">
+      <name>Label_32</name>
+      <text>PM2.5</text>
+      <x>5</x>
+      <y>122</y>
+      <tooltip>Calculated mass concentration for ultraviolet (UV) wavelength for 
+sample spot sense1 in nanograms percubic meter. Calculated in SingleSpot
+and DualSpot sampling modes.</tooltip>
+    </widget>
+    <widget type="label" version="2.0.0">
+      <name>Label_33</name>
+      <text>PM10</text>
+      <x>5</x>
+      <y>152</y>
+      <tooltip>Calculated mass concentration for ultraviolet (UV) wavelength for 
+sample spot sense1 in nanograms percubic meter. Calculated in SingleSpot
+and DualSpot sampling modes.</tooltip>
+    </widget>
+    <widget type="textupdate" version="2.0.0">
+      <name>Text Update_12</name>
+      <pv_name>sniffer:SO2</pv_name>
+      <x>87</x>
+      <y>182</y>
+      <width>90</width>
+      <foreground_color>
+        <color red="0" green="0" blue="255">
+        </color>
+      </foreground_color>
+      <format>1</format>
+      <precision>4</precision>
+    </widget>
+    <widget type="label" version="2.0.0">
+      <name>Label_34</name>
+      <text>SO2</text>
+      <x>5</x>
+      <y>182</y>
+      <tooltip>Calculated mass concentration for ultraviolet (UV) wavelength for 
+sample spot sense1 in nanograms percubic meter. Calculated in SingleSpot
+and DualSpot sampling modes.</tooltip>
+    </widget>
+  </widget>
+  <widget type="group" version="2.0.0">
+    <name>Atmospheric Data</name>
+    <x>270</x>
+    <y>60</y>
+    <width>318</width>
+    <height>120</height>
+    <widget type="textupdate" version="2.0.0">
+      <name>Array_2-textupdate-3_2</name>
+      <pv_name>sniffer:temperature</pv_name>
+      <x>155</x>
+      <y>2</y>
+      <width>121</width>
+      <format>1</format>
+      <precision>1</precision>
+      <tooltip>
+null</tooltip>
+    </widget>
+    <widget type="textupdate" version="2.0.0">
+      <name>Array_2-textupdate-3_3</name>
+      <pv_name>sniffer:humidity</pv_name>
+      <x>155</x>
+      <y>32</y>
+      <width>121</width>
+      <format>1</format>
+      <precision>1</precision>
+      <tooltip>
+null</tooltip>
+    </widget>
+    <widget type="textupdate" version="2.0.0">
+      <name>Array_2-textupdate-3_4</name>
+      <pv_name>sniffer:pressure</pv_name>
+      <x>155</x>
+      <y>62</y>
+      <width>121</width>
+      <format>1</format>
+      <tooltip>
+null</tooltip>
+    </widget>
+    <widget type="label" version="2.0.0">
+      <name>Label_43</name>
+      <text>temperature</text>
+      <x>2</x>
+      <y>2</y>
+      <width>150</width>
+    </widget>
+    <widget type="label" version="2.0.0">
+      <name>Label_44</name>
+      <text>humidity</text>
+      <x>2</x>
+      <y>32</y>
+      <width>150</width>
+    </widget>
+    <widget type="label" version="2.0.0">
+      <name>Label_45</name>
+      <text>pressure</text>
+      <x>2</x>
+      <y>62</y>
+      <width>150</width>
+    </widget>
+  </widget>
+  <widget type="group" version="2.0.0">
+    <name>General</name>
+    <x>270</x>
+    <y>300</y>
+    <width>318</width>
+    <height>150</height>
+    <widget type="textupdate" version="2.0.0">
+      <name>Array_2-textupdate-3_8</name>
+      <pv_name>sniffer:sequence</pv_name>
+      <x>155</x>
+      <y>2</y>
+      <width>121</width>
+      <format>1</format>
+      <tooltip>
+null</tooltip>
+    </widget>
+    <widget type="textupdate" version="2.0.0">
+      <name>Array_2-textupdate-3_9</name>
+      <pv_name>sniffer:serial</pv_name>
+      <x>155</x>
+      <y>32</y>
+      <width>121</width>
+      <format>6</format>
+      <tooltip>
+null</tooltip>
+    </widget>
+    <widget type="label" version="2.0.0">
+      <name>Label_51</name>
+      <text>sequence</text>
+      <x>2</x>
+      <y>2</y>
+      <width>150</width>
+    </widget>
+    <widget type="label" version="2.0.0">
+      <name>Label_52</name>
+      <text>serial</text>
+      <x>2</x>
+      <y>32</y>
+      <width>150</width>
+    </widget>
+    <widget type="textupdate" version="2.0.0">
+      <name>Array_2-textupdate-3_10</name>
+      <pv_name>sniffer:hdop</pv_name>
+      <x>155</x>
+      <y>62</y>
+      <width>121</width>
+      <format>1</format>
+      <tooltip>
+null</tooltip>
+    </widget>
+    <widget type="label" version="2.0.0">
+      <name>Label_53</name>
+      <text>hdop</text>
+      <x>2</x>
+      <y>62</y>
+      <width>150</width>
+    </widget>
+    <widget type="textupdate" version="2.0.0">
+      <name>Array_2-textupdate-3_11</name>
+      <pv_name>sniffer:sateNum</pv_name>
+      <x>155</x>
+      <y>92</y>
+      <width>121</width>
+      <format>1</format>
+      <tooltip>
+null</tooltip>
+    </widget>
+    <widget type="label" version="2.0.0">
+      <name>Label_54</name>
+      <text>sateNum</text>
+      <x>2</x>
+      <y>92</y>
+      <width>150</width>
+    </widget>
+  </widget>
+  <widget type="label" version="2.0.0">
+    <name>Label_57</name>
+    <text>Data and TIME</text>
+    <x>40</x>
+    <y>60</y>
+    <width>150</width>
+  </widget>
+  <widget type="textupdate" version="2.0.0">
+    <name>Array_2-textupdate-3_12</name>
+    <pv_name>sniffer:utcTime</pv_name>
+    <x>40</x>
+    <y>80</y>
+    <width>200</width>
+    <format>6</format>
+    <horizontal_alignment>1</horizontal_alignment>
+    <vertical_alignment>1</vertical_alignment>
+    <tooltip>
+null</tooltip>
+  </widget>
+  <widget type="label" version="2.0.0">
+    <name>Label_58</name>
+    <text>Sniffer 4D</text>
+    <x>250</x>
+    <y>20</y>
+    <width>102</width>
+    <font>
+      <font family="Liberation Sans" style="BOLD" size="20.0">
+      </font>
+    </font>
+  </widget>
+  <widget type="slide_button" version="2.0.0">
+    <name>Slide Button</name>
+    <pv_name>sniffer:enable</pv_name>
+    <label>Control Sniffer</label>
+    <x>30</x>
+    <y>20</y>
+    <width>185</width>
+  </widget>
+</display>

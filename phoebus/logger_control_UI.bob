@@ -1,0 +1,153 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<display version="2.0.0">
+  <name>Logger</name>
+  <widget type="label" version="2.0.0">
+    <name>Label</name>
+    <class>TITLE</class>
+    <text>Logger</text>
+    <x use_class="true">0</x>
+    <y use_class="true">0</y>
+    <width>550</width>
+    <height>31</height>
+    <font use_class="true">
+      <font name="Header 1" family="Liberation Sans" style="BOLD" size="22.0">
+      </font>
+    </font>
+    <foreground_color use_class="true">
+      <color name="Text" red="0" green="0" blue="0">
+      </color>
+    </foreground_color>
+    <transparent use_class="true">true</transparent>
+  </widget>
+  <widget type="slide_button" version="2.0.0">
+    <name>Slide Button</name>
+    <pv_name>logger:enable</pv_name>
+    <label>start Logger!</label>
+    <x>20</x>
+    <y>380</y>
+    <width>140</width>
+  </widget>
+  <widget type="slide_button" version="2.0.0">
+    <name>Slide Button_1</name>
+    <pv_name>logger:save_opc</pv_name>
+    <label>Save OPC data?</label>
+    <x>20</x>
+    <y>50</y>
+    <width>160</width>
+  </widget>
+  <widget type="slide_button" version="2.0.0">
+    <name>Slide Button_2</name>
+    <pv_name>logger:save_sniffer</pv_name>
+    <label>Save Sniffer data?</label>
+    <x>20</x>
+    <y>110</y>
+    <width>160</width>
+  </widget>
+  <widget type="slide_button" version="2.0.0">
+    <name>Slide Button_3</name>
+    <pv_name>logger:save_aeth</pv_name>
+    <label>Save MICROAETH data?</label>
+    <x>20</x>
+    <y>80</y>
+    <width>240</width>
+  </widget>
+  <widget type="label" version="2.0.0">
+    <name>Label_1</name>
+    <text>Interval between save</text>
+    <x>20</x>
+    <y>200</y>
+    <width>160</width>
+  </widget>
+  <widget type="textentry" version="3.0.0">
+    <name>interval between measurement</name>
+    <pv_name>logger:save_interval</pv_name>
+    <x>170</x>
+    <y>200</y>
+    <width>191</width>
+  </widget>
+  <widget type="textupdate" version="2.0.0">
+    <name>Array_2-textupdate-1_1</name>
+    <pv_name>logger:no_records_saved_opc</pv_name>
+    <x>240</x>
+    <y>55</y>
+    <width>121</width>
+    <format>1</format>
+    <precision>0</precision>
+    <tooltip>
+null</tooltip>
+  </widget>
+  <widget type="textupdate" version="2.0.0">
+    <name>Array_2-textupdate-1_2</name>
+    <pv_name>logger:no_records_saved_sniffer</pv_name>
+    <x>240</x>
+    <y>115</y>
+    <width>121</width>
+    <format>1</format>
+    <precision>0</precision>
+    <tooltip>
+null</tooltip>
+  </widget>
+  <widget type="textupdate" version="2.0.0">
+    <name>Array_2-textupdate-1_3</name>
+    <pv_name>logger:no_records_saved_aeth</pv_name>
+    <x>240</x>
+    <y>85</y>
+    <width>121</width>
+    <format>1</format>
+    <precision>0</precision>
+    <tooltip>
+null</tooltip>
+  </widget>
+  <widget type="textupdate" version="2.0.0">
+    <name>Array_2-textupdate-1_4</name>
+    <pv_name>logger:file_name</pv_name>
+    <x>20</x>
+    <y>260</y>
+    <width>341</width>
+    <height>50</height>
+    <format>6</format>
+    <precision>10</precision>
+    <tooltip>
+null</tooltip>
+  </widget>
+  <widget type="label" version="2.0.0">
+    <name>Label_2</name>
+    <text>Data is being saved to this file name::</text>
+    <x>20</x>
+    <y>240</y>
+    <width>220</width>
+  </widget>
+  <widget type="label" version="2.0.0">
+    <name>Label_3</name>
+    <text>Save Folder</text>
+    <x>20</x>
+    <y>320</y>
+    <width>220</width>
+  </widget>
+  <widget type="textupdate" version="2.0.0">
+    <name>Array_2-textupdate-1_5</name>
+    <pv_name>logger:folder_name</pv_name>
+    <x>20</x>
+    <y>340</y>
+    <width>341</width>
+    <format>6</format>
+    <precision>10</precision>
+    <tooltip>
+null</tooltip>
+  </widget>
+  <widget type="label" version="2.0.0">
+    <name>Label_4</name>
+    <text>Project Name</text>
+    <x>20</x>
+    <y>150</y>
+    <width>220</width>
+  </widget>
+  <widget type="textentry" version="3.0.0">
+    <name>Text Entry_1</name>
+    <pv_name>logger:project_name</pv_name>
+    <x>20</x>
+    <y>170</y>
+    <width>341</width>
+    <format>6</format>
+  </widget>
+</display>
