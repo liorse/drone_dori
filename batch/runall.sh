@@ -1,5 +1,6 @@
 #!/bin/bash
 
+./cancelall.sh
 sbatch softIoc.batch
 sbatch logger.batch
 sbatch opc.batch

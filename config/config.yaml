@@ -17,16 +17,16 @@ logger:
     save_aeth_bool: True # save MICROAETH data to file   
     save_sniffer_bool: True # save sniffer data to file
     save_folder: '/home/pi/data'
-    interval_between_save_s: 12 # time in seconds to gather and mean results
+    interval_between_save_s: 5 # time in seconds to gather and mean results
 opc:
     demo: False # is this a demo mode or an instrument is connected?
     port: "/dev/opc" #"/dev/ttyACM0"
-    auto_start: True
+    auto_start: False
 sniffer:
     demo: False # is this a demo mode or an instrument is connected?
     port: "/dev/sniffer"#"/dev/ttyUSB1"
-    auto_start: True
+    auto_start: False
 aeth:
     demo: False
     port: "/dev/aeth"
-    auto_start: True
+    auto_start: False
