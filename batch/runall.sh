@@ -1,6 +1,6 @@
-#!/bin/bash
 
-./cancelall.sh
+
+/home/pi/Documents/github/drone_dori/batch/cancelall.sh
 sbatch softIoc.batch
 sbatch logger.batch
 sbatch opc.batch
