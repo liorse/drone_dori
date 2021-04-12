@@ -101,7 +101,6 @@ class SNIFFER(ActiveObject):
             array_strings =[]    
             while True:
                 data_string_line = self.ser.readline()
-                
                 if data_string_line == b'\n':
                     break
                 else:
@@ -115,6 +114,9 @@ class SNIFFER(ActiveObject):
             json_string = sep.join(array_strings)
             try:
                 data_dict = json.loads(json_string)
+                print('data start')
+                print(data_dict)
+                print('data end')
                 break
             except json.decoder.JSONDecodeError:
                 logging.error('json read exception occured, retrying next data frame....')

@@ -1,0 +1,10 @@
+[Unit]
+Description=Runs the radio serial module to enable comm for remote drone client
+
+[Service]
+User=root
+ExecStart=pppd -detach /dev/sik_radio 10.1.1.1:10.1.1.2 57600
+Restart=always
+
+[Install]
+WantedBy=multi-user.target

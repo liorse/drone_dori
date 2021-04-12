@@ -153,25 +153,28 @@ def insert_data_into_epics(data):
     '''
     
     if isinstance(data, dict):
-        sniffer_dev_epics.CO = data['airData']['CO(ppm)']
-        sniffer_dev_epics.NO2 = data['airData']['NO2(ppm)']
-        sniffer_dev_epics.Ox = data['airData']['Ox(ppm)']
-        sniffer_dev_epics.PM1 = data['airData']['PM1.0(ug/m3)']
-        sniffer_dev_epics.PM10 = data['airData']['PM10(ug/m3)'] 
-        sniffer_dev_epics.PM2dot5 = data['airData']['PM2.5(ug/m3)']
-        sniffer_dev_epics.SO2 = data['airData']['SO2(ppm)']
-        sniffer_dev_epics.altitude = data['altitude']
-        sniffer_dev_epics.hdop = data['hdop']
-        sniffer_dev_epics.humidity = data['humidity']
-        sniffer_dev_epics.latitude = data['latitude']
-        sniffer_dev_epics.longitude = data['longitude']
-        sniffer_dev_epics.pressure = data['pressure']
-        sniffer_dev_epics.sateNum = data['sateNum']
-        sniffer_dev_epics.sequence = data['sequence']
-        sniffer_dev_epics.serial = data['serial']
-        sniffer_dev_epics.temperature = data['temperature']
-        sniffer_dev_epics.utcTime = data['utcTime']
-        sniffer_dev_epics.data_ready = 0 if sniffer_dev_epics.data_ready==1 else 1
+        try:  
+            sniffer_dev_epics.CO = data['airData']['CO(ppm)']
+            sniffer_dev_epics.NO2 = data['airData']['NO2(ppm)']
+            sniffer_dev_epics.Ox = data['airData']['Ox(ppm)']
+            sniffer_dev_epics.PM1 = data['airData']['PM1.0(ug/m3)']
+            sniffer_dev_epics.PM10 = data['airData']['PM10(ug/m3)'] 
+            sniffer_dev_epics.PM2dot5 = data['airData']['PM2.5(ug/m3)']
+            sniffer_dev_epics.SO2 = data['airData']['SO2(ppm)']
+            sniffer_dev_epics.altitude = data['altitude']
+            sniffer_dev_epics.hdop = data['hdop']
+            sniffer_dev_epics.humidity = data['humidity']
+            sniffer_dev_epics.latitude = data['latitude']
+            sniffer_dev_epics.longitude = data['longitude']
+            sniffer_dev_epics.pressure = data['pressure']
+            sniffer_dev_epics.sateNum = data['sateNum']
+            sniffer_dev_epics.sequence = data['sequence']
+            sniffer_dev_epics.serial = data['serial']
+            sniffer_dev_epics.temperature = data['temperature']
+            sniffer_dev_epics.utcTime = data['utcTime']
+            sniffer_dev_epics.data_ready = 0 if sniffer_dev_epics.data_ready==1 else 1
+        except KeyError:
+            logging.error('one of the keys of dictionary is not correct, probably due to bad communication data string')
     
 
 def on_sniffer_enable(value, **kw):
